@@ -190,7 +190,12 @@ ALTER TABLE `Watchlist`
 --
 -- Constraints for dumped tables
 --
-
+--
+-- Constraints for table `Transactions`
+--
+ALTER TABLE `AuctionItem`
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`SellerID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `auctionitem_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
 --
 -- Constraints for table `AuctionItem`
 --
@@ -198,7 +203,17 @@ ALTER TABLE `AuctionItem`
   ADD CONSTRAINT `auctionitem_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
   ADD CONSTRAINT `auctionitem_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
 
+---- Constraints for table `Watchlist`
 --
+ALTER TABLE `Watchlist`
+  ADD CONSTRAINT `watchlist_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `watchlist_ibfk_2` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`AuctionItemID`);
+
+  -- Constraints for table `Notification`
+--
+ALTER TABLE `Notification`
+  ADD CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+
 -- Constraints for table `Bid`
 --
 ALTER TABLE `Bid`
@@ -206,7 +221,8 @@ ALTER TABLE `Bid`
   ADD CONSTRAINT `bid_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
   ADD CONSTRAINT `bid_ibfk_3` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
   ADD CONSTRAINT `bid_ibfk_4` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
-  ADD CONSTRAINT `bid_ibfk_5` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+  ADD CONSTRAINT `bid_ibfk_5` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `bid_ibfk_6` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`AuctionItemID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
