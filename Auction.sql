@@ -6,7 +6,7 @@
 -- Generation Time: Nov 05, 2023 at 08:26 PM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
-
+-- helllo
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
