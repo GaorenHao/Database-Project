@@ -29,13 +29,14 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `AuctionItem` (
   `ItemAuctionID` varchar(4) NOT NULL,
-  `UserID` int(11) DEFAULT NULL,
+  `UserID` varchar(4) NOT NULL,
   `CategoryID` varchar(4) NOT NULL,
   `Description` text NOT NULL,
   `StartingPrice` int(11) NOT NULL,
   `ReservePrice` int(11) NOT NULL,
   `EndDate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- Dumping data for table `AuctionItem`
@@ -145,14 +146,17 @@ CREATE TABLE `Watchlist` (
 --
 -- Indexes for table `AuctionItem`
 --
+--
 ALTER TABLE `AuctionItem`
-  ADD PRIMARY KEY (`ItemAuctionID`);
+  ADD PRIMARY KEY (`ItemAuctionID`),
+  ADD KEY `UserID` (`UserID`);
 
 --
 -- Indexes for table `Bid`
 --
 ALTER TABLE `Bid`
-  ADD PRIMARY KEY (`BidID`);
+  ADD PRIMARY KEY (`BidID`),
+  ADD KEY `UserID` (`UserID`);
 
 --
 -- Indexes for table `Categories`
@@ -183,6 +187,42 @@ ALTER TABLE `Users`
 --
 ALTER TABLE `Watchlist`
   ADD PRIMARY KEY (`WatchlistID`);
+--
+-- Constraints for dumped tables
+--
+--
+-- Constraints for table `Transactions`
+--
+ALTER TABLE `AuctionItem`
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`SellerID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `auctionitem_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+--
+-- Constraints for table `AuctionItem`
+--
+ALTER TABLE `AuctionItem`
+  ADD CONSTRAINT `auctionitem_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `auctionitem_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+
+---- Constraints for table `Watchlist`
+--
+ALTER TABLE `Watchlist`
+  ADD CONSTRAINT `watchlist_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `watchlist_ibfk_2` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`AuctionItemID`);
+
+  -- Constraints for table `Notification`
+--
+ALTER TABLE `Notification`
+  ADD CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+
+-- Constraints for table `Bid`
+--
+ALTER TABLE `Bid`
+  ADD CONSTRAINT `bid_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `bid_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `bid_ibfk_3` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `bid_ibfk_4` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `bid_ibfk_5` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `bid_ibfk_6` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`AuctionItemID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
