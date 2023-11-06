@@ -23,7 +23,7 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
---
+--avatest
 -- Table structure for table `AuctionItem`
 --
 
