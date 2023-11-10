@@ -121,11 +121,11 @@ CREATE TABLE `Users` (
 --
 
 INSERT INTO `Users` (`UserID`, `Email`, `Password`, `FirstName`, `LastName`, `Role`) VALUES
-('3296', '', '', '', '', ''),
-('3561', '', '', '', '', ''),
-('3571', '', '', '', '', ''),
-('3896', '', '', '', '', ''),
-('3971', '', '', '', '', '');
+('3296', 'avaiscool@gmail.com', '123abc', 'Ava', 'Forever', 'Seller'),
+('3561', 'avalovescoding@yahoo.co.uk', 'energyultra', 'Jess', 'Fun', 'Buyer'),
+('3571', 'avalovescats@gmail.com', 'beastmode123', 'Gaorren', 'Yay', 'Seller'),
+('3896', 'coolkidsusesql@gmail.com', 'redbullol999', 'Jonny', 'Slays', 'Buyer'),
+('3971', 'iamhungryandtired@gmail.com', 'ETphonehome', 'Luna', 'Mika', 'Buyer');
 
 -- --------------------------------------------------------
 
@@ -139,7 +139,15 @@ CREATE TABLE `Watchlist` (
   `ItemAuctionID` varchar(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+---- Dumping data for table `Watchlist`
 --
+
+INSERT INTO `Watchlist` (`WatchlistID`, `UserID`, `ItemAuctionID`) VALUES
+('5676', '3296', '8900'),
+('5781', '3561', '8901'),
+('5661', '3571', '8902'),
+('5923', '3896', '8903'),
+('5296', '3971', '8904');
 -- Indexes for dumped tables
 --
 
