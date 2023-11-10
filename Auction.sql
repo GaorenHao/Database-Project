@@ -23,9 +23,8 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
---avatest
+-- avatest
 -- Table structure for table `AuctionItem`
---
 
 CREATE TABLE `AuctionItem` (
   `ItemAuctionID` varchar(4) NOT NULL,
@@ -121,11 +120,11 @@ CREATE TABLE `Users` (
 --
 
 INSERT INTO `Users` (`UserID`, `Email`, `Password`, `FirstName`, `LastName`, `Role`) VALUES
-('3296', '', '', '', '', ''),
-('3561', '', '', '', '', ''),
-('3571', '', '', '', '', ''),
-('3896', '', '', '', '', ''),
-('3971', '', '', '', '', '');
+('3296', 'avaiscool@gmail.com', '123abc', 'Ava', 'Forever', 'Seller'),
+('3561', 'avalovescoding@yahoo.co.uk', 'energyultra', 'Jess', 'Fun', 'Buyer'),
+('3571', 'avalovescats@gmail.com', 'beastmode123', 'Gaorren', 'Yay', 'Seller'),
+('3896', 'coolkidsusesql@gmail.com', 'redbullol999', 'Jonny', 'Slays', 'Buyer'),
+('3971', 'iamhungryandtired@gmail.com', 'ETphonehome', 'Luna', 'Mika', 'Buyer');
 
 -- --------------------------------------------------------
 
@@ -138,7 +137,17 @@ CREATE TABLE `Watchlist` (
   `UserID` varchar(4) NOT NULL,
   `ItemAuctionID` varchar(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+---- Dumping data for table `Watchlist`
+--
 
+INSERT INTO `Watchlist` (`WatchlistID`, `UserID`, `ItemAuctionID`) VALUES
+('5676', '3296', '8900'),
+('5781', '3561', '8901'),
+('5661', '3571', '8902'),
+('5923', '3896', '8903'),
+('5296', '3971', '8904');
+-- Indexes for dumped tables
+--
 --
 -- Indexes for dumped tables
 --
@@ -181,6 +190,7 @@ ALTER TABLE `Transactions`
 --
 ALTER TABLE `Users`
   ADD PRIMARY KEY (`UserID`);
+  MODIFY UserID INT AUTO_INCREMENT PRIMARY KEY;
 
 --
 -- Indexes for table `Watchlist`
@@ -194,20 +204,21 @@ ALTER TABLE `Watchlist`
 -- Constraints for table `Transactions`
 --
 ALTER TABLE `AuctionItem`
-  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`SellerID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
   ADD CONSTRAINT `auctionitem_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
 --
 -- Constraints for table `AuctionItem`
---
 ALTER TABLE `AuctionItem`
-  ADD CONSTRAINT `auctionitem_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
-  ADD CONSTRAINT `auctionitem_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+  ADD CONSTRAINT `auctionitem_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+-- Notice the semicolon at the end of the statement above.
 
----- Constraints for table `Watchlist`
---
+-- Constraints for table `Watchlist`
 ALTER TABLE `Watchlist`
   ADD CONSTRAINT `watchlist_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
-  ADD CONSTRAINT `watchlist_ibfk_2` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`AuctionItemID`);
+  ADD CONSTRAINT `watchlist_ibfk_2` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`);
+-- Notice that `AuctionItemID` has been corrected to `ItemAuctionID` to match the column name.
+-- Also, note that if this is intended to be part of a single transaction or script, you may need to end with a semicolon here as well.
+
 
   -- Constraints for table `Notification`
 --
