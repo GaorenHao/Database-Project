@@ -1,28 +1,16 @@
 <?php
-  $db_host = 'localhost';
-  $db_user = 'root';
-  $db_password = 'root';
-  $db_db = 'information_schema';
- 
-  $mysqli = @new mysqli(
-    $db_host,
-    $db_user,
-    $db_password,
-    $db_db
-  );
-	
-  if ($mysqli->connect_error) {
-    echo 'Errno: '.$mysqli->connect_errno;
-    echo '<br>';
-    echo 'Error: '.$mysqli->connect_error;
-    exit();
-  }
+// db_connect.php
+$server = 'localhost';
+$username = 'root';
+$password = 'root';
+$database = 'random_new_db';
 
-  echo 'Success: A proper connection to MySQL was made.';
-  echo '<br>';
-  echo 'Host information: '.$mysqli->host_info;
-  echo '<br>';
-  echo 'Protocol version: '.$mysqli->protocol_version;
+$connection = mysqli_connect($server, $username, $password, $database);
 
-  $mysqli->close();
+if (!$connection) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+// Optionally, you can set the connection to use exceptions for error handling if you're using MySQLi in an OOP context
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 ?>

@@ -1,9 +1,14 @@
 <?php include_once("header.php")?>
 <?php require("utilities.php")?>
+<?php
+include 'db_connect.php';
+
+// Now you can use $connection to interact with the database
+?>
 
 <div class="container">
 
-<h2 class="my-3">Browse listing ava</h2>
+<h2 class="my-3">Browse listing</h2>
 
 <div id="searchSpecs">
 <!-- When this form is submitted, this PHP page is what processes it.
@@ -106,26 +111,27 @@
      retrieved from the query -->
 
 <?php
-  // Demonstration of what listings will look like using dummy data.
-  $item_id = "87021";
-  $title = "Dummy title";
-  $description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget rutrum ipsum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus feugiat, ipsum vel egestas elementum, sem mi vestibulum eros, et facilisis dui nisi eget metus. In non elit felis. Ut lacus sem, pulvinar ultricies pretium sed, viverra ac sapien. Vivamus condimentum aliquam rutrum. Phasellus iaculis faucibus pellentesque. Sed sem urna, maximus vitae cursus id, malesuada nec lectus. Vestibulum scelerisque vulputate elit ut laoreet. Praesent vitae orci sed metus varius posuere sagittis non mi.";
-  $current_price = 30;
-  $num_bids = 1;
-  $end_date = new DateTime('2020-09-16T11:00:00');
-  
-  // This uses a function defined in utilities.php
-  print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
-  
-  $item_id = "516";
-  $title = "Different title";
-  $description = "Very short description.";
-  $current_price = 13.50;
-  $num_bids = 3;
-  $end_date = new DateTime('2020-11-02T00:00:00');
-  
-  print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+  // Replace the demonstration part with actual fetching and displaying
+  // You will replace the SQL query string with your actual SQL query
+  $sql = "SELECT ItemAuctionID, UserID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
+  $result = $connection->query($sql);
+
+  if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+      $item_id = $row['ItemAuctionID']; // Make sure to fetch and assign the correct columns
+      $title = $row['Description'];
+      $description = $row['Description'];
+      $current_price = $row['StartingPrice'];
+      $num_bids = $row['ReservePrice'];
+      $end_date = new DateTime($row['EndDate']);
+      
+      print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+    }
+  } else {
+    echo "<p>No listings found.</p>";
+  }
 ?>
+
 
 </ul>
 
