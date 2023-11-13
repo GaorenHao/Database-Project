@@ -8,40 +8,42 @@
 
 /* TODO #1: Connect to MySQL database (perhaps by requiring a file that
             already does this). */
-require once 'db_connect.php';
-
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+            
+            include 'db_connect.php';
+            
 /* TODO #2: Extract form data into variables. Because the form was a 'post'
             form, its data can be accessed via $POST['auctionTitle'], 
             $POST['auctionDetails'], etc. Perform checking on the data to
             make sure it can be inserted into the database. If there is an
             issue, give some semi-helpful feedback to user. */
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $stmt->bind_param("ssssiis", $ItemAuctionID, $SellerID, $CategoryID, $Description, $StartingPrice, $ReservePrice, $EndDate);
-    $ItemAuctionID = htmlspecialchars($_POST['Title of auction']);
-    $CategoryID = htmlspecialchars($_POST['Category']);
-    $Description = htmlspecialchars($_POST['Details']);
-    $StartingPrice = htmlspecialchars($_POST['Starting price']);
-    $ReservePrice = htmlspecialchars($_POST['Reserve price']);
-    $EndDate = htmlspecialchars($_POST['End date']);
+var_dump($_POST);
+$auctionTitle = $_POST['auctionTitle']; // no title yet in our database... insert this into Description in our database
+$auctionDetails = $_POST['auctionDetails']; // and leave this one out for now :) 
+$auctionCategory = $_POST['auctionCategory']; // hmm... do we need to connect the database options to here? maybe leave it out for now ... 
+$auctionStartPrice = $_POST['auctionStartPrice'];
+$auctionReservePrice = $_POST['auctionReservePrice'];
+$auctionEndDate = $_POST['auctionEndDate'];
+$itemAuctionID = 'NA';
+            
 
-$sql = "INSERT INTO AuctionItem (ItemAuctionID, SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?) "
-$stmt = $conn->prepare($sql);
-$stmt->blind_param("ssssiis", $ItemAuctionID, $SellerID, $CategoryID, $Description, $StartingPrice, $ReservePrice, $EndDate);
 
 /* TODO #3: If everything looks good, make the appropriate call to insert
             data into the database. */
             
-            if ($stmt->execute()) {
-                echo('<div class="text-center">Auction successfully created! <a href="FIXME">View your new listing.</a></div>');
-            } else {
-                echo "Error occurred: " . $stmt->error;
-            }
-
-            $stmt->close();
-
+$stmt = $connection->prepare("INSERT INTO AuctionItem (ItemAuctionID, UserID, CategoryID, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("ssssiis", $itemAuctionID, $_SESSION['username'], $auctionCategory, $auctionTitle, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
+            
+if ($stmt->execute()) {
+    echo "New item added successfully.";
+  } else {
+    echo "Error: " . $stmt->error;
+  }
 // If all is successful, let user know.
-
+echo('<div class="text-center"><a href="FIXME">View your new listing.</a></div>');
 ?>
 
 </div>
