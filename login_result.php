@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -22,6 +24,11 @@ if ($result->num_rows > 0) {
 	print_r($row['Password']);
 	echo $password;
 	if ($row['Password'] == $password) {
+
+		$_SESSION['logged_in'] = true;
+		$_SESSION['username'] = $row['UserID'];
+		$_SESSION['account_type'] = $row['Role'];
+
 		echo "<p>Password correct! Yay :) </p>";
 	} else {
 		// Notify user of success/failure and redirect/give navigation options.
@@ -40,10 +47,7 @@ if ($result->num_rows > 0) {
 
 // Jess: what are session variables ?? 
 
-session_start();
-$_SESSION['logged_in'] = true;
-$_SESSION['username'] = $row['UserID'];
-$_SESSION['account_type'] = $row['Role'];
+
 
 echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
 echo $_SESSION['username'];
