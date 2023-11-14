@@ -77,7 +77,7 @@ include 'db_connect.php';
   }
   
   $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
-  $result = $conn->query($sql);
+  $result = $connection->query($sql);
 
   if ($result->num_rows>0){
     while($row = $result->fetch_assoc()){
@@ -124,7 +124,7 @@ include 'db_connect.php';
 <?php
   // Replace the demonstration part with actual fetching and displaying
   // You will replace the SQL query string with your actual SQL query
-  $sql = "SELECT ItemAuctionID, UserID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
+  $sql = "SELECT ItemAuctionID, SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
   $result = $connection->query($sql);
 
   if ($result->num_rows > 0) {

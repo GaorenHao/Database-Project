@@ -28,18 +28,30 @@ $stmt->bind_param("sssss", $accountType, $email, $password, $firstName, $lastNam
 // Execute the prepared statement
 if ($stmt->execute()) {
   echo "New account registered successfully.";
+  echo "Account type: $accountType"; 
+  $recent_userID = $connection -> insert_id;
 
-  if ($accountType==='seller') {
-    $lastUserID = $connection->insert_id
-    $stmt =  $connection->prepare("INSERT INTO sellers (userID) VALUES (?)");
-    $stmt->blind_param("i", $lastUserID)
+  if ($accountType === 'seller') {
+    
+    $stmt = $connection->prepare("INSERT INTO sellers (UserID) VALUES (?)");
+    $stmt->bind_param("i", $recent_userID);
 
-    if ($stmt->execute()){
-      echo "New seller registered successfully. ";
-    else {
-      echo "Error creating new seller:".stmt->error
-      </div>
+    if ($stmt->execute()) {
+      echo "New Seller created.";
+    } else {
+      echo "Error creating seller:".$stmt->error;
     }
+  }
+
+  elseif ($accountType === 'buyer'){
+
+    $stmt = $connection->prepare("INSERT INTO buyer (UserID) VALUES (?)");
+    $stmt->bind_param("i", $recent_userID);
+
+    if ($stmt->execute()) {
+      echo "New Buyer created.";
+    } else {
+      echo "Error creating Buyer:".$stmt->error;
     }
 
   }

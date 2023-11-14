@@ -29,13 +29,13 @@ $auctionCategory = $_POST['auctionCategory']; // hmm... do we need to connect th
 $auctionStartPrice = $_POST['auctionStartPrice'];
 $auctionReservePrice = $_POST['auctionReservePrice'];
 $auctionEndDate = $_POST['auctionEndDate'];
-$itemAuctionID = 'NA';
+
 
 /* TODO #3: If everything looks good, make the appropriate call to insert
             data into the database. */
 
-$stmt = $connection->prepare("INSERT INTO AuctionItem (ItemAuctionID, UserID, CategoryID, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sssssss", $itemAuctionID, $_SESSION['username'], $auctionCategory, $auctionTitle, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
+$stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("sssssss",  $_SESSION['username'], $auctionCategory, $auctionTitle, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
 
 // Execute the prepared statement
 if ($stmt->execute()) {
