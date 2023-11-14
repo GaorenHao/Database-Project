@@ -23,13 +23,12 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
---avatest
+-- avatest
 -- Table structure for table `AuctionItem`
---
 
 CREATE TABLE `AuctionItem` (
-  `ItemAuctionID` varchar(4) NOT NULL,
-  `UserID` varchar(4) NOT NULL,
+  `ItemAuctionID` INT AUTO_INCREMENT,
+  `UserID` INT AUTOINCREMENT,
   `CategoryID` varchar(4) NOT NULL,
   `Description` text NOT NULL,
   `StartingPrice` int(11) NOT NULL,
@@ -56,9 +55,9 @@ INSERT INTO `AuctionItem` (`ItemAuctionID`, `UserID`, `CategoryID`, `Description
 --
 
 CREATE TABLE `Bid` (
-  `BidID` varchar(4) NOT NULL,
-  `UserID` varchar(4) NOT NULL,
-  `ItemAuctionID` varchar(4) NOT NULL,
+  `BidID` INT AUTO_INCREMENT,
+  `UserID` INT AUTO_INCREMENT,
+  `ItemAuctionID` INT AUTO_INCREMENT,
   `BidTime` time NOT NULL,
   `BidAmount` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -70,9 +69,10 @@ CREATE TABLE `Bid` (
 --
 
 CREATE TABLE `Categories` (
-  `CategoryID` varchar(4) NOT NULL
+  `CategoryID` INT AUTO_INCREMENT,
+  `ConditionType` enum('new','good','used','broken') NOT NULL,
+  `Colour` enum('pink','blue') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- --------------------------------------------------------
 
 --
@@ -80,8 +80,8 @@ CREATE TABLE `Categories` (
 --
 
 CREATE TABLE `Notification` (
-  `NotificationID` varchar(4) NOT NULL,
-  `UserID` varchar(4) NOT NULL,
+  `NotificationID` INT AUTO_INCREMENT,
+  `UserID` INT AUTO_INCREMENT,
   `DateTime` datetime NOT NULL,
   `Message` text NOT NULL,
   `Type` text NOT NULL
@@ -94,11 +94,11 @@ CREATE TABLE `Notification` (
 --
 
 CREATE TABLE `Transactions` (
-  `TransactionID` varchar(4) NOT NULL,
-  `SellerID` varchar(4) NOT NULL,
-  `ItemID` varchar(4) NOT NULL,
-  `BidID` varchar(4) NOT NULL,
-  `BuyerID` varchar(4) NOT NULL
+  `TransactionID` INT AUTO_INCREMENT,
+  `SellerID` INT AUTO_INCREMENT,
+  `ItemID` INT AUTO_INCREMENT,
+  `BidID` INT AUTO_INCREMENT,
+  `BuyerID` INT AUTO_INCREMENT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -108,7 +108,7 @@ CREATE TABLE `Transactions` (
 --
 
 CREATE TABLE `Users` (
-  `UserID` varchar(4) NOT NULL,
+  `UserID` INT AUTO_INCREMENT,
   `Email` text NOT NULL,
   `Password` text NOT NULL,
   `FirstName` text NOT NULL,
@@ -134,11 +134,10 @@ INSERT INTO `Users` (`UserID`, `Email`, `Password`, `FirstName`, `LastName`, `Ro
 --
 
 CREATE TABLE `Watchlist` (
-  `WatchlistID` varchar(4) NOT NULL,
-  `UserID` varchar(4) NOT NULL,
-  `ItemAuctionID` varchar(4) NOT NULL
+  `WatchlistID` INT AUTO_INCREMENT,
+  `UserID` INT AUTO_INCREMENT,
+  `ItemAuctionID` INT AUTO_INCREMENT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 ---- Dumping data for table `Watchlist`
 --
 
@@ -148,6 +147,9 @@ INSERT INTO `Watchlist` (`WatchlistID`, `UserID`, `ItemAuctionID`) VALUES
 ('5661', '3571', '8902'),
 ('5923', '3896', '8903'),
 ('5296', '3971', '8904');
+-- Indexes for dumped tables
+--
+--
 -- Indexes for dumped tables
 --
 
@@ -189,6 +191,7 @@ ALTER TABLE `Transactions`
 --
 ALTER TABLE `Users`
   ADD PRIMARY KEY (`UserID`);
+  MODIFY UserID INT AUTO_INCREMENT PRIMARY KEY;
 
 --
 -- Indexes for table `Watchlist`
@@ -202,20 +205,21 @@ ALTER TABLE `Watchlist`
 -- Constraints for table `Transactions`
 --
 ALTER TABLE `AuctionItem`
-  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`SellerID`) REFERENCES `Users` (`UserID`),
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
   ADD CONSTRAINT `auctionitem_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
 --
 -- Constraints for table `AuctionItem`
---
 ALTER TABLE `AuctionItem`
-  ADD CONSTRAINT `auctionitem_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
-  ADD CONSTRAINT `auctionitem_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+  ADD CONSTRAINT `auctionitem_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
+-- Notice the semicolon at the end of the statement above.
 
----- Constraints for table `Watchlist`
---
+-- Constraints for table `Watchlist`
 ALTER TABLE `Watchlist`
   ADD CONSTRAINT `watchlist_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`),
-  ADD CONSTRAINT `watchlist_ibfk_2` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`AuctionItemID`);
+  ADD CONSTRAINT `watchlist_ibfk_2` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`);
+-- Notice that `AuctionItemID` has been corrected to `ItemAuctionID` to match the column name.
+-- Also, note that if this is intended to be part of a single transaction or script, you may need to end with a semicolon here as well.
+
 
   -- Constraints for table `Notification`
 --
