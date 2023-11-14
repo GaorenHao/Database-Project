@@ -50,8 +50,6 @@ if ($result->num_rows > 0) {
 
 
 echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
-echo $_SESSION['username'];
-echo $_SESSION['account_type'];
 
 // Redirect to index after 5 seconds
 header("refresh:5;url=index.php");
