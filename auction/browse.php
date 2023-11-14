@@ -34,9 +34,9 @@ include 'db_connect.php';
         <label for="cat" class="sr-only">Search within:</label>
         <select class="form-control" id="cat">
           <option selected value="all">All categories</option>
-          <option value="fill">Fill me in</option>
-          <option value="with">with options</option>
-          <option value="populated">populated from a database?</option>
+          <option value="fill">purple</option>
+          <option value="with">green</option>
+          <option value="populated">red</option>
         </select>
       </div>
     </div>
@@ -64,6 +64,7 @@ include 'db_connect.php';
   // Retrieve these from the URL
   if (!isset($_GET['keyword'])) {
     // TODO: Define behavior if a keyword has not been specified.
+    
   }
   else {
     $keyword = $_GET['keyword'];
@@ -93,7 +94,11 @@ include 'db_connect.php';
   /* TODO: Use above values to construct a query. Use this query to 
      retrieve data from the database. (If there is no form data entered,
      decide on appropriate default value/default query to make. */
-  
+     
+     $sql = "SELECT * FROM AuctionItem\n"
+     $result = $connection->query($sql)
+
+     . "ORDER BY StartingPrice ASC;";
   /* For the purposes of pagination, it would also be helpful to know the
      total number of results that satisfy the above query */
   $num_results = 96; // TODO: Calculate me for real

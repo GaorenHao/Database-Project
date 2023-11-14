@@ -14,8 +14,8 @@ include 'db_connect.php';
 
 var_dump($_POST);
 $accountType = $_POST['accountType'];
-$email = $_POST['email'];
-$password = $_POST['password'];
+$email = $_POST['Email'];
+$password = $_POST['Password'];
 $passwordConfirmation = $_POST['passwordConfirmation'];
 
 // Assign default values if first name and last name are not provided
