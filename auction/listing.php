@@ -2,17 +2,37 @@
 <?php require("utilities.php")?>
 
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include 'db_connect.php';
+
   // Get info from the URL:
   $item_id = $_GET['item_id'];
 
   // TODO: Use item_id to make a query to the database.
+  $sql = "SELECT * FROM AuctionItem WHERE ItemAuctionID = $item_id";
+  $result = $connection->query($sql);
+  
+  if ($result->num_rows > 0) {
+    // Fetching the first row of the result
+    $row = $result->fetch_assoc();
+
+    // Accessing the specific column, for example, 'ColumnA'
+    $title = $row['Description'];
+
+    
+} else {
+    echo "No results found.";
+}
 
   // DELETEME: For now, using placeholder data.
-  $title = "Placeholder title";
-  $description = "Description blah blah blah";
+  //$title = $result['Description'];
+  $description = "Description blah blah blah1";
   $current_price = 30.50;
   $num_bids = 1;
-  $end_time = new DateTime('2020-11-02T00:00:00');
+  $end_time = new DateTime('2024-11-02T00:00:00');
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
   //       like whether the auction ended in a sale or was cancelled due
@@ -31,7 +51,12 @@
   //       For now, this is hardcoded.
   $has_session = true;
   $watching = false;
+  
+  
+
+
 ?>
+
 
 
 <div class="container">
@@ -82,10 +107,38 @@
         <div class="input-group-prepend">
           <span class="input-group-text">£</span>
         </div>
-	    <input type="number" class="form-control" id="bid">
+	    <input type="number" name="bid" class="form-control" id="bid">
+      <!-- Hidden field for id -->
+      <input type="hidden" name="item_id" value="<?php echo htmlspecialchars($item_id); ?>">
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
+    <!-- TABLE OF ALL BIDS -->
+    <table>
+          <thead>
+              <tr>
+                  <th>User</th>
+                  <th>Bid</th>
+                  <th>Time</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php
+                $sql = "SELECT UserID, BidAmount, BidTime FROM Bid WHERE ItemAuctionID = $item_id";
+                $result2 = $connection->query($sql);
+                if ($result2->num_rows > 0) {
+                  // Output data of each row
+                  while($row2 = $result2->fetch_assoc()) {
+                      echo "<tr><td>" . $row2["UserID"]. "</td><td>" . $row2["BidAmount"] . "</td><td>" . $row2["BidTime"] . "</td></tr>";
+                      
+                  }
+              } else {
+                  echo "No bids yet";
+              }
+            ?>
+          </tbody>
+      </table>
+    
 <?php endif ?>
 
   
