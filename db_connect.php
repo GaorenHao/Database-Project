@@ -3,7 +3,7 @@
 $server = 'localhost';
 $username = 'root';
 $password = 'root';
-$database = 'random_new_db';
+$database = 'Auction';
 
 $connection = mysqli_connect($server, $username, $password, $database);
 
