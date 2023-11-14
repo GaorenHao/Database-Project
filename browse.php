@@ -34,9 +34,9 @@ include 'db_connect.php';
         <label for="cat" class="sr-only">Search within:</label>
         <select class="form-control" id="cat">
           <option selected value="all">All categories</option>
-          <option value="fill">Fill me in</option>
-          <option value="with">with options</option>
-          <option value="populated">populated from a database?</option>
+          <option value="fashion">fashion</option>
+          <option value="home">home</option>
+          <option value="beauty">beauty</option>
         </select>
       </div>
     </div>
@@ -76,6 +76,17 @@ include 'db_connect.php';
     $category = $_GET['cat'];
   }
   
+  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
+  $result = $conn->query($sql);
+
+  if ($result->num_rows>0){
+    while($row = $result->fetch_assoc()){
+      echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
+    }
+  } else {
+    echo "0 results";
+  }
+
   if (!isset($_GET['order_by'])) {
     // TODO: Define behavior if an order_by value has not been specified.
   }
