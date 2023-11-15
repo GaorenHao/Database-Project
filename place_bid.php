@@ -30,32 +30,44 @@ if (isset($_SESSION['username'])) {
     echo 'Username is not set in the session.';
 }
 
-
-$bid = $_POST['bid']; 
 // Create the DateTime object
 $now = new DateTime();
 // Format the DateTime object to a string
 $formattedNow = $now->format('Y-m-d H:i:s');
+$buyerid = $_SESSION['buyerid']; 
+
+
+
+//// BID LOGIC >>>> NEW BIDS MUST BE HIGHER THAN THE CURRENT HIGHEST BID
+
+$bid = $_POST['bid']; 
 $item_id = $_POST['item_id'];
+$current_price = $_POST['current_price'];
 
-
-$username = $_SESSION['username']; 
-$nullValue = "NULL"; // For NULL values, you should use a variable
-
-// insert data into the table 
-$stmt = $connection->prepare("INSERT INTO Bid (BidID, UserID, ItemAuctionID, BidTime, BidAmount) VALUES (?, ?, ?, ?, ?)");
-$stmt->bind_param("sssss", $nullValue, $username, $item_id, $formattedNow, $bid);
-
-// Execute the prepared statement
-if ($stmt->execute()) {
-  echo "New bid added successfully.";
+if ($bid < $current_price) {
+  // Handle the error
+  // Redirect back to the form with an error message or display the message directly
+  echo('Your bid is too low. Please submit a bid higher than the current bid. Redirecting you back to the listing ... ');
 } else {
-  echo "Error: " . $stmt->error;
+    // insert data into the table 
+  $stmt = $connection->prepare("INSERT INTO Bid (BuyerID, ItemAuctionID, BidTime, BidAmount) VALUES (?, ?, ?, ?)");
+  $stmt->bind_param("iisd", $buyerid, $item_id, $formattedNow, $bid);
+
+  // Execute the prepared statement
+  if ($stmt->execute()) {
+    echo "New bid added successfully.";
+  } else {
+    echo "Error: " . $stmt->error;
+  }
+
+
+  // If all is successful, let user know.
+  echo('<div class="text-center"><a href="FIXME">View your new listing.</a></div>');
 }
 
 
-// If all is successful, let user know.
-echo('<div class="text-center"><a href="FIXME">View your new listing.</a></div>');
+
+
 
 
 ?>

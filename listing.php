@@ -20,7 +20,28 @@ include 'db_connect.php';
     $row = $result->fetch_assoc();
 
     // Accessing the specific column, for example, 'ColumnA'
-    $title = $row['Description'];
+    $title = $row['Title'];
+    $description = $row['Description'];
+    $reservePrice = $row['ReservePrice'];
+    $num_bids = 1; //// hard coded, need to change 
+    $end_time = new DateTime('2024-11-02T00:00:00');
+
+    ///////// #1 get the highest bid from the database
+    // Assuming $item_id is the ID of the item being bid on
+    // $highest_bid_query = "SELECT MAX(BidAmount) AS highestBid FROM Bid WHERE ItemAuctionID = $item_id";
+    $highest_bid_query = "SELECT BuyerID, BidAmount FROM Bid WHERE BidAmount = (SELECT MAX(BidAmount) FROM Bid WHERE ItemAuctionID = $item_id) AND ItemAuctionID = $item_id";
+
+    // Now, find the buyer id that made the highest big 
+    $result2 = $connection->query($highest_bid_query);
+
+    if ($result2) {
+        $row2 = $result2->fetch_assoc();
+        $current_price = $row2['BidAmount'] ?? $row['StartingPrice']; // Default to starting price if no bid exists
+        $highest_buyerid = $row2['BuyerID'];
+    } else {
+        // Handle query error
+        echo "Error: " . $connection->error;
+    }
 
     
 } else {
@@ -28,11 +49,8 @@ include 'db_connect.php';
 }
 
   // DELETEME: For now, using placeholder data.
-  //$title = $result['Description'];
-  $description = "Description blah blah blah1";
-  $current_price = 30.50;
   $num_bids = 1;
-  $end_time = new DateTime('2024-11-02T00:00:00');
+  $end_time = new DateTime('2020-11-02T00:00:00');
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
   //       like whether the auction ended in a sale or was cancelled due
@@ -96,6 +114,13 @@ include 'db_connect.php';
     <p>
 <?php if ($now > $end_time): ?>
      This auction ended <?php echo(date_format($end_time, 'j M H:i')) ?>
+
+    <!-- Compare current price with reserve price, and declare the winning bid / buyer -->
+    <?php if ($current_price >= $reservePrice): ?>
+      <p>The winning buyer is buyerID <?php echo $highest_buyerid ?>. Congrats!!</p>
+    <?php else: ?>
+      <p>The reserve bid has not been met. Item not sold.</p>
+    <?php endif ?>
      <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
      Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
@@ -108,8 +133,14 @@ include 'db_connect.php';
           <span class="input-group-text">£</span>
         </div>
 	    <input type="number" name="bid" class="form-control" id="bid">
+      <!-- BID LOGIC >>>> NEW BIDS MUST BE HIGHER THAN THE CURRENT HIGHEST BID -->
+      <?php 
+
+      ////  #1 get the highest bid from the database - already done in the above, but send it to the place_bid.php file... 
+      ?>
       <!-- Hidden field for id -->
       <input type="hidden" name="item_id" value="<?php echo htmlspecialchars($item_id); ?>">
+      <input type="hidden" name="current_price" value="<?php echo htmlspecialchars($current_price); ?>">
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
@@ -124,12 +155,12 @@ include 'db_connect.php';
           </thead>
           <tbody>
           <?php
-                $sql = "SELECT UserID, BidAmount, BidTime FROM Bid WHERE ItemAuctionID = $item_id";
+                $sql = "SELECT BuyerID, BidAmount, BidTime FROM Bid WHERE ItemAuctionID = $item_id";
                 $result2 = $connection->query($sql);
                 if ($result2->num_rows > 0) {
                   // Output data of each row
                   while($row2 = $result2->fetch_assoc()) {
-                      echo "<tr><td>" . $row2["UserID"]. "</td><td>" . $row2["BidAmount"] . "</td><td>" . $row2["BidTime"] . "</td></tr>";
+                      echo "<tr><td>" . $row2["BuyerID"]. "</td><td>" . $row2["BidAmount"] . "</td><td>" . $row2["BidTime"] . "</td></tr>";
                       
                   }
               } else {
@@ -137,8 +168,9 @@ include 'db_connect.php';
               }
             ?>
           </tbody>
+          
       </table>
-    
+      <p>The highest bidder is currently buyerID <?php echo $highest_buyerid ?></p>
 <?php endif ?>
 
   
