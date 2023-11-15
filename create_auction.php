@@ -44,9 +44,12 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
           <div class="col-sm-10">
             <select class="form-control" id="auctionCategory" name="auctionCategory">
               <option selected>Choose...</option>
-              <option value="fill">Fill me in</option>
-              <option value="with">with options</option>
-              <option value="populated">populated from a database?</option>
+              <option value="fashion">fashion</option>
+              <option value="electronics">electronics</option>
+              <option value="home">home</option>
+              <option value="beauty">beauty</option>
+              <option value="outdoor">outdoor</option>
+              <option value="art">art</option>
             </select>
             <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Select a category for this item.</small>
           </div>

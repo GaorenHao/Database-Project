@@ -34,8 +34,8 @@ $auctionEndDate = $_POST['auctionEndDate'];
 /* TODO #3: If everything looks good, make the appropriate call to insert
             data into the database. */
 
-$stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sssssss",  $_SESSION['username'], $auctionCategory, $auctionTitle, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
+$stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("issiis", $_SESSION['username'], $auctionCategory, $auctionTitle, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
 
 // Execute the prepared statement
 if ($stmt->execute()) {
