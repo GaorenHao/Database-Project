@@ -67,6 +67,8 @@ include 'db_connect.php';
   // Retrieve these from the URL
   if (!isset($_GET['keyword'])) {
     // TODO: Define behavior if a keyword has not been specified.
+    $keyword = 0;
+    echo "No keyword specified";
   }
   else {
     $keyword = $_GET['keyword'];
@@ -74,25 +76,19 @@ include 'db_connect.php';
 
   if (!isset($_GET['cat'])) {
     // TODO: Define behavior if a category has not been specified.
+    $category = 0;
+    echo "No category defined"
+
   }
   else {
     $category = $_GET['cat'];
   }
   
-  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
-  $result = $connection->query($sql);
-
-  if ($result->num_rows>0){
-    while($row = $result->fetch_assoc()){
-      echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
-    }
-  } else {
-    echo "0 results";
-  }
-
+ 
   if (!isset($_GET['order_by'])) {
     // TODO: Define behavior if an order_by value has not been specified.
-  }
+    $ordering = 0;
+    echo "No order by specified";}
   else {
     $ordering = $_GET['order_by'];
   }
@@ -107,6 +103,31 @@ include 'db_connect.php';
   /* TODO: Use above values to construct a query. Use this query to 
      retrieve data from the database. (If there is no form data entered,
      decide on appropriate default value/default query to make. */
+
+  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
+  $result = $connection->query($sql);
+   
+  if ($result->num_rows>0){
+  while($row = $result->fetch_assoc()){
+       echo "CategoryID:".$row["CategoryID"]. "Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
+       }
+     } else {
+       echo "0 results";
+     }
+   
+  
+  $sql = "SELECT Title FROM AuctionItem WHERE Title = ?"
+  $stmt -> bind_param("s", $keyword)
+  $stmt -> execute();
+  $results = $stmt -> get_result();
+
+     if ($results->num_rows>0){
+      while($row = $result->fetch_assoc()){
+        echo "CategoryID:". $row["CategoryID"]. "Description". $row["Description"]."". $row["Starting Price"]. "<br>";
+      } else {
+        echo "0 results";
+      }
+     }
   
   /* For the purposes of pagination, it would also be helpful to know the
      total number of results that satisfy the above query */
