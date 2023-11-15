@@ -29,6 +29,7 @@ USE Auction;
 
 CREATE TABLE `AuctionItem` (
   `ItemAuctionID` int(4) NOT NULL,
+  'Title' text NOT NULL,
   `SellerID` int(4) NOT NULL,
   `CategoryID` enum('fashion','electronics','beauty','home','outdoor','art') NOT NULL,
   `WatchlistID` int(4) NOT NULL,
