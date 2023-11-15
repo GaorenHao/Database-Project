@@ -26,9 +26,14 @@ $stmt = $connection->prepare("INSERT INTO users (role, email, password, FirstNam
 $stmt->bind_param("sssss", $accountType, $email, $password, $firstName, $lastName);
 
 // Execute the prepared statement
+
+if ($password !== $passwordConfirmation) {
+  echo "Passwords do not match:".$stmt->error;
+  exit;
+}
 if ($stmt->execute()) {
-  echo "New account registered successfully.";
-  echo "Account type: $accountType"; 
+  
+  
   $recent_userID = $connection -> insert_id;
 
   if ($accountType === 'seller') {
@@ -36,10 +41,10 @@ if ($stmt->execute()) {
     $stmt = $connection->prepare("INSERT INTO sellers (UserID) VALUES (?)");
     $stmt->bind_param("i", $recent_userID);
 
-    if ($stmt->execute()) {
-      echo "New Seller created.";
-    } else {
+    if (!$stmt->execute()) {
+      
       echo "Error creating seller:".$stmt->error;
+      exit;
     }
   }
 
@@ -48,16 +53,21 @@ if ($stmt->execute()) {
     $stmt = $connection->prepare("INSERT INTO buyer (UserID) VALUES (?)");
     $stmt->bind_param("i", $recent_userID);
 
-    if ($stmt->execute()) {
-      echo "New Buyer created.";
-    } else {
+    if (!$stmt->execute()) {
+      
       echo "Error creating Buyer:".$stmt->error;
+      exit;
     }
 
   }
+  
+  $_SESSION['logged_in'] = true;
+	$_SESSION['username'] = $row['UserID'];
+	$_SESSION['account_type'] = $row['Role'];
+  header('Location: login_result.php');
+  exit();
 } else {
   echo "Error: " . $stmt->error;
 }
-// Redirect to index after 5 seconds
-header("refresh:5;url=index.php");
+
 ?>
