@@ -58,5 +58,6 @@ if ($stmt->execute()) {
 } else {
   echo "Error: " . $stmt->error;
 }
-
+// Redirect to index after 5 seconds
+header("refresh:5;url=index.php");
 ?>

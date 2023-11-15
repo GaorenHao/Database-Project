@@ -29,12 +29,25 @@ $auctionCategory = $_POST['auctionCategory']; // hmm... do we need to connect th
 $auctionStartPrice = $_POST['auctionStartPrice'];
 $auctionReservePrice = $_POST['auctionReservePrice'];
 $auctionEndDate = $_POST['auctionEndDate'];
-$nullWatchlist = 0; //////// we could implement default nulls on the SQL side, but for now, let me just do it cosmetically on this side. 
+//$nullWatchlist = 0; //////// we could implement default nulls on the SQL side, but for now, let me just do it cosmetically on this side. 
 /// we are just creating a new item to list. so it is typical that it does not immediately have a watchlistID assignment
 
-//// mapping category name to category id
+//// *************************** mapping category name to category id
+$stmt = $connection->prepare("SELECT `CategoryID` FROM `Categories` WHERE `CategoryName` = ?");
+$stmt->bind_param("s", $auctionCategory);
+$stmt->execute();
+$result = $stmt->get_result();
 
-// Assuming $mysqli is your database connection
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $categoryID = $row['CategoryID'];
+} else {
+    // Handle the case where the category does not exist
+    echo "Category not found";
+    exit;
+}
+
+//// *************************** mapping userid to sellerid
 $stmt = $connection->prepare("SELECT `CategoryID` FROM `Categories` WHERE `CategoryName` = ?");
 $stmt->bind_param("s", $auctionCategory);
 $stmt->execute();
@@ -53,8 +66,8 @@ if ($result->num_rows > 0) {
 /* TODO #3: If everything looks good, make the appropriate call to insert
             data into the database. */
 
-$stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, WatchlistID, Title, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("isissdis", $_SESSION['username'], $categoryID, $nullWatchlist, $auctionTitle, $auctionDetails, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
+$stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, Title, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("isssdis", $_SESSION['sellerid'], $categoryID, $auctionTitle, $auctionDetails, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
 
 // Execute the prepared statement
 if ($stmt->execute()) {

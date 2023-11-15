@@ -30,6 +30,44 @@ if ($result->num_rows > 0) {
 		$_SESSION['logged_in'] = true;
 		$_SESSION['username'] = $row['UserID'];
 		$_SESSION['account_type'] = $row['Role'];
+
+		// add here, the sellerID & buyerID mapping ... 
+		//// *************************** mapping category name to category id... can probably condense this down but do later... 
+		if ($_SESSION['account_type'] == 'seller') {
+			// Query the Sellers table to find the SellerID
+			$stmt = $connection->prepare("SELECT `SellerID` FROM `Sellers` WHERE `UserID` = ?");
+			$stmt->bind_param("s", $_SESSION['username']);
+			$stmt->execute();
+			$result = $stmt->get_result();
+		
+			if ($result->num_rows > 0) {
+				$row = $result->fetch_assoc();
+				print_r($row);
+				$_SESSION['sellerid'] = $row['SellerID'];
+				echo $_SESSION['sellerid'];
+			} else {
+				// Handle the case where the seller ID does not exist
+				echo "Error - Seller ID not found";
+				exit;
+			}
+		} elseif ($_SESSION['account_type'] == 'buyer') {
+			// Query the Buyers table to find the BuyerID
+			$stmt = $connection->prepare("SELECT `BuyerID` FROM `Buyer` WHERE `UserID` = ?");
+			$stmt->bind_param("s", $_SESSION['username']);
+			$stmt->execute();
+			$result = $stmt->get_result();
+		
+			if ($result->num_rows > 0) {
+				$row = $result->fetch_assoc();
+				$_SESSION['buyerid'] = $row['BuyerID'];
+				echo $_SESSION['buyerid'];
+			} else {
+				// Handle the case where the buyer ID does not exist
+				echo "Error - Buyer ID not found";
+				exit;
+			}
+		}
+
 		echo "<p>Password correct! Yay :) </p>";
 	} else {
 		// Notify user of success/failure and redirect/give navigation options.

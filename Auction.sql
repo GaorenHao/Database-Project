@@ -32,7 +32,6 @@ CREATE TABLE `AuctionItem` (
   `Title` text NOT NULL,
   `SellerID` int(4) NOT NULL,
   `CategoryID` int(4) NOT NULL,
-  `WatchlistID` int(4) NOT NULL,
   `Description` text NOT NULL,
   `StartingPrice` int(11) NOT NULL,
   `ReservePrice` int(11) NOT NULL,
@@ -146,7 +145,19 @@ CREATE TABLE `Users` (
 CREATE TABLE `Watchlist` (
   `WatchlistID` int(4) NOT NULL,
   `UserID` int(4) NOT NULL,
-  `ItemAuctionID` int(4) NOT NULL
+  `Name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for `WatchListItems` (JOIN TABLE) ******************
+-- 
+
+CREATE TABLE `WatchListItems` (
+  `WatchListID` int(11) NOT NULL,
+  `ItemAuctionID` int(11) NOT NULL,
+  PRIMARY KEY (`WatchListID`, `ItemAuctionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -159,8 +170,7 @@ CREATE TABLE `Watchlist` (
 ALTER TABLE `AuctionItem`
   ADD PRIMARY KEY (`ItemAuctionID`),
   ADD KEY `FK2_AuctionItem` (`CategoryID`),
-  ADD KEY `FK1_AuctionItem` (`SellerID`),
-  ADD KEY `FK3_AuctionItem` (`WatchlistID`);
+  ADD KEY `FK1_AuctionItem` (`SellerID`);
 
 --
 -- Indexes for table `Bid`
@@ -279,9 +289,8 @@ ALTER TABLE `Watchlist`
 --
 ALTER TABLE `AuctionItem`
   ADD CONSTRAINT `FK1_AuctionItem` FOREIGN KEY (`SellerID`) REFERENCES `Sellers` (`SellerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK2_AuctionItem` FOREIGN KEY (`CategoryID`) REFERENCES `Categories` (`CategoryID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK3_AuctionItem` FOREIGN KEY (`WatchlistID`) REFERENCES `Watchlist` (`WatchlistID`) ON DELETE CASCADE ON UPDATE CASCADE;
-
+  ADD CONSTRAINT `FK2_AuctionItem` FOREIGN KEY (`CategoryID`) REFERENCES `Categories` (`CategoryID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  
 --
 -- Constraints for table `Bid`
 --
@@ -309,13 +318,20 @@ ALTER TABLE `Transactions`
   ADD CONSTRAINT `FK3_Transactions` FOREIGN KEY (`BidID`) REFERENCES `Bid` (`BidID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK4_Transactions` FOREIGN KEY (`BuyerID`) REFERENCES `Buyer` (`BuyerID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---
+-- 
 -- Constraints for table `Watchlist`
---
+-- 
 ALTER TABLE `Watchlist`
-  ADD CONSTRAINT `FK1_Watchlist` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
+  ADD CONSTRAINT `FK_WatchList_User` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE;
 
+-- 
+-- Constraints for table `WatchListItems`
+-- 
+ALTER TABLE `WatchListItems`
+  ADD CONSTRAINT `FK_WatchListItems_WatchList` FOREIGN KEY (`WatchListID`) REFERENCES `WatchList` (`WatchListID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_WatchListItems_Items` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE;
+
+-- 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
