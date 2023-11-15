@@ -35,8 +35,11 @@ include 'db_connect.php';
         <select class="form-control" id="cat">
           <option selected value="all">All categories</option>
           <option value="fashion">fashion</option>
+          <option value="electronics">electronics</option>
           <option value="home">home</option>
           <option value="beauty">beauty</option>
+          <option value="outdoor">outdoor</option>
+          <option value="art">art</option>
         </select>
       </div>
     </div>
