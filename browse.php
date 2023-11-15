@@ -127,6 +127,7 @@ include 'db_connect.php';
 <?php
   // Replace the demonstration part with actual fetching and displaying
   // You will replace the SQL query string with your actual SQL query
+  
   $sql = "SELECT ItemAuctionID, SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
   $result = $connection->query($sql);
 
