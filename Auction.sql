@@ -29,9 +29,9 @@ USE Auction;
 
 CREATE TABLE `AuctionItem` (
   `ItemAuctionID` int(4) NOT NULL,
-  'Title' text NOT NULL,
+  `Title` text NOT NULL,
   `SellerID` int(4) NOT NULL,
-  `CategoryID` enum('fashion','electronics','beauty','home','outdoor','art') NOT NULL,
+  `CategoryID` int(4) NOT NULL,
   `WatchlistID` int(4) NOT NULL,
   `Description` text NOT NULL,
   `StartingPrice` int(11) NOT NULL,
@@ -71,8 +71,17 @@ CREATE TABLE `Buyer` (
 --
 
 CREATE TABLE `Categories` (
-  `CategoryID` enum('fashion','electronics','beauty','home','outdoor','art') NOT NULL
+  `CategoryID` int(4) NOT NULL AUTO_INCREMENT,
+  `CategoryName` varchar(255) NOT NULL,
+  PRIMARY KEY (`CategoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `Categories` (`CategoryName`) VALUES ('fashion');
+INSERT INTO `Categories` (`CategoryName`) VALUES ('electronics');
+INSERT INTO `Categories` (`CategoryName`) VALUES ('beauty');
+INSERT INTO `Categories` (`CategoryName`) VALUES ('home');
+INSERT INTO `Categories` (`CategoryName`) VALUES ('outdoor');
+INSERT INTO `Categories` (`CategoryName`) VALUES ('art');
 
 -- --------------------------------------------------------
 
@@ -171,8 +180,7 @@ ALTER TABLE `Buyer`
 --
 -- Indexes for table `Categories`
 --
-ALTER TABLE `Categories`
-  ADD PRIMARY KEY (`CategoryID`);
+
 
 --
 -- Indexes for table `Notification`
