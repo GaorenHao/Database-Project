@@ -19,7 +19,7 @@ if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
 
 <div class="container">
 
-<h2 class="my-3">2 Browse listing</h2>
+<h2 class="my-3">Browse listing</h2>
 
 <div id="searchSpecs">
 <!-- When this form is submitted, this PHP page is what processes it.
