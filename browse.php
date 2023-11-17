@@ -68,117 +68,51 @@ include 'db_connect.php';
 </div>
 
 <?php
-  // Retrieve these from the URL
-  if (!isset($_GET['keyword'])) {
-    // TODO: Define behavior if a keyword has not been specified.
-    echo "No keyword specified";
-  }else {
-    $keyword = $_GET['keyword'];
+  // Sanitize and validate GET parameters
+  $keyword = isset($_GET['keyword']) ? $connection->real_escape_string($_GET['keyword']) : '';
+  $category = isset($_GET['cat']) ? $connection->real_escape_string($_GET['cat']) : 'all';
+  $ordering = isset($_GET['order_by']) ? $_GET['order_by'] : 'pricelow';
+  $curr_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+
+  // Construct the SQL query based on parameters
+  $sql = "SELECT AuctionItem.*, Categories.CategoryName FROM AuctionItem ";
+  $sql .= "LEFT JOIN Categories ON AuctionItem.CategoryID = Categories.CategoryID ";
+
+  if (!empty($keyword)) {
+      $sql .= "WHERE AuctionItem.Description LIKE '%$keyword%' ";
   }
 
-  if (!isset($_GET['cat'])) {
-    echo "No category specified";
-    // TODO: Define behavior if a category has not been specified
+  if ($category != 'all') {
+      $sql .= (!empty($keyword) ? "AND " : "WHERE ") . "Categories.CategoryName = '$category' ";
   }
-  else {
-    $category = $_GET['cat'];
+
+  if ($ordering == 'pricelow') {
+      $sql .= "ORDER BY AuctionItem.StartingPrice ASC ";
+  } elseif ($ordering == 'pricehigh') {
+      $sql .= "ORDER BY AuctionItem.StartingPrice DESC ";
+  } else {
+      $sql .= "ORDER BY AuctionItem.EndDate DESC ";
   }
-  ////////// can remove this probs!! 
-  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
+
+  // Pagination Logic
+  $results_per_page = 10;
+  $offset = ($curr_page - 1) * $results_per_page;
+  $sql .= " LIMIT $results_per_page OFFSET $offset";
+
+  // Execute the query
   $result = $connection->query($sql);
 
-  if ($result->num_rows>0){
-    while($row = $result->fetch_assoc()){
-      //echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
+  if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+      echo "Title: " . htmlspecialchars($row["Title"]) . "<br>";
+      echo "Description: " . htmlspecialchars($row["Description"]) . "<br>";
+      echo "Starting Price: " . htmlspecialchars($row["StartingPrice"]) . "<br>";
+      echo "End Date: " . htmlspecialchars($row["EndDate"]) . "<br>";
+      echo "Category: " . htmlspecialchars($row["CategoryName"]) . "<br><br>";
     }
-  } else {
-    echo "0 results";
+  } else { 
+    echo "No results found";
   }
-
-  // Initialize orderbysql with a default value
-  $orderbysql = 'ORDER BY StartingPrice ASC';
-
-  if (!isset($_GET['order_by'])) {
-    echo "No order by defined";
-
-
-  }
-
-    
-    // TODO: Define behavior if an order_by value has not been specified.
-  else {
-    $ordering = $_GET['order_by'];
-
-    if ($ordering == 'pricelow') {
-      $orderbysql = 'ORDER BY Starting Price ASC';
-    }
-    else if ($ordering == 'pricehigh') {
-      $orderbysql = 'ORDER BY StartingPrice DESC';
-    } else{
-      $orderbysql = 'ORDER BY EndDate DESC';
-    }
-  }
-
-
-  
-  if (!isset($_GET['page'])) {
-    $curr_page = 1;
-  }
-  else {
-    $curr_page = $_GET['page'];
-  }
-
-  /* TODO: Use above values to construct a query. Use this query to 
-     retrieve data from the database. (If there is no form data entered,
-     decide on appropriate default value/default query to make. */
-
-  $sql = "SELECT * FROM AuctionItem $orderbysql";
-  $result = $connection -> query($sql);
-
-  if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()){
-      echo"Title". $row["Title"] ."Description". $row["Description"]. "StartingPrice" .$row["StartingPrice"]. "EndDate". $row["EndDate"]. "<br>";
-    }
-  } else { echo "No results found";
-  }
-    
-
-
-
-
-  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
-  $result = $connection->query($sql);
-   
-  if ($result->num_rows>0){
-    while($row = $result->fetch_assoc()){
-  echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
-  }
-  } else {
-      echo "0 results";
-  }
-
-  
-
-  
-    
-
-
-
-
-  /* For the purposes of pagination, it would also be helpful to know the
-     total number of results that satisfy the above query */
-     $results_per_page = 10;
-     $count_query = "SELECT COUNT(*) FROM AuctionItem"; // Adjust based on filters if needed
-     $count_result = $connection->query($count_query);
-     $row = $count_result->fetch_row();
-     $num_results = $row[0];
-     $max_page = ceil($num_results / $results_per_page);
-     
-     $curr_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-     $offset = ($curr_page - 1) * $results_per_page;
-     
-     // Append LIMIT and OFFSET to the main SQL query
-     $sql .= "LIMIT $results_per_page OFFSET $offset";
 ?>
 
 <div class="container mt-5">
