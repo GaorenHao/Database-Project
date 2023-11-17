@@ -8,7 +8,7 @@ if (!isset($_POST['functionname']) || !isset($_POST['arguments'])) {
 $item_id = $_POST['arguments'];
 
 if ($_POST['functionname'] == "add_to_watchlist") {
-  $stmt = $connection->prepare("INSERT INTO Watchlist (Item, email, password, FirstName, LastName) VALUES (?, ?, ?, ?, ?)");
+  $stmt = $connection->prepare("INSERT INTO Watchlist (avaisconfused) VALUES (?, ?, ?, ?, ?)");
   $stmt->bind_param("sssss", $accountType, $email, $password, $firstName, $lastName);
   // TODO: Update database and return success/failure.
 
