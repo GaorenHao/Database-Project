@@ -48,7 +48,7 @@ CREATE TABLE `Bid` (
   `BidID` int(4) NOT NULL,
   `BuyerID` int(4) NOT NULL,
   `ItemAuctionID` int(4) NOT NULL,
-  `BidTime` time NOT NULL,
+  `BidTime` datetime NOT NULL,
   `BidAmount` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

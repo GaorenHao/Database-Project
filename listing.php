@@ -19,13 +19,14 @@ include 'db_connect.php';
     // Fetching the first row of the result
     $row = $result->fetch_assoc();
 
-    // Accessing the specific column, for example, 'ColumnA'
     $title = $row['Title'];
     $description = $row['Description'];
     $reservePrice = $row['ReservePrice'];
     $num_bids = 1; //// hard coded, need to change 
-    $end_time = new DateTime('2024-11-02T00:00:00');
+    $end_time = new DateTime($row['EndDate']);
 
+    ////  <!-- BID LOGIC >>>> NEW BIDS MUST BE HIGHER THAN THE CURRENT HIGHEST BID -->
+    
     ///////// #1 get the highest bid from the database
     // Assuming $item_id is the ID of the item being bid on
     // $highest_bid_query = "SELECT MAX(BidAmount) AS highestBid FROM Bid WHERE ItemAuctionID = $item_id";
@@ -50,7 +51,6 @@ include 'db_connect.php';
 
   // DELETEME: For now, using placeholder data.
   $num_bids = 1;
-  $end_time = new DateTime('2020-11-02T00:00:00');
 
   // TODO: Note: Auctions that have ended may pull a different set of data,
   //       like whether the auction ended in a sale or was cancelled due
@@ -133,7 +133,7 @@ include 'db_connect.php';
           <span class="input-group-text">£</span>
         </div>
 	    <input type="number" name="bid" class="form-control" id="bid">
-      <!-- BID LOGIC >>>> NEW BIDS MUST BE HIGHER THAN THE CURRENT HIGHEST BID -->
+      
       <?php 
 
       ////  #1 get the highest bid from the database - already done in the above, but send it to the place_bid.php file... 

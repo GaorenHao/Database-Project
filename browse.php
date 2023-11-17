@@ -78,13 +78,13 @@ include 'db_connect.php';
   else {
     $category = $_GET['cat'];
   }
-  
+  ////////// can remove this probs!! 
   $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
   $result = $connection->query($sql);
 
   if ($result->num_rows>0){
     while($row = $result->fetch_assoc()){
-      echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
+      //echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
     }
   } else {
     echo "0 results";
@@ -128,16 +128,17 @@ include 'db_connect.php';
   // Replace the demonstration part with actual fetching and displaying
   // You will replace the SQL query string with your actual SQL query
   
-  $sql = "SELECT ItemAuctionID, SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
-  $result = $connection->query($sql);
+  //$sql = "SELECT ItemAuctionID, SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
+  $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
+  $result = $connection->query($itemSummary_query);
 
-  if ($result->num_rows > 0) {
+  if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-      $item_id = $row['ItemAuctionID']; // Make sure to fetch and assign the correct columns
-      $title = $row['Description'];
+      $item_id = $row['ItemAuctionID']; // Fetching the correct columns
+      $title = $row['Title'];
       $description = $row['Description'];
-      $current_price = $row['StartingPrice'];
-      $num_bids = $row['ReservePrice'];
+      $current_price = $row['MaxBid'];
+      $num_bids = $row['BidCount'];
       $end_date = new DateTime($row['EndDate']);
       
       print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
