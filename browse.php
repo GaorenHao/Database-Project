@@ -29,7 +29,7 @@ include 'db_connect.php';
               <i class="fa fa-search"></i>
             </span>
           </div>
-          <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
+          <input type="text" class="form-control border-left-0" id="keyword" name="keyword" placeholder="Search for anything">
         </div>
       </div>
     </div>
