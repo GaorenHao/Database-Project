@@ -22,7 +22,7 @@ error_reporting(E_ALL);
   //Ava: we want it to select the items from the auction table that correspond to the Seller ID that is currently logged in.
   
    // TODO: Check user's credentials (cookie/session).
-session_start();
+
 if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSION['account_type'] == 'seller'){
 // Ava: I think the error might be here - i'm not sure if I am using th esession variables correctly as I have trid to interpret the log in page, could be an issue with strings being stored as integers?
   $UserID = $_SESSION['username'];
@@ -43,7 +43,7 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
   
   // TODO: Perform a query to pull up their auctions.
 
-      $stmt = $connection->prepare("SELECT Title, Description, StartingPrice, ReservePrice, EndDate  FROM AuctionItem WHERE SellerID = ?");
+      $stmt = $connection->prepare("SELECT ItemAuctionID, Title, Description, StartingPrice, ReservePrice, EndDate  FROM AuctionItem WHERE SellerID = ?");
       if($stmt){
         $stmt->bind_param("i", $SellerID);
         $stmt->execute();
@@ -58,7 +58,15 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
             $startingprice = $row['StartingPrice'];
             $reserveprice = $row['ReservePrice'];
             $enddate = $row['EndDate'];
-            print_listing_li($title,$description,$startingprice, $reserveprice, $enddate);
+            $itemAuctionID =$row['ItemAuctionID'];
+            
+            echo "<li>";
+            echo "<h3>" . htmlspecialchars($title) . "</h3>";
+            echo "<p>Description: " . htmlspecialchars($description) . "</p>";
+            echo "<p>Starting Price: " . htmlspecialchars($startingprice) . "</p>";
+            echo "<p>Reserve Price: " . htmlspecialchars($reserveprice) . "</p>";
+            echo "<p>End Date: " . htmlspecialchars($enddate) . "</p>";
+            echo "</li>";
           }
         }else{
           echo "<p>You have no listed items.</p>";
