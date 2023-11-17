@@ -116,41 +116,33 @@ include 'db_connect.php';
       echo "End Date: " . htmlspecialchars($row["EndDate"]) . "<br>";
       echo "Category: " . htmlspecialchars($row["CategoryName"]) . "<br><br>";
     }
-  } else { 
-    echo "No results found";
-  }
-?>
 
-<div class="container mt-5">
+    // Proceed with the second query only if the first query had results
+    $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
+    $itemSummary_result = $connection->query($itemSummary_query);
 
-<!-- TODO: If result set is empty, print an informative message. Otherwise... -->
+    if ($itemSummary_result && $itemSummary_result->num_rows > 0) {
+      while ($row = $itemSummary_result->fetch_assoc()) {
+        $item_id = $row['ItemAuctionID']; // Fetching the correct columns
+        $title = htmlspecialchars($row['Title']);
+        $description = htmlspecialchars($row['Description']);
+        $current_price = htmlspecialchars($row['MaxBid']);
+        $num_bids = htmlspecialchars($row['BidCount']);
+        $end_date = new DateTime($row['EndDate']);
 
-<ul class="list-group">
-
-<!-- TODO: Use a while loop to print a list item for each auction listing
-     retrieved from the query -->
-
-<?php
-  // Replace the demonstration part with actual fetching and displaying
-  // You will replace the SQL query string with your actual SQL query
-  
-  //$sql = "SELECT ItemAuctionID, SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
-  $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
-  $result = $connection->query($itemSummary_query);
-
-  if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-      $item_id = $row['ItemAuctionID']; // Fetching the correct columns
-      $title = $row['Title'];
-      $description = $row['Description'];
-      $current_price = $row['MaxBid'];
-      $num_bids = $row['BidCount'];
-      $end_date = new DateTime($row['EndDate']);
-      
-      print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+        // Display the details for each auction listing
+        // Replace this with your actual listing display logic
+        echo "Item ID: " . $item_id . "<br>";
+        echo "Title: " . $title . "<br>";
+        echo "Description: " . $description . "<br>";
+        echo "Current Price: " . $current_price . "<br>";
+        echo "Number of Bids: " . $num_bids . "<br>";
+        echo "End Date: " . $end_date->format('Y-m-d H:i:s') . "<br><br>";
+      }
     }
-  } else {
-    echo "<p>No listings found.</p>";
+
+  } else { 
+    echo "No listings found.";
   }
 ?>
 
