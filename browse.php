@@ -95,119 +95,49 @@ include 'db_connect.php';
     echo "0 results";
   }
 
-  // Initialize orderbysql with a default value
-  $orderbysql = 'ORDER BY StartingPrice ASC';
+  // Initialize variables
+$orderbysql = 'ORDER BY StartingPrice ASC'; // Default sorting order
 
+// Retrieve form data from URL
+$keyword = isset($_GET['keyword']) ? $_GET['keyword'] : null;
+$category = isset($_GET['cat']) ? $_GET['cat'] : 'all'; // Default to all categories
+$ordering = isset($_GET['order_by']) ? $_GET['order_by'] : 'pricelow';
 
-  if (!isset($_GET['order_by'])) {
-    echo "No order by defined";
+// Update sorting order based on user selection
+switch ($ordering) {
+  case 'pricelow':
+    $orderbysql = 'ORDER BY StartingPrice ASC';
+    break;
+  case 'pricehigh':
+    $orderbysql = 'ORDER BY StartingPrice DESC';
+    break;
+  case 'date':
+    $orderbysql = 'ORDER BY EndDate ASC';
+    break;
+}
 
+// TODO: Use above values to construct a query
+// Example query (modify according to your requirements)
+$sql = "SELECT * FROM AuctionItem WHERE (Title LIKE ? OR Description LIKE ?) AND (CategoryID = ? OR 'all' = ?) $orderbysql";
+$stmt = $connection->prepare($sql);
+$searchTerm = '%' . $keyword . '%';
+$stmt->bind_param('ssss', $searchTerm, $searchTerm, $category, $category);
+$stmt->execute();
+$result = $stmt->get_result();
 
+// Display results
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    // Format and display each row
+    echo "<div>Title: " . htmlspecialchars($row['Title']) . "<br>";
+    echo "Description: " . htmlspecialchars($row['Description']) . "<br>";
+    echo "Starting Price: " . htmlspecialchars($row['StartingPrice']) . "<br>";
+    echo "End Date: " . htmlspecialchars($row['EndDate']) . "</div><hr>";
   }
+} else {
+  echo "No results found";
+}
 
-    
-    // TODO: Define behavior if an order_by value has not been specified.
-  else {
-    $ordering = $_GET['order_by'];
-
-    if ($ordering == 'pricelow') {
-      $orderbysql = 'ORDER BY Starting Price ASC';
-    }
-    else if ($ordering == 'pricehigh') {
-      $orderbysql = 'ORDER BY StartingPrice DESC';
-    } else{
-      $orderbysql = 'ORDER BY EndDate DESC';
-    }
-  }
-
-
-  
-  if (!isset($_GET['page'])) {
-    $curr_page = 1;
-  }
-  else {
-    $curr_page = $_GET['page'];
-  }
-
-  /* TODO: Use above values to construct a query. Use this query to 
-     retrieve data from the database. (If there is no form data entered,
-     decide on appropriate default value/default query to make. */
-
-  $sql = "SELECT * FROM AuctionItem $orderbysql";
-  $result = $connection -> query($sql);
-
-  if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()){
-      echo"Title". $row["Title"] ."Description". $row["Description"]. "StartingPrice" .$row["StartingPrice"]. "EndDate". $row["EndDate"]. "<br>";
-    }
-  } else { echo "No results found";
-  }
-    
-
-
-
-
-  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
-  $result = $connection->query($sql);
-   
-  if ($result->num_rows>0){
-    while($row = $result->fetch_assoc()){
-  echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
-  }
-  } else {
-      echo "0 results";
-  }
-
-  
-
-  
-    
-
-
-
-
-  /* For the purposes of pagination, it would also be helpful to know the
-     total number of results that satisfy the above query */
-  $num_results = 96; // TODO: Calculate me for real
-  $results_per_page = 10;
-  $max_page = ceil($num_results / $results_per_page);
-?>
-
-<div class="container mt-5">
-
-<!-- TODO: If result set is empty, print an informative message. Otherwise... -->
-
-<ul class="list-group">
-
-<!-- TODO: Use a while loop to print a list item for each auction listing
-     retrieved from the query -->
-
-<?php
-  // Replace the demonstration part with actual fetching and displaying
-  // You will replace the SQL query string with your actual SQL query
-  
-  //$sql = "SELECT ItemAuctionID, SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
-  $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
-  $result = $connection->query($itemSummary_query);
-
-  if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-      $item_id = $row['ItemAuctionID']; // Fetching the correct columns
-      $title = $row['Title'];
-      $description = $row['Description'];
-      $current_price = $row['MaxBid'];
-      $num_bids = $row['BidCount'];
-      $end_date = new DateTime($row['EndDate']);
-      
-      print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
-    }
-  } else {
-    echo "<p>No listings found.</p>";
-  }
-?>
-
-
-</ul>
 
 <!-- Pagination for results listings -->
 <nav aria-label="Search results pages" class="mt-5">
