@@ -6,6 +6,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include 'db_connect.php';
 
+
 // Now you can use $connection to interact with the database
 ?>
 
@@ -93,6 +94,9 @@ include 'db_connect.php';
   } else {
     echo "0 results";
   }
+
+  // Initialize orderbysql with a default value
+  $orderbysql = 'ORDER BY StartingPrice ASC';
 
   if (!isset($_GET['order_by'])) {
     echo "No order by defined";
