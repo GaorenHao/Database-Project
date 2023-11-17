@@ -8,12 +8,16 @@ if (!isset($_POST['functionname']) || !isset($_POST['arguments'])) {
 $item_id = $_POST['arguments'];
 
 if ($_POST['functionname'] == "add_to_watchlist") {
+  $stmt = $connection->prepare("INSERT INTO Watchlist (avaisconfused) VALUES (?, ?, ?, ?, ?)");
+  $stmt->bind_param("sssss", $accountType, $email, $password, $firstName, $lastName);
   // TODO: Update database and return success/failure.
+
 
   $res = "success";
 }
 else if ($_POST['functionname'] == "remove_from_watchlist") {
   // TODO: Update database and return success/failure.
+
 
   $res = "success";
 }
@@ -25,3 +29,5 @@ else if ($_POST['functionname'] == "remove_from_watchlist") {
 echo $res;
 
 ?>
+
+$stmt = $connection -> prepare("INSERT SellerID FROM Sellers WHERE UserID = ?");

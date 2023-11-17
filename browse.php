@@ -1,6 +1,9 @@
 <?php include_once("header.php")?>
 <?php require("utilities.php")?>
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 include 'db_connect.php';
 
 // Now you can use $connection to interact with the database
@@ -67,13 +70,14 @@ include 'db_connect.php';
   // Retrieve these from the URL
   if (!isset($_GET['keyword'])) {
     // TODO: Define behavior if a keyword has not been specified.
-  }
-  else {
+    echo "No keyword specified";
+  }else {
     $keyword = $_GET['keyword'];
   }
 
   if (!isset($_GET['cat'])) {
-    // TODO: Define behavior if a category has not been specified.
+    echo "No category specified";
+    // TODO: Define behavior if a category has not been specified
   }
   else {
     $category = $_GET['cat'];
@@ -91,11 +95,27 @@ include 'db_connect.php';
   }
 
   if (!isset($_GET['order_by'])) {
-    // TODO: Define behavior if an order_by value has not been specified.
+    echo "No order by defined";
+
+
   }
+
+    
+    // TODO: Define behavior if an order_by value has not been specified.
   else {
     $ordering = $_GET['order_by'];
+
+    if ($ordering == 'pricelow') {
+      $orderbysql = 'ORDER BY Starting Price ASC';
+    }
+    else if ($ordering == 'pricehigh') {
+      $orderbysql = 'ORDER BY StartingPrice DESC';
+    } else{
+      $orderbysql = 'ORDER BY EndDate DESC';
+    }
   }
+
+
   
   if (!isset($_GET['page'])) {
     $curr_page = 1;
@@ -107,7 +127,40 @@ include 'db_connect.php';
   /* TODO: Use above values to construct a query. Use this query to 
      retrieve data from the database. (If there is no form data entered,
      decide on appropriate default value/default query to make. */
+
+  $sql = "SELECT * FROM AuctionItem $orderbysql";
+  $result = $connection -> query($sql);
+
+  if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()){
+      echo"Title". $row["Title"] ."Description". $row["Description"]. "StartingPrice" .$row["StartingPrice"]. "EndDate". $row["EndDate"]. "<br>";
+    }
+  } else { echo "No results found";
+  }
+    
+
+
+
+
+  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
+  $result = $connection->query($sql);
+   
+  if ($result->num_rows>0){
+    while($row = $result->fetch_assoc()){
+  echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
+  }
+  } else {
+      echo "0 results";
+  }
+
   
+
+  
+    
+
+
+
+
   /* For the purposes of pagination, it would also be helpful to know the
      total number of results that satisfy the above query */
   $num_results = 96; // TODO: Calculate me for real
