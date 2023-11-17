@@ -129,31 +129,12 @@ switch ($ordering) {
      retrieve data from the database. (If there is no form data entered,
      decide on appropriate default value/default query to make. */
 
-  $sql = "SELECT * FROM AuctionItem $orderbysql";
-  $result = $connection -> query($sql);
-
-  if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()){
-      echo"Title". $row["Title"] ."Description". $row["Description"]. "StartingPrice" .$row["StartingPrice"]. "EndDate". $row["EndDate"]. "<br>";
-    }
-  } else { echo "No results found";
-  }
-    
-
-
-
-
-  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
-  $result = $connection->query($sql);
-   
-  if ($result->num_rows>0){
-    while($row = $result->fetch_assoc()){
-  echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
-  }
-  } else {
-      echo "0 results";
-  }
-
+     $sql = "SELECT * FROM AuctionItem WHERE (Title LIKE ? OR Description LIKE ?) AND (CategoryID = ? OR 'all' = ?) $orderbysql";
+     $stmt = $connection->prepare($sql);
+     $searchTerm = '%' . $keyword . '%';
+     $stmt->bind_param('ssss', $searchTerm, $searchTerm, $category, $category);
+     $stmt->execute();
+     $result = $stmt->get_result();
   
 
   
@@ -186,19 +167,16 @@ switch ($ordering) {
   $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
   $result = $connection->query($itemSummary_query);
 
-  if ($result && $result->num_rows > 0) {
+  if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-      $item_id = $row['ItemAuctionID']; // Fetching the correct columns
-      $title = $row['Title'];
-      $description = $row['Description'];
-      $current_price = $row['MaxBid'];
-      $num_bids = $row['BidCount'];
-      $end_date = new DateTime($row['EndDate']);
-      
-      print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+      // Format and display each row
+      echo "<div>Title: " . htmlspecialchars($row['Title']) . "<br>";
+      echo "Description: " . htmlspecialchars($row['Description']) . "<br>";
+      echo "Starting Price: " . htmlspecialchars($row['StartingPrice']) . "<br>";
+      echo "End Date: " . htmlspecialchars($row['EndDate']) . "</div><hr>";
     }
   } else {
-    echo "<p>No listings found.</p>";
+    echo "No results found";
   }
 ?>
 
