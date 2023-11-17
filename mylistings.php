@@ -24,7 +24,7 @@ error_reporting(E_ALL);
    // TODO: Check user's credentials (cookie/session).
 session_start();
 if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSION['account_type'] == 'seller'){
-
+// Ava: I think the error might be here - i'm not sure if I am using th esession variables correctly as I have trid to interpret the log in page, could be an issue with strings being stored as integers?
   $UserID = $_SESSION['username'];
 
   $stmt = $connection -> prepare("SELECT SellerID FROM Sellers WHERE UserID = ?");
