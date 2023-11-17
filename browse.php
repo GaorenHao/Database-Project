@@ -29,14 +29,14 @@ include 'db_connect.php';
               <i class="fa fa-search"></i>
             </span>
           </div>
-          <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
+          <input type="text" class="form-control border-left-0" id="keyword" name="keyword" placeholder="Search for anything">
         </div>
       </div>
     </div>
     <div class="col-md-3 pr-0">
       <div class="form-group">
         <label for="cat" class="sr-only">Search within:</label>
-        <select class="form-control" id="cat">
+        <select class="form-control" id="cat" name="cat">
           <option selected value="all">All categories</option>
           <option value="fashion">fashion</option>
           <option value="electronics">electronics</option>
@@ -50,7 +50,7 @@ include 'db_connect.php';
     <div class="col-md-3 pr-0">
       <div class="form-inline">
         <label class="mx-2" for="order_by">Sort by:</label>
-        <select class="form-control" id="order_by">
+        <select class="form-control" id="order_by" name="order_by">
           <option selected value="pricelow">Price (low to high)</option>
           <option value="pricehigh">Price (high to low)</option>
           <option value="date">Soonest expiry</option>
@@ -68,140 +68,81 @@ include 'db_connect.php';
 </div>
 
 <?php
-  // Retrieve these from the URL
-  if (!isset($_GET['keyword'])) {
-    // TODO: Define behavior if a keyword has not been specified.
-    echo "No keyword specified";
-  }else {
-    $keyword = $_GET['keyword'];
+  // Sanitize and validate GET parameters
+  $keyword = isset($_GET['keyword']) ? $connection->real_escape_string($_GET['keyword']) : '';
+  $category = isset($_GET['cat']) ? $connection->real_escape_string($_GET['cat']) : 'all';
+  $ordering = isset($_GET['order_by']) ? $_GET['order_by'] : 'pricelow';
+  $curr_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+
+  // Construct the SQL query based on parameters
+  $sql = "SELECT AuctionItem.*, Categories.CategoryName FROM AuctionItem ";
+  $sql .= "LEFT JOIN Categories ON AuctionItem.CategoryID = Categories.CategoryID ";
+
+  if (!empty($keyword)) {
+      $sql .= "WHERE AuctionItem.Description LIKE '%$keyword%' ";
   }
 
-  if (!isset($_GET['cat'])) {
-    echo "No category specified";
-    // TODO: Define behavior if a category has not been specified
+  if ($category != 'all') {
+      $sql .= (!empty($keyword) ? "AND " : "WHERE ") . "Categories.CategoryName = '$category' ";
   }
-  else {
-    $category = $_GET['cat'];
-  }
-  ////////// can remove this probs!! 
-  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
-  $result = $connection->query($sql);
 
-  if ($result->num_rows>0){
-    while($row = $result->fetch_assoc()){
-      //echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
-    }
+  if ($ordering == 'pricelow') {
+      $sql .= "ORDER BY AuctionItem.StartingPrice ASC ";
+  } elseif ($ordering == 'pricehigh') {
+      $sql .= "ORDER BY AuctionItem.StartingPrice DESC ";
   } else {
-    echo "0 results";
+      $sql .= "ORDER BY AuctionItem.EndDate DESC ";
   }
 
-  // Initialize orderbysql with a default value
-  $orderbysql = 'ORDER BY StartingPrice ASC';
-
-  if (!isset($_GET['order_by'])) {
-    echo "No order by defined";
-
-
-  }
-
-    
-    // TODO: Define behavior if an order_by value has not been specified.
-  else {
-    $ordering = $_GET['order_by'];
-
-    if ($ordering == 'pricelow') {
-      $orderbysql = 'ORDER BY Starting Price ASC';
-    }
-    else if ($ordering == 'pricehigh') {
-      $orderbysql = 'ORDER BY StartingPrice DESC';
-    } else{
-      $orderbysql = 'ORDER BY EndDate DESC';
-    }
-  }
-
-
-  
-  if (!isset($_GET['page'])) {
-    $curr_page = 1;
-  }
-  else {
-    $curr_page = $_GET['page'];
-  }
-
-  /* TODO: Use above values to construct a query. Use this query to 
-     retrieve data from the database. (If there is no form data entered,
-     decide on appropriate default value/default query to make. */
-
-  $sql = "SELECT * FROM AuctionItem $orderbysql";
-  $result = $connection -> query($sql);
-
-  if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()){
-      echo"Title". $row["Title"] ."Description". $row["Description"]. "StartingPrice" .$row["StartingPrice"]. "EndDate". $row["EndDate"]. "<br>";
-    }
-  } else { echo "No results found";
-  }
-    
-
-
-
-
-  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
-  $result = $connection->query($sql);
-   
-  if ($result->num_rows>0){
-    while($row = $result->fetch_assoc()){
-  echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
-  }
-  } else {
-      echo "0 results";
-  }
-
-  
-
-  
-    
-
-
-
-
-  /* For the purposes of pagination, it would also be helpful to know the
-     total number of results that satisfy the above query */
-  $num_results = 96; // TODO: Calculate me for real
+  // Pagination Logic
   $results_per_page = 10;
-  $max_page = ceil($num_results / $results_per_page);
-?>
+  $offset = ($curr_page - 1) * $results_per_page;
 
-<div class="container mt-5">
-
-<!-- TODO: If result set is empty, print an informative message. Otherwise... -->
-
-<ul class="list-group">
-
-<!-- TODO: Use a while loop to print a list item for each auction listing
-     retrieved from the query -->
-
-<?php
-  // Replace the demonstration part with actual fetching and displaying
-  // You will replace the SQL query string with your actual SQL query
-  
-  //$sql = "SELECT ItemAuctionID, SellerID, CategoryID, Description, StartingPrice, ReservePrice, EndDate FROM AuctionItem";
-  $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
-  $result = $connection->query($itemSummary_query);
+  // First, fetch the total number of items for pagination
+  $totalItemsQuery = "SELECT COUNT(*) as TotalItems FROM AuctionItem";
+  $totalItemsResult = $connection->query($totalItemsQuery);
+  $totalItemsRow = $totalItemsResult->fetch_assoc();
+  $totalItems = $totalItemsRow['TotalItems'];
+  $max_page = ceil($totalItems / $results_per_page);
+  // Execute the query
+  $sql .= " LIMIT $results_per_page OFFSET $offset";
+  $result = $connection->query($sql);
 
   if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-      $item_id = $row['ItemAuctionID']; // Fetching the correct columns
-      $title = $row['Title'];
-      $description = $row['Description'];
-      $current_price = $row['MaxBid'];
-      $num_bids = $row['BidCount'];
-      $end_date = new DateTime($row['EndDate']);
-      
-      print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+      echo "Title: " . htmlspecialchars($row["Title"]) . "<br>";
+      echo "Description: " . htmlspecialchars($row["Description"]) . "<br>";
+      echo "Starting Price: " . htmlspecialchars($row["StartingPrice"]) . "<br>";
+      echo "End Date: " . htmlspecialchars($row["EndDate"]) . "<br>";
+      echo "Category: " . htmlspecialchars($row["CategoryName"]) . "<br><br>";
     }
-  } else {
-    echo "<p>No listings found.</p>";
+
+    // Proceed with the second query only if the first query had results
+    $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
+    $itemSummary_result = $connection->query($itemSummary_query);
+
+    if ($itemSummary_result && $itemSummary_result->num_rows > 0) {
+      while ($row = $itemSummary_result->fetch_assoc()) {
+        $item_id = $row['ItemAuctionID']; // Fetching the correct columns
+        $title = htmlspecialchars($row['Title']);
+        $description = htmlspecialchars($row['Description']);
+        $current_price = htmlspecialchars($row['MaxBid']);
+        $num_bids = htmlspecialchars($row['BidCount']);
+        $end_date = new DateTime($row['EndDate']);
+
+        // Display the details for each auction listing
+        // Replace this with your actual listing display logic
+        echo "Item ID: " . $item_id . "<br>";
+        echo "Title: " . $title . "<br>";
+        echo "Description: " . $description . "<br>";
+        echo "Current Price: " . $current_price . "<br>";
+        echo "Number of Bids: " . $num_bids . "<br>";
+        echo "End Date: " . $end_date->format('Y-m-d H:i:s') . "<br><br>";
+      }
+    }
+
+  } else { 
+    echo "No listings found.";
   }
 ?>
 
@@ -275,5 +216,3 @@ include 'db_connect.php';
 
 
 <?php include_once("footer.php")?>
-
-
