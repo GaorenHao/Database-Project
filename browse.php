@@ -95,6 +95,9 @@ include 'db_connect.php';
     echo "0 results";
   }
 
+  // Initialize orderbysql with a default value
+  $orderbysql = 'ORDER BY StartingPrice ASC';
+
   if (!isset($_GET['order_by'])) {
     echo "No order by defined";
 
