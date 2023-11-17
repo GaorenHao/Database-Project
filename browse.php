@@ -6,20 +6,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include 'db_connect.php';
 
-// Default initialization of curr_page
-$curr_page = 1;
-
-// Check if 'page' parameter is set in the URL and is a valid number
-if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
-    $curr_page = (int) $_GET['page'];
-}
 
 // Now you can use $connection to interact with the database
 ?>
 
 <div class="container">
 
-<h2 class="my-3">3 Browse listing</h2>
+<h2 class="my-3">Browse listing</h2>
 
 <div id="searchSpecs">
 <!-- When this form is submitted, this PHP page is what processes it.
