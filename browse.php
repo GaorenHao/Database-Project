@@ -97,9 +97,15 @@ include 'db_connect.php';
   // Pagination Logic
   $results_per_page = 10;
   $offset = ($curr_page - 1) * $results_per_page;
-  $sql .= " LIMIT $results_per_page OFFSET $offset";
 
+  // First, fetch the total number of items for pagination
+  $totalItemsQuery = "SELECT COUNT(*) as TotalItems FROM AuctionItem";
+  $totalItemsResult = $connection->query($totalItemsQuery);
+  $totalItemsRow = $totalItemsResult->fetch_assoc();
+  $totalItems = $totalItemsRow['TotalItems'];
+  $max_page = ceil($totalItems / $results_per_page);
   // Execute the query
+  $sql .= " LIMIT $results_per_page OFFSET $offset";
   $result = $connection->query($sql);
 
   if ($result && $result->num_rows > 0) {
