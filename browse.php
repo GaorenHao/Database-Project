@@ -29,14 +29,14 @@ include 'db_connect.php';
               <i class="fa fa-search"></i>
             </span>
           </div>
-          <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
+          <input type="text" class="form-control border-left-0" name="keyword" id="keyword" placeholder="Search for anything">
         </div>
       </div>
     </div>
     <div class="col-md-3 pr-0">
       <div class="form-group">
         <label for="cat" class="sr-only">Search within:</label>
-        <select class="form-control" id="cat">
+        <select class="form-control" name="cat" id="cat">
           <option selected value="all">All categories</option>
           <option value="fashion">fashion</option>
           <option value="electronics">electronics</option>
@@ -50,7 +50,7 @@ include 'db_connect.php';
     <div class="col-md-3 pr-0">
       <div class="form-inline">
         <label class="mx-2" for="order_by">Sort by:</label>
-        <select class="form-control" id="order_by">
+        <select class="form-control" name="order_by" id="order_by">
           <option selected value="pricelow">Price (low to high)</option>
           <option value="pricehigh">Price (high to low)</option>
           <option value="date">Soonest expiry</option>
@@ -97,6 +97,7 @@ include 'db_connect.php';
 
   // Initialize orderbysql with a default value
   $orderbysql = 'ORDER BY StartingPrice ASC';
+
 
   if (!isset($_GET['order_by'])) {
     echo "No order by defined";
