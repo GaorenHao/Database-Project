@@ -29,14 +29,14 @@ include 'db_connect.php';
               <i class="fa fa-search"></i>
             </span>
           </div>
-          <input type="text" class="form-control border-left-0" name="keyword" id="keyword" placeholder="Search for anything">
+          <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
         </div>
       </div>
     </div>
     <div class="col-md-3 pr-0">
       <div class="form-group">
         <label for="cat" class="sr-only">Search within:</label>
-        <select class="form-control" name="cat" id="cat">
+        <select class="form-control" id="cat">
           <option selected value="all">All categories</option>
           <option value="fashion">fashion</option>
           <option value="electronics">electronics</option>
@@ -50,7 +50,7 @@ include 'db_connect.php';
     <div class="col-md-3 pr-0">
       <div class="form-inline">
         <label class="mx-2" for="order_by">Sort by:</label>
-        <select class="form-control" name="order_by" id="order_by">
+        <select class="form-control" id="order_by">
           <option selected value="pricelow">Price (low to high)</option>
           <option value="pricehigh">Price (high to low)</option>
           <option value="date">Soonest expiry</option>
@@ -95,26 +95,29 @@ include 'db_connect.php';
     echo "0 results";
   }
 
-// Initialize variables
-$orderbysql = 'ORDER BY StartingPrice ASC'; // Default sorting order
+  // Initialize orderbysql with a default value
+  $orderbysql = 'ORDER BY StartingPrice ASC';
 
-// Retrieve form data from URL
-$keyword = isset($_GET['keyword']) ? $_GET['keyword'] : null;
-$category = isset($_GET['cat']) ? $_GET['cat'] : 'all'; // Default to all categories
-$ordering = isset($_GET['order_by']) ? $_GET['order_by'] : 'pricelow';
+  if (!isset($_GET['order_by'])) {
+    echo "No order by defined";
 
-// Update sorting order based on user selection
-switch ($ordering) {
-  case 'pricelow':
-    $orderbysql = 'ORDER BY StartingPrice ASC';
-    break;
-  case 'pricehigh':
-    $orderbysql = 'ORDER BY StartingPrice DESC';
-    break;
-  case 'date':
-    $orderbysql = 'ORDER BY EndDate ASC';
-    break;
-}
+
+  }
+
+    
+    // TODO: Define behavior if an order_by value has not been specified.
+  else {
+    $ordering = $_GET['order_by'];
+
+    if ($ordering == 'pricelow') {
+      $orderbysql = 'ORDER BY Starting Price ASC';
+    }
+    else if ($ordering == 'pricehigh') {
+      $orderbysql = 'ORDER BY StartingPrice DESC';
+    } else{
+      $orderbysql = 'ORDER BY EndDate DESC';
+    }
+  }
 
 
   
@@ -129,12 +132,31 @@ switch ($ordering) {
      retrieve data from the database. (If there is no form data entered,
      decide on appropriate default value/default query to make. */
 
-     $sql = "SELECT * FROM AuctionItem WHERE (Title LIKE ? OR Description LIKE ?) AND (CategoryID = ? OR 'all' = ?) $orderbysql";
-     $stmt = $connection->prepare($sql);
-     $searchTerm = '%' . $keyword . '%';
-     $stmt->bind_param('ssss', $searchTerm, $searchTerm, $category, $category);
-     $stmt->execute();
-     $result = $stmt->get_result();
+  $sql = "SELECT * FROM AuctionItem $orderbysql";
+  $result = $connection -> query($sql);
+
+  if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()){
+      echo"Title". $row["Title"] ."Description". $row["Description"]. "StartingPrice" .$row["StartingPrice"]. "EndDate". $row["EndDate"]. "<br>";
+    }
+  } else { echo "No results found";
+  }
+    
+
+
+
+
+  $sql = "SELECT * FROM AuctionItem ORDER BY StartingPrice";
+  $result = $connection->query($sql);
+   
+  if ($result->num_rows>0){
+    while($row = $result->fetch_assoc()){
+  echo "CategoryID:".$row["CategoryID"]. "- Description:". $row["Description"]." ". $row["StartingPrice"]. "<br>";
+  }
+  } else {
+      echo "0 results";
+  }
+
   
 
   
@@ -145,9 +167,18 @@ switch ($ordering) {
 
   /* For the purposes of pagination, it would also be helpful to know the
      total number of results that satisfy the above query */
-  $num_results = 96; // TODO: Calculate me for real
-  $results_per_page = 10;
-  $max_page = ceil($num_results / $results_per_page);
+     $results_per_page = 10;
+     $count_query = "SELECT COUNT(*) FROM AuctionItem"; // Adjust based on filters if needed
+     $count_result = $connection->query($count_query);
+     $row = $count_result->fetch_row();
+     $num_results = $row[0];
+     $max_page = ceil($num_results / $results_per_page);
+     
+     $curr_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+     $offset = ($curr_page - 1) * $results_per_page;
+     
+     // Append LIMIT and OFFSET to the main SQL query
+     $sql .= "LIMIT $results_per_page OFFSET $offset";
 ?>
 
 <div class="container mt-5">
@@ -167,16 +198,19 @@ switch ($ordering) {
   $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
   $result = $connection->query($itemSummary_query);
 
-  if ($result->num_rows > 0) {
+  if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-      // Format and display each row
-      echo "<div>Title: " . htmlspecialchars($row['Title']) . "<br>";
-      echo "Description: " . htmlspecialchars($row['Description']) . "<br>";
-      echo "Starting Price: " . htmlspecialchars($row['StartingPrice']) . "<br>";
-      echo "End Date: " . htmlspecialchars($row['EndDate']) . "</div><hr>";
+      $item_id = $row['ItemAuctionID']; // Fetching the correct columns
+      $title = $row['Title'];
+      $description = $row['Description'];
+      $current_price = $row['MaxBid'];
+      $num_bids = $row['BidCount'];
+      $end_date = new DateTime($row['EndDate']);
+      
+      print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
     }
   } else {
-    echo "No results found";
+    echo "<p>No listings found.</p>";
   }
 ?>
 
@@ -250,5 +284,4 @@ switch ($ordering) {
 
 
 <?php include_once("footer.php")?>
-
 
