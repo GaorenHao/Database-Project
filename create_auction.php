@@ -97,9 +97,18 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
                 e.preventDefault(); // Prevent form submission
                 alert('Please select a future date for the auction end.');
               }
+              var startingPrice = parseFloat(document.getElementById("auctionStartPrice").value);
+              var reservePrice = parseFloat(document.getElementById("auctionReservePrice").value);
+
+              // Check if reserve price is not higher than starting price
+              if (reservePrice <= startingPrice) {
+                e.preventDefault(); // Prevent form submission
+                alert("Reserve price must be higher than the starting price.");
+              }
             });
           });
         </script>
+
       </form>
     </div>
   </div>

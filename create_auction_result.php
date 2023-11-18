@@ -36,10 +36,13 @@ $now = new DateTime();
 
 // Check if the end date is in the past
 if ($endDate <= $now) {
-    // Handle error - Redirect back or show an error message
     echo "Error: Auction end date must be in the future.";
-    exit; // Stop further execution if the date is not valid
+    exit;
 }
+if ($auctionReservePrice <= $auctionStartPrice) {
+    echo "Error: Reserve price must be higher than the starting price.";
+    exit;
+  }
 
 //$nullWatchlist = 0; //////// we could implement default nulls on the SQL side, but for now, let me just do it cosmetically on this side. 
 /// we are just creating a new item to list. so it is typical that it does not immediately have a watchlistID assignment
@@ -90,7 +93,7 @@ if ($stmt->execute()) {
             
 
 // If all is successful, let user know.
-echo('<div class="text-center"><a href="FIXME">View your new listing.</a></div>');
+echo('<div class="text-center"><a href="mylistings.php">View your new listing.</a></div>');
 
 
 ?>
