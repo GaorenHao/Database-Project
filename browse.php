@@ -211,7 +211,24 @@ include 'db_connect.php';
 </nav>
 
 
-</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Parse the URL parameters
+        const params = new URLSearchParams(window.location.search);
+        
+        // Get parameters for category and order_by
+        const category = params.get('cat');
+        const orderBy = params.get('order_by');
+
+        // Set the dropdowns to reflect the current parameters
+        if (category) {
+            document.getElementById('cat').value = category;
+        }
+        if (orderBy) {
+            document.getElementById('order_by').value = orderBy;
+        }
+    });
+</script>
 
 
 
