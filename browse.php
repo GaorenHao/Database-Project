@@ -72,7 +72,7 @@ include 'db_connect.php';?>
   $sql .= "LEFT JOIN Categories ON AuctionItem.CategoryID = Categories.CategoryID ";
 
   if (!empty($keyword)) {
-      $sql .= "WHERE AuctionItem.Description LIKE '%$keyword%' ";
+      $sql .= "WHERE AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%'";
   }
 
   if ($category != 'all') {
