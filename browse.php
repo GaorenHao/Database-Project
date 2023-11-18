@@ -4,11 +4,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-include 'db_connect.php';
-
-
-// Now you can use $connection to interact with the database
-?>
+include 'db_connect.php';?>
 
 <div class="container">
 
@@ -63,9 +59,6 @@ include 'db_connect.php';
   </div>
 </form>
 </div> <!-- end search specs bar -->
-
-
-</div>
 
 <?php
   // Sanitize and validate GET parameters
@@ -146,9 +139,6 @@ include 'db_connect.php';
   }
 ?>
 
-
-</ul>
-
 <!-- Pagination for results listings -->
 <nav aria-label="Search results pages" class="mt-5">
   <ul class="pagination justify-content-center">
@@ -206,10 +196,7 @@ include 'db_connect.php';
     </li>');
   }
 ?>
-
-  </ul>
 </nav>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -229,7 +216,5 @@ include 'db_connect.php';
         }
     });
 </script>
-
-
 
 <?php include_once("footer.php")?>
