@@ -29,6 +29,18 @@ $auctionCategory = $_POST['auctionCategory']; // hmm... do we need to connect th
 $auctionStartPrice = $_POST['auctionStartPrice'];
 $auctionReservePrice = $_POST['auctionReservePrice'];
 $auctionEndDate = $_POST['auctionEndDate'];
+
+// Convert the auction end date to a DateTime object
+$endDate = DateTime::createFromFormat('Y-m-d\TH:i', $auctionEndDate);
+$now = new DateTime();
+
+// Check if the end date is in the past
+if ($endDate <= $now) {
+    // Handle error - Redirect back or show an error message
+    echo "Error: Auction end date must be in the future.";
+    exit; // Stop further execution if the date is not valid
+}
+
 //$nullWatchlist = 0; //////// we could implement default nulls on the SQL side, but for now, let me just do it cosmetically on this side. 
 /// we are just creating a new item to list. so it is typical that it does not immediately have a watchlistID assignment
 
