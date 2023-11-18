@@ -71,21 +71,26 @@ include 'db_connect.php';?>
   $sql = "SELECT AuctionItem.*, Categories.CategoryName FROM AuctionItem ";
   $sql .= "LEFT JOIN Categories ON AuctionItem.CategoryID = Categories.CategoryID ";
 
-  if (!empty($keyword)) {
-      $sql .= "WHERE AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%'";
-  }
+   if ($category != 'all') {
+    $sql .= "WHERE Categories.CategoryName = '$category' ";
+    }
 
-  if ($category != 'all') {
-      $sql .= (!empty($keyword) ? "AND " : "WHERE ") . "Categories.CategoryName = '$category' ";
-  }
+    if (!empty($keyword)) {
+        if ($category != 'all') {
+            $sql .= "AND (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
+        } else {
+            $sql .= "WHERE (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
+        }
+    }
 
-  if ($ordering == 'pricelow') {
-      $sql .= "ORDER BY AuctionItem.StartingPrice ASC ";
-  } elseif ($ordering == 'pricehigh') {
-      $sql .= "ORDER BY AuctionItem.StartingPrice DESC ";
-  } else {
-      $sql .= "ORDER BY AuctionItem.EndDate ASC ";
-  }
+// Apply the Order By condition last
+if ($ordering == 'pricelow') {
+    $sql .= "ORDER BY AuctionItem.StartingPrice ASC ";
+} elseif ($ordering == 'pricehigh') {
+    $sql .= "ORDER BY AuctionItem.StartingPrice DESC ";
+} else {
+    $sql .= "ORDER BY AuctionItem.EndDate ASC ";
+}
 
   // Pagination Logic
   $results_per_page = 10;
@@ -206,6 +211,7 @@ include 'db_connect.php';?>
         // Get parameters for category and order_by
         const category = params.get('cat');
         const orderBy = params.get('order_by');
+        const keyword = params.get('keyword'); 
 
         // Set the dropdowns to reflect the current parameters
         if (category) {
@@ -213,6 +219,9 @@ include 'db_connect.php';?>
         }
         if (orderBy) {
             document.getElementById('order_by').value = orderBy;
+        }
+        if (keyword) {
+            document.getElementById('keyword').value = keyword;
         }
     });
 </script>
