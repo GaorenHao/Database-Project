@@ -91,7 +91,7 @@ include 'db_connect.php';
   } elseif ($ordering == 'pricehigh') {
       $sql .= "ORDER BY AuctionItem.StartingPrice DESC ";
   } else {
-      $sql .= "ORDER BY AuctionItem.EndDate DESC ";
+      $sql .= "ORDER BY AuctionItem.EndDate ASC ";
   }
 
   // Pagination Logic
