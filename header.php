@@ -25,7 +25,7 @@
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
 
-  <title>[My Auction Site] <!--CHANGEME!--></title>
+  <title>Awesome Auction</title>
 </head>
 
 
@@ -33,7 +33,7 @@
 
 <!-- Navbars -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
-  <a class="navbar-brand" href="#">Awesome Auctions<!--CHANGEME!--></a>
+  <a class="navbar-brand" href="browse.php">Awesome Auctions<!--CHANGEME!--></a>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
     
