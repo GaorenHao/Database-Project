@@ -142,12 +142,12 @@ CREATE TABLE `Users` (
 -- Table structure for table `Watchlist`
 --
 
-CREATE TABLE `Watchlist` (
+/* CREATE TABLE `Watchlist` (
   `WatchlistID` int(4) NOT NULL,
   `UserID` int(4) NOT NULL,
   `Name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+ */
 -- --------------------------------------------------------
 
 -- 
@@ -155,9 +155,8 @@ CREATE TABLE `Watchlist` (
 -- 
 
 CREATE TABLE `WatchListItems` (
-  `WatchListID` int(11) NOT NULL,
-  `ItemAuctionID` int(11) NOT NULL,
-  PRIMARY KEY (`WatchListID`, `ItemAuctionID`)
+  `BuyerID` int(11) NOT NULL,
+  `ItemAuctionID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -224,9 +223,9 @@ ALTER TABLE `Users`
 --
 -- Indexes for table `Watchlist`
 --
-ALTER TABLE `Watchlist`
+/* ALTER TABLE `Watchlist`
   ADD PRIMARY KEY (`WatchlistID`),
-  ADD KEY `FK1_Watchlist` (`UserID`);
+  ADD KEY `FK1_Watchlist` (`UserID`); */
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -277,8 +276,8 @@ ALTER TABLE `Users`
 --
 -- AUTO_INCREMENT for table `Watchlist`
 --
-ALTER TABLE `Watchlist`
-  MODIFY `WatchlistID` int(4) NOT NULL AUTO_INCREMENT;
+/* ALTER TABLE `Watchlist`
+  MODIFY `WatchlistID` int(4) NOT NULL AUTO_INCREMENT; */
 
 --
 -- Constraints for dumped tables
@@ -321,16 +320,15 @@ ALTER TABLE `Transactions`
 -- 
 -- Constraints for table `Watchlist`
 -- 
-ALTER TABLE `Watchlist`
-  ADD CONSTRAINT `FK_WatchList_User` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE;
+/* ALTER TABLE `Watchlist`
+  ADD CONSTRAINT `FK_WatchList_User` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE; */
 
 -- 
 -- Constraints for table `WatchListItems`
 -- 
 ALTER TABLE `WatchListItems`
-  ADD CONSTRAINT `FK_WatchListItems_WatchList` FOREIGN KEY (`WatchListID`) REFERENCES `WatchList` (`WatchListID`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_WatchListItems_Items` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE;
-
+  ADD CONSTRAINT `FK_WatchListItems_Items` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_WatchListItems_Buyer` FOREIGN KEY (`BuyerID`) REFERENCES `Buyer` (`BuyerID`) ON DELETE CASCADE;
 -- 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -2,11 +2,19 @@
 <?php require("utilities.php")?>
 
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL);
 
-include 'db_connect.php';
+  include 'db_connect.php';
+
+  if (!empty($_SESSION)) {
+    echo "<pre>";
+    print_r($_SESSION);
+    echo "</pre>";
+  } else {
+    echo "No session variables are set.";
+  }
 
   // Get info from the URL:
   $item_id = $_GET['item_id'];
@@ -26,7 +34,7 @@ include 'db_connect.php';
     $end_time = new DateTime($row['EndDate']);
 
     ////  <!-- BID LOGIC >>>> NEW BIDS MUST BE HIGHER THAN THE CURRENT HIGHEST BID -->
-    
+
     ///////// #1 get the highest bid from the database
     // Assuming $item_id is the ID of the item being bid on
     // $highest_bid_query = "SELECT MAX(BidAmount) AS highestBid FROM Bid WHERE ItemAuctionID = $item_id";
@@ -78,8 +86,8 @@ include 'db_connect.php';
 
 
 <div class="container">
-
-<div class="row"> <!-- Row #1 with auction title + watch button -->
+<!-- Row #1 with auction title + watch button -->
+<div class="row"> 
   <div class="col-sm-8"> <!-- Left col -->
     <h2 class="my-3"><?php echo($title); ?></h2>
   </div>
@@ -90,7 +98,8 @@ include 'db_connect.php';
   if ($now < $end_time):
 ?>
     <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?> >
-      <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist()">+ Add to watchlist</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist(this)" 
+      data-item-id="<?php echo $item_id; ?>">+ Add to watchlist</button>
     </div>
     <div id="watch_watching" <?php if (!$has_session || !$watching) echo('style="display: none"');?> >
       <button type="button" class="btn btn-success btn-sm" disabled>Watching</button>
@@ -187,13 +196,36 @@ include 'db_connect.php';
 // JavaScript functions: addToWatchlist and removeFromWatchlist.
 
 function addToWatchlist(button) {
-  console.log("These print statements are helpful for debugging btw");
+  //console.log("These print statements are helpful for debugging btw");
+  //console.log($item_id);
+
+  var itemId = button.getAttribute('data-item-id'); // Retrieve item_id from data attribute
+  console.log(itemId)
+
+  // AJAX call to send item_id to the server
+  $.ajax({
+    url: 'watchlist_funcs.php', // The PHP file where you handle the item_id
+    type: 'POST',
+    data: { item_id: itemId, functionname: 'add_to_watchlist',}, // Send item_id as POST data
+    success: function(response) {
+      // Handle success (e.g., show a message, update UI)
+      console.log('Item added to watchlist', response);
+      console.log(itemId);
+    },
+    error: function(error) {
+      // Handle error
+      console.error('Error adding item to watchlist', error);
+    }
+  });
+
+
 
   // This performs an asynchronous call to a PHP function using POST method.
   // Sends item ID as an argument to that function.
-  $.ajax('watchlist_funcs.php', {
+/*   $.ajax('watchlist_funcs.php', {
     type: "POST",
     data: {functionname: 'add_to_watchlist', arguments: [<?php echo($item_id);?>]},
+    /////////// sending data via post to watchlist_funcs.php
 
     success: 
       function (obj, textstatus) {
@@ -216,7 +248,7 @@ function addToWatchlist(button) {
       function (obj, textstatus) {
         console.log("Error");
       }
-  }); // End of AJAX call
+  }); // End of AJAX call */
 
 } // End of addToWatchlist func
 

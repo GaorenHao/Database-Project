@@ -1,4 +1,5 @@
 <?php include_once("header.php")?>
+<?php include_once("watchlist_funcs.php")?>
 <?php
 
 // TODO: Extract $_POST variables, check they're OK, and attempt to make a bid.
@@ -56,9 +57,20 @@ if ($bid < $current_price) {
   // Execute the prepared statement
   if ($stmt->execute()) {
     echo "New bid added successfully.";
+    //new_bid_watchlist_funcs($item_id, $buyerid, $current_price, $bid); //// send the new highest bid to watchlist_funcs
+    //$message = new_bid_watchlist_funcs($item_id, $buyerid, $current_price, $bid);
+    // Do something with $message, like echoing it or logging it
+    //echo $message;
+
+    // Assign values to session variables
+    $_SESSION['most_recent_item_id'] = $item_id;
+    $_SESSION['current_price'] = $current_price;
+    $_SESSION['most_recent_bid'] = $bid;
   } else {
     echo "Error: " . $stmt->error;
   }
+
+
 
 
   // If all is successful, let user know.
@@ -69,7 +81,5 @@ if ($bid < $current_price) {
 
 
 
-
-?>
 
 ?>
