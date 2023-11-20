@@ -67,10 +67,6 @@ include 'db_connect.php';?>
   $ordering = isset($_GET['order_by']) ? $_GET['order_by'] : 'pricelow';
   $curr_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
-  // Construct the SQL query based on parameters
-  $sql = "SELECT AuctionItem.*, Categories.CategoryName FROM AuctionItem ";
-  $sql .= "LEFT JOIN Categories ON AuctionItem.CategoryID = Categories.CategoryID ";
-
   // Construct the SQL query to fetch auction items and bid information
   $sql = "SELECT AuctionItem.*, Categories.CategoryName, COUNT(Bid.BidID) AS BidCount, MAX(Bid.BidAmount) AS MaxBid ";
   $sql .= "FROM AuctionItem ";
