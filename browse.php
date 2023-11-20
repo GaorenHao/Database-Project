@@ -93,7 +93,7 @@ if ($ordering == 'pricelow') {
 }
 
   // Pagination Logic
-  $results_per_page = 10;
+  $results_per_page = 12;
   $offset = ($curr_page - 1) * $results_per_page;
 
   // First, fetch the total number of items for pagination
@@ -120,6 +120,8 @@ if ($ordering == 'pricelow') {
     $itemSummary_result = $connection->query($itemSummary_query);
 
     if ($itemSummary_result && $itemSummary_result->num_rows > 0) {
+      $itemCount = 0;
+      echo '<div class="row">';
       while ($row = $itemSummary_result->fetch_assoc()) {
         $item_id = $row['ItemAuctionID']; // Fetching the correct columns
         $title = htmlspecialchars($row['Title']);
@@ -127,18 +129,24 @@ if ($ordering == 'pricelow') {
         $current_price = htmlspecialchars($row['MaxBid']);
         $num_bids = htmlspecialchars($row['BidCount']);
         $end_date = new DateTime($row['EndDate']);
-
+        
+        if ($itemCount > 0 && $itemCount % 4 == 0) {
+          echo '</div><div class="row">';  // End the current row and start a new one
+        
+        }
         // Display the details for each auction listing
         // Replace this with your actual listing display logic
-        echo "Item ID: " . $item_id . "<br>";
-        echo "Title: " . $title . "<br>";
-        echo "Description: " . $description . "<br>";
-        echo "Current Price: " . $current_price . "<br>";
-        echo "Number of Bids: " . $num_bids . "<br>";
-        echo "End Date: " . $end_date->format('Y-m-d H:i:s') . "<br><br>";
+        echo '<div class="col-md-3">';
+        echo "<h5>" . $title . "</h5>";
+        echo "<p>" . $description . "</p>";
+        echo "<p>Current Price: £" . $current_price . "</p>";
+        echo "<p>Number of Bids: " . $num_bids . "</p>";
+        echo "<p>End Date: " . $end_date . "</p>";
+        echo '</div>'; // End of this item's column
+        $itemCount++;
       }
     }
-
+    echo '</div>';
   } else { 
     echo "No listings found.";
   }
