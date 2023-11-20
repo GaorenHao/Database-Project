@@ -101,7 +101,7 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
                 var reservePrice = parseFloat(document.getElementById("auctionReservePrice").value);
 
                 // Check if reserve price is not higher than starting price
-                if (reservePrice <= startingPrice) {
+                if (reservePrice < startingPrice) {
                   e.preventDefault(); // Prevent form submission
                   alert("Reserve price must be higher than the starting price.");
                 }

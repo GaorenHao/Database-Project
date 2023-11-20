@@ -18,18 +18,23 @@
   $auctionReservePrice = $_POST['auctionReservePrice']; // And this line
   $auctionEndDate = $_POST['auctionEndDate'];
 
-// Convert the auction end date to a DateTime object
-$endDate = DateTime::createFromFormat('Y-m-d\TH:i', $auctionEndDate);
-$now = new DateTime();
+  // Convert the auction end date to a DateTime object
+  $endDate = DateTime::createFromFormat('Y-m-d\TH:i', $auctionEndDate);
+  $now = new DateTime();
 
-// Check if the end date is in the past
-if ($endDate <= $now) {
-    echo "Error: Auction end date must be in the future.";
-    exit;
-}
-if ($auctionReservePrice <= $auctionStartPrice) {
-    echo "Error: Reserve price must be higher than the starting price.";
-    exit;
+  // Check if the end date is in the past
+  if ($endDate <= $now) {
+      echo "Error: Auction end date must be in the future.";
+      exit;
+  }
+  if (empty($auctionReservePrice)) {
+    $auctionReservePrice = $auctionStartPrice;
+  } else {
+    // If reserve price is entered, check if it's greater than the starting price
+    if ($auctionReservePrice <= $auctionStartPrice) {
+      echo "Error: Reserve price must be higher than the starting price.";
+      exit;
+    }
   }
 
   // Update the database
