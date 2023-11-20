@@ -24,7 +24,26 @@
 
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
-
+  <style>
+    .description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .item-box {
+    border: 1px solid #ddd; /* Light grey border */
+    padding: 10px; /* Space inside the box */
+    margin-bottom: 15px; /* Space outside the box */
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for depth */
+    min-height: 250px; /* Minimum height */
+    height: auto; /* Allow height to expand as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  </style>
   <title>Awesome Auction</title>
 </head>
 

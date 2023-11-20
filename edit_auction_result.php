@@ -39,6 +39,9 @@
       exit;
     }
   }
+  if (empty($auctionDetails)) {
+    $auctionDetails = "No description is given for this item.";
+  }
 
   // Update the database
   $stmt = $connection->prepare("UPDATE AuctionItem SET Title = ?, Description = ?, StartingPrice = ?, ReservePrice = ?, EndDate = ? WHERE ItemAuctionID = ?");

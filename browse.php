@@ -122,13 +122,19 @@ if ($ordering == 'pricelow') {
 
           // Display the details for each auction listing in a column
           echo '<div class="col-md-3">';
+          echo '<div class="item-box">';
           echo "<h5>" . htmlspecialchars($row['Title']) . "</h5>";
-          echo "<p>" . htmlspecialchars($row['Description']) . "</p>";
+          // Truncate the description to a specific character length for a non-CSS solution
+          $maxLength = 100; 
+          $description = $row['Description'];
+          $shortDescription = (strlen($description) > $maxLength) ? substr($description, 0, $maxLength) . "..." : $description;
+
+          echo "<p class='description'>" . htmlspecialchars($shortDescription) . "</p>";
           echo "<p>Starting Price: £" . htmlspecialchars($row['StartingPrice']) . "</p>";
           echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
           echo "<p>Category: " . htmlspecialchars($row['CategoryName']) . "</p>";
           echo '</div>'; // End of this item's column
-
+          echo '</div>';
           $itemCount++; // Increment the item count
       }
 
