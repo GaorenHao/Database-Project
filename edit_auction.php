@@ -117,7 +117,7 @@
           
           <script>
             document.addEventListener('DOMContentLoaded', function() {
-              document.getElementById('createAuctionForm').addEventListener('submit', function(e) {
+              document.getElementById('editAuctionForm').addEventListener('submit', function(e) {
                 var endDateInput = document.getElementById('auctionEndDate');
                 var selectedDate = new Date(endDateInput.value);
                 var now = new Date();

@@ -93,7 +93,7 @@ if ($stmt->execute()) {
             
 
 // If all is successful, let user know.
-echo('<div class="text-center"><a href="mylistings.php">View your new listing.</a></div>');
+echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
 
 
 ?>

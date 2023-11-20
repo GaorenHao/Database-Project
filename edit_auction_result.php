@@ -42,6 +42,10 @@ if ($auctionReservePrice <= $auctionStartPrice) {
   } else {
     echo "Error updating item: " . $stmt->error;
   }
+
+  // If all is successful, let user know.
+  echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
+
 ?>
 
 </div>
