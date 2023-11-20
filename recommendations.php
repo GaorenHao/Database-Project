@@ -25,6 +25,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSION
 
     $UserID = $_SESSION['username'];
 
+    $stmt = $connection ->prepare('SELECT BuyerID FROM Buyer WHERE UserID = ?');
+
     $stmt->bind_param("i", $UserID);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -57,7 +59,7 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSION
                         $row = $result->fetch_assoc();
                         $BuyerID2 = $row['BuyerID'];
 
-                        $stmt = $connection->prepare('SELECT ItemAuctionID FROM Bids WHERE BuyerID =?');
+                        $stmt = $connection->prepare('SELECT ItemAuctionID FROM Bid WHERE BuyerID =?');
                         if ($stmt) {
                             $stmt->bind_param('i', $BuyerID2);
                             $stmt->execute();
