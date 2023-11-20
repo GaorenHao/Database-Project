@@ -14,8 +14,8 @@
   $itemAuctionID = $_POST['itemAuctionID'];
   $auctionTitle = $_POST['auctionTitle'];
   $auctionDetails = $_POST['auctionDetails'];
-  $auctionStartPrice = $_POST['auctionStartPrice']; // Added this line
-  $auctionReservePrice = $_POST['auctionReservePrice']; // And this line
+  $auctionStartPrice = $_POST['auctionStartPrice']; 
+  $auctionReservePrice = $_POST['auctionReservePrice']; 
   $auctionEndDate = $_POST['auctionEndDate'];
 
   // Convert the auction end date to a DateTime object
@@ -43,13 +43,10 @@
 
   if ($stmt->execute()) {
     echo "Auction item updated successfully.";
-    // Redirect to listings or display success message
+    echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
   } else {
     echo "Error updating item: " . $stmt->error;
   }
-
-  // If all is successful, let user know.
-  echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
 
 ?>
 

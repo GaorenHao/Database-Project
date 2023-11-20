@@ -3,8 +3,9 @@
 <?php
   include 'db_connect.php';
 
-  // Start the session
-  session_start();
+  if (session_id() == '') {
+    session_start();
+  }
 
   // Ensure the user is logged in and is a seller
   if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') {
@@ -114,6 +115,7 @@
           </div>
 
           <button type="submit" class="btn btn-primary form-control">Update Auction</button>
+          <button type="button" class="btn btn-danger form-control mt-2" onclick="confirmDeletion(<?php echo $itemAuctionID; ?>)">Delete Auction</button>
           
           <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -136,6 +138,11 @@
                 }
               });
             });
+            function confirmDeletion(itemId) {
+              if (confirm("Are you sure you want to delete this auction? This action cannot be undone.")) {
+                window.location.href = 'delete_auction.php?item_id=' + itemId;
+              }
+            }
           </script>
 
         </form>
