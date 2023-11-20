@@ -22,7 +22,6 @@
               make sure it can be inserted into the database. If there is an
               issue, give some semi-helpful feedback to user. */
 
-  var_dump($_POST);
   $auctionTitle = $_POST['auctionTitle']; 
   $auctionDetails = $_POST['auctionDetails']; // and leave this one out for now :) 
   $auctionCategory = $_POST['auctionCategory']; // hmm... do we need to connect the database options to here? maybe leave it out for now ... 
@@ -39,11 +38,14 @@
       echo "Error: Auction end date must be in the future.";
       exit;
   }
-  if (empty($auctionReservePrice)) {
+  $auctionStartPrice = floatval($_POST['auctionStartPrice']); 
+
+  // Check if reserve price is provided and ensure it's a number
+  if (empty($_POST['auctionReservePrice'])) {
     $auctionReservePrice = $auctionStartPrice;
   } else {
-    // If reserve price is entered, check if it's greater than the starting price
-    if ($auctionReservePrice <= $auctionStartPrice) {
+    $auctionReservePrice = floatval($_POST['auctionReservePrice']);
+    if ($auctionReservePrice < $auctionStartPrice) {
       echo "Error: Reserve price must be higher than the starting price.";
       exit;
     }

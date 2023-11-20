@@ -27,11 +27,14 @@
       echo "Error: Auction end date must be in the future.";
       exit;
   }
-  if (empty($auctionReservePrice)) {
+  $auctionStartPrice = floatval($_POST['auctionStartPrice']); 
+
+  // Check if reserve price is provided and ensure it's a number
+  if (empty($_POST['auctionReservePrice'])) {
     $auctionReservePrice = $auctionStartPrice;
   } else {
-    // If reserve price is entered, check if it's greater than the starting price
-    if ($auctionReservePrice <= $auctionStartPrice) {
+    $auctionReservePrice = floatval($_POST['auctionReservePrice']);
+    if ($auctionReservePrice < $auctionStartPrice) {
       echo "Error: Reserve price must be higher than the starting price.";
       exit;
     }
