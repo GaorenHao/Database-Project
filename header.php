@@ -1,7 +1,7 @@
 <?php
   // FIXME: At the moment, I've allowed these values to be set manually.
   // But eventually, with a database, these should be set automatically
-  // ONLY after the user's login credentials have been verified via 
+  // ONLY after the user's login credentials have been verified via a
   // database query.
   session_start();
   ini_set('display_errors', 1);
