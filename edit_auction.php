@@ -114,26 +114,29 @@
           </div>
 
           <button type="submit" class="btn btn-primary form-control">Update Auction</button>
-          document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('createAuctionForm').addEventListener('submit', function(e) {
-              var endDateInput = document.getElementById('auctionEndDate');
-              var selectedDate = new Date(endDateInput.value);
-              var now = new Date();
+          
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              document.getElementById('createAuctionForm').addEventListener('submit', function(e) {
+                var endDateInput = document.getElementById('auctionEndDate');
+                var selectedDate = new Date(endDateInput.value);
+                var now = new Date();
 
-              if (selectedDate <= now) {
-                e.preventDefault(); // Prevent form submission
-                alert('Please select a future date for the auction end.');
-              }
-              var startingPrice = parseFloat(document.getElementById("auctionStartPrice").value);
-              var reservePrice = parseFloat(document.getElementById("auctionReservePrice").value);
+                if (selectedDate <= now) {
+                  e.preventDefault(); // Prevent form submission
+                  alert('Please select a future date for the auction end.');
+                }
+                var startingPrice = parseFloat(document.getElementById("auctionStartPrice").value);
+                var reservePrice = parseFloat(document.getElementById("auctionReservePrice").value);
 
-              // Check if reserve price is not higher than starting price
-              if (reservePrice <= startingPrice) {
-                e.preventDefault(); // Prevent form submission
-                alert("Reserve price must be higher than the starting price.");
-              }
+                // Check if reserve price is not higher than starting price
+                if (reservePrice <= startingPrice) {
+                  e.preventDefault(); // Prevent form submission
+                  alert("Reserve price must be higher than the starting price.");
+                }
+              });
             });
-          });
+          </script>
 
         </form>
       </div>
