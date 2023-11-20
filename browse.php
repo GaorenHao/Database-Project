@@ -130,10 +130,13 @@ if ($ordering == 'pricelow') {
           $shortDescription = (strlen($description) > $maxLength) ? substr($description, 0, $maxLength) . "..." : $description;
 
           echo "<p class='description'>" . htmlspecialchars($shortDescription) . "</p>";
-          echo "<p>Starting Price: £" . htmlspecialchars($row['StartingPrice']) . "</p>";
-          echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
-          echo "<p>Category: " . htmlspecialchars($row['CategoryName']) . "</p>";
-          echo '</div>'; // End of this item's column
+          
+          echo '<div class="item-info">';
+          echo "  <p>Starting Price: £" . htmlspecialchars($row['StartingPrice']) . "</p>";
+          echo "  <p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
+          echo "  <p>Category: " . htmlspecialchars($row['CategoryName']) . "</p>";
+          echo '</div>'; 
+          echo '</div>';
           echo '</div>';
           $itemCount++; // Increment the item count
       }

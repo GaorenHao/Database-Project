@@ -42,7 +42,16 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-  }
+    background-color: #ffffff;
+    }
+    .item-info {
+    margin-top: auto; /* Pushes the info to the bottom */
+    padding-top: 5px; /* Reduced top padding */
+    line-height: 1.2; /* Reduces the space between lines */
+    }
+    .item-info p {
+        margin-bottom: 0; /* Removes bottom margin from paragraphs */
+    }
   </style>
   <title>Awesome Auction</title>
 </head>
