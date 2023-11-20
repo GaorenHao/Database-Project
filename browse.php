@@ -1,18 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Page Title</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!-- Other head elements -->
-</head>
-<body>
-    <!-- Your HTML content -->
-</body>
-</html>
-
-
 <?php include_once("header.php")?>
 <?php require("utilities.php")?>
 <?php
@@ -27,14 +12,14 @@ include 'db_connect.php';?>
 
 <div id="searchSpecs">
 <!-- When this form is submitted, this PHP page is what processes it.
-     Search/sort specs are passed to this page through parameters in the URL
-     (GET method of passing data to a page). -->
+    Search/sort specs are passed to this page through parameters in the URL
+    (GET method of passing data to a page). -->
 <form method="get" action="browse.php">
   <div class="row">
     <div class="col-md-5 pr-0">
       <div class="form-group">
         <label for="keyword" class="sr-only">Search keyword:</label>
-	    <div class="input-group">
+      <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text bg-transparent pr-0 text-muted">
               <i class="fa fa-search"></i>
@@ -86,17 +71,24 @@ include 'db_connect.php';?>
   $sql = "SELECT AuctionItem.*, Categories.CategoryName FROM AuctionItem ";
   $sql .= "LEFT JOIN Categories ON AuctionItem.CategoryID = Categories.CategoryID ";
 
-   if ($category != 'all') {
-    $sql .= "WHERE Categories.CategoryName = '$category' ";
-    }
+  // Construct the SQL query to fetch auction items and bid information
+  $sql = "SELECT AuctionItem.*, Categories.CategoryName, COUNT(Bid.BidID) AS BidCount, MAX(Bid.BidAmount) AS MaxBid ";
+  $sql .= "FROM AuctionItem ";
+  $sql .= "LEFT JOIN Categories ON AuctionItem.CategoryID = Categories.CategoryID ";
+  $sql .= "LEFT JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID ";
 
-    if (!empty($keyword)) {
-        if ($category != 'all') {
-            $sql .= "AND (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
-        } else {
-            $sql .= "WHERE (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
-        }
-    }
+  // Add conditions based on category and keyword
+  if ($category != 'all') {
+      $sql .= "WHERE Categories.CategoryName = '$category' ";
+      if (!empty($keyword)) {
+          $sql .= "AND (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
+      }
+  } elseif (!empty($keyword)) {
+      $sql .= "WHERE (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
+  }
+
+  // Group by ItemAuctionID to aggregate bid data
+  $sql .= "GROUP BY AuctionItem.ItemAuctionID ";
 
 // Apply the Order By condition last
 if ($ordering == 'pricelow') {
@@ -121,51 +113,35 @@ if ($ordering == 'pricelow') {
   $sql .= " LIMIT $results_per_page OFFSET $offset";
   $result = $connection->query($sql);
 
+ 
   if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-      echo "Title: " . htmlspecialchars($row["Title"]) . "<br>";
-      echo "Description: " . htmlspecialchars($row["Description"]) . "<br>";
-      echo "Starting Price: " . htmlspecialchars($row["StartingPrice"]) . "<br>";
-      echo "End Date: " . htmlspecialchars($row["EndDate"]) . "<br>";
-      echo "Category: " . htmlspecialchars($row["CategoryName"]) . "<br><br>";
-    }
-
-    // Proceed with the second query only if the first query had results
-    $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
-    $itemSummary_result = $connection->query($itemSummary_query);
-
-    if ($itemSummary_result && $itemSummary_result->num_rows > 0) {
       $itemCount = 0;
-      echo '<div class="row">';
-      while ($row = $itemSummary_result->fetch_assoc()) {
-        $item_id = $row['ItemAuctionID']; // Fetching the correct columns
-        $title = htmlspecialchars($row['Title']);
-        $description = htmlspecialchars($row['Description']);
-        $current_price = htmlspecialchars($row['MaxBid']);
-        $num_bids = htmlspecialchars($row['BidCount']);
-        $end_date = new DateTime($row['EndDate']);
-        
-        if ($itemCount > 0 && $itemCount % 4 == 0) {
-          echo '</div><div class="row">';  // End the current row and start a new one
-        
-        }
-        // Display the details for each auction listing
-        // Replace this with your actual listing display logic
-        echo '<div class="col-md-3">';
-        echo "<h5>" . $title . "</h5>";
-        echo "<p>" . $description . "</p>";
-        echo "<p>Current Price: £" . $current_price . "</p>";
-        echo "<p>Number of Bids: " . $num_bids . "</p>";
-        echo "<p>End Date: " . $end_date . "</p>";
-        echo '</div>'; // End of this item's column
-        $itemCount++;
+      echo '<div class="row">'; // Start the first row
+
+      while ($row = $result->fetch_assoc()) {
+          // Check if we need to end the current row and start a new one
+          if ($itemCount > 0 && $itemCount % 4 == 0) {
+              echo '</div><div class="row">';
+          }
+
+          // Display the details for each auction listing in a column
+          echo '<div class="col-md-3">';
+          echo "<h5>" . htmlspecialchars($row['Title']) . "</h5>";
+          echo "<p>" . htmlspecialchars($row['Description']) . "</p>";
+          echo "<p>Starting Price: £" . htmlspecialchars($row['StartingPrice']) . "</p>";
+          echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
+          echo "<p>Category: " . htmlspecialchars($row['CategoryName']) . "</p>";
+          echo '</div>'; // End of this item's column
+
+          $itemCount++; // Increment the item count
       }
-    }
-    echo '</div>';
-  } else { 
-    echo "No listings found.";
+
+      echo '</div>'; // Close the last row div
+  } else {
+      echo "No listings found.";
   }
 ?>
+
 
 <!-- Pagination for results listings -->
 <nav aria-label="Search results pages" class="mt-5">
