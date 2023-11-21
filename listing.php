@@ -150,6 +150,7 @@
       <!-- Hidden field for id -->
       <input type="hidden" name="item_id" value="<?php echo htmlspecialchars($item_id); ?>">
       <input type="hidden" name="current_price" value="<?php echo htmlspecialchars($current_price); ?>">
+      <input type="hidden" name="previous_highest_buyerid" value="<?php echo htmlspecialchars($highest_buyerid); ?>">
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
