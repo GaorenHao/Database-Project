@@ -139,6 +139,17 @@
       <a class="nav-link btn border-light" href="create_auction.php">+ Create auction</a>
     </li>');
   }
+  if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'admin') {
+    echo('
+    <li class="nav-item mx-1">
+        <a class="nav-link" href="admin.php">View Users</a>
+      </li>
+    <li class="nav-item ml-3">
+    <a class="nav-link btn border-light" href="admin.php">- Manage Users</a>
+    </li>');
+    
+   
+  }
 ?>
   </ul>
 </nav>
