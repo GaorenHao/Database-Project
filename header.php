@@ -9,7 +9,43 @@
   error_reporting(E_ALL);
 
   include 'db_connect.php';
+  // Get the current user's ID
+  $userId = $_SESSION['username']; // Assuming the user ID is stored in the session
+
+  // Create the DateTime object
+  $now = new DateTime();
+  // Format the DateTime object to a string
+  $formattedNow = $now->format('Y-m-d H:i:s');
+  // Prepare the query
+  $notifQuery = "SELECT Message, NotificationID FROM Notification WHERE UserID = '$userId' AND DateTime < NOW()";
+  // Execute the query
+  $result = $connection->query($notifQuery);
+  // Check for a matching notification
+  if ($result->num_rows > 0) {
+      // Fetch the notification data
+      $notification = $result->fetch_assoc();
+      // Pass the notification to JavaScript
+      echo "<script>";
+    echo "var notificationMessage = " . json_encode($notification['Message']) . ";";
+    echo "var deleteNotifId = " . json_encode($notification['NotificationID']) . ";"; // Assuming 'id' is the column name
+    echo "</script>";
+    }
+
+  // Check if this is an AJAX request for deleting a notification
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteNotifId'])) {
+    $deleteNotifQuery = $connection->prepare("DELETE FROM Notification WHERE NotificationID = ?");
+    $deleteNotifQuery->bind_param("i", $_POST['deleteNotifId']); 
+    $deleteNotifQuery->execute();
+
+    if ($deleteNotifQuery->affected_rows > 0) {
+        echo "Notification dismissed and data deleted successfully";
+    } else {
+        echo "Error or no data found to delete";
+    }
+  }
+
 ?>
+
 
 
 <!doctype html>
@@ -24,6 +60,7 @@
 
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
+
   <style>
     .description {
         display: -webkit-box;
@@ -53,6 +90,33 @@
         margin-bottom: 0; /* Removes bottom margin from paragraphs */
     }
   </style>
+
+  <script>
+        // Check if the notificationMessage variable is set
+        if (typeof notificationMessage !== 'undefined' && typeof deleteNotifId !== 'undefined') { //////// change undefined to null maybe ?
+          window.onload = function() {
+              alert("Notification: " + notificationMessage);
+              sendDismissNotification(deleteNotifId); // Pass the notification ID to the function
+          };
+        }
+
+        function sendDismissNotification(deleteNotifId) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "", true); // Same file
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            xhr.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    console.log(this.responseText); // Log server response
+                }
+            }
+
+            xhr.send("deleteNotifId=" + deleteNotifId); ////// where is this being sent to 
+        }
+        
+    </script>
+
+
   <title>Awesome Auction</title>
 </head>
 
@@ -105,6 +169,17 @@
 	<li class="nav-item ml-3">
       <a class="nav-link btn border-light" href="create_auction.php">+ Create auction</a>
     </li>');
+  }
+  if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'admin') {
+    echo('
+    <li class="nav-item mx-1">
+        <a class="nav-link" href="admin.php">View Users</a>
+      </li>
+    <li class="nav-item ml-3">
+    <a class="nav-link btn border-light" href="admin.php">- Manage Users</a>
+    </li>');
+    
+   
   }
 ?>
   </ul>

@@ -80,8 +80,66 @@ echo $res;
 }
 ?> */
 
-function new_bid_watchlist_funcs($item_id, $buyerid, $current_price, $bid) {
-  $msg = "The info of the item that just had a new bid are: " . $item_id . ", " . $buyerid . ", " . $current_price . ", " . $bid;
-  return $msg;
+function new_bid_watchlist_funcs($connection, $buyer) {
+
+  // First Query for the max bid across all users for a given item id
+  $sql1 = "SELECT WatchListItems.ItemAuctionID, MAX(Bid.BidAmount) AS max_bid_amount
+  FROM WatchListItems
+  LEFT JOIN Bid ON WatchListItems.ItemAuctionID = Bid.ItemAuctionID
+  GROUP BY WatchListItems.ItemAuctionID";
+  $result1 = $connection->query($sql1);
+
+  // Second Query for the max bid a certain user has plaed for a given itemid
+  $sql2 = "SELECT Bid.ItemAuctionID, MAX(Bid.BidAmount) AS max_bid_per_buyer
+  FROM WatchListItems
+  LEFT JOIN Bid ON WatchListItems.ItemAuctionID = Bid.ItemAuctionID AND Bid.BuyerID = $buyer
+  GROUP BY WatchListItems.ItemAuctionID";
+  $result2 = $connection->query($sql2);
+
+  // Fetch results
+  $results1 = $result1->fetch_all(MYSQLI_ASSOC);
+  $results2 = $result2->fetch_all(MYSQLI_ASSOC);
+
+
+
+  // Merge Results --- probably item5 is not in here ! 
+  $mergedResults = [];
+
+  // First, merge the results based on matching ItemAuctionID - where both tables have something 
+  foreach ($results1 as $row1) {
+  foreach ($results2 as $row2) {
+  if ($row1['ItemAuctionID'] == $row2['ItemAuctionID']) {
+  $status = ($row1['max_bid_amount'] > $row2['max_bid_per_buyer']) ? "You have been outbid :(" : "You are the highest bidder!";  
+  $mergedResults[$row1['ItemAuctionID']] = [
+        'ItemAuctionID' => $row1['ItemAuctionID'],
+        'max_bid_amount' => $row1['max_bid_amount'],
+        'max_bid_per_buyer' => $row2['max_bid_per_buyer'],
+        'status' => $status
+        
+    ];
+  }
+  }
+  }
+
+  // Add unique entries from results1
+  foreach ($results1 as $row1) {
+  if (!array_key_exists($row1['ItemAuctionID'], $mergedResults)) {
+  $mergedResults[$row1['ItemAuctionID']] = [
+    'ItemAuctionID' => $row1['ItemAuctionID'],
+    'max_bid_amount' => $row1['max_bid_amount'],
+    'max_bid_per_buyer' => "None yet", // Assuming null if not present in $results2 - aka, where buyer has not bidded anything, but is on the watch list 
+    'status' => "You have not yet made a bid."
+  ];
+  }
+  }
+
+  // If you need the results to be re-indexed numerically
+  $mergedResults = array_values($mergedResults);
+
+  // Return the merged results
+  return $mergedResults;
+
 }
+  
+
 ?>
