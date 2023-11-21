@@ -50,7 +50,9 @@
       exit;
     }
   }
-
+  if (empty($auctionDetails)) {
+    $auctionDetails = "No description is given for this item.";
+  }
   //$nullWatchlist = 0; //////// we could implement default nulls on the SQL side, but for now, let me just do it cosmetically on this side. 
   /// we are just creating a new item to list. so it is typical that it does not immediately have a watchlistID assignment
 

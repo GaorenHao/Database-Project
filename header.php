@@ -1,7 +1,7 @@
 <?php
   // FIXME: At the moment, I've allowed these values to be set manually.
   // But eventually, with a database, these should be set automatically
-  // ONLY after the user's login credentials have been verified via a 
+  // ONLY after the user's login credentials have been verified via a
   // database query.
   session_start();
   ini_set('display_errors', 1);
@@ -61,6 +61,36 @@
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
 
+  <style>
+    .description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .item-box {
+    border: 1px solid #ddd; /* Light grey border */
+    padding: 10px; /* Space inside the box */
+    margin-bottom: 15px; /* Space outside the box */
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for depth */
+    min-height: 250px; /* Minimum height */
+    height: auto; /* Allow height to expand as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #ffffff;
+    }
+    .item-info {
+    margin-top: auto; /* Pushes the info to the bottom */
+    padding-top: 5px; /* Reduced top padding */
+    line-height: 1.2; /* Reduces the space between lines */
+    }
+    .item-info p {
+        margin-bottom: 0; /* Removes bottom margin from paragraphs */
+    }
+  </style>
+
   <script>
         // Check if the notificationMessage variable is set
         if (typeof notificationMessage !== 'undefined' && typeof deleteNotifId !== 'undefined') { //////// change undefined to null maybe ?
@@ -85,6 +115,7 @@
         }
         
     </script>
+
 
   <title>Awesome Auction</title>
 </head>
