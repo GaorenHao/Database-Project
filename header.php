@@ -10,8 +10,19 @@
 
   include 'db_connect.php';
   // Get the current user's ID
-  $userId = $_SESSION['username']; // Assuming the user ID is stored in the session
+  if (isset($_SESSION['username'])) {
+    $username = $_SESSION['username']; // If it's set, use it
+  } else {
+    $username = null; // If not set, assign a default value (e.g., null)
+  }
+  // Initialize $userId with a default value (e.g., null)
+  $userId = null;
 
+  // Check if the session variable is set and assign its value to $userId
+  if (isset($_SESSION['userId'])) {
+      $userId = $_SESSION['userId'];
+  }
+  
   // Create the DateTime object
   $now = new DateTime();
   // Format the DateTime object to a string

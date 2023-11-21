@@ -119,9 +119,11 @@ if ($ordering == 'pricelow') {
           if ($itemCount > 0 && $itemCount % 4 == 0) {
               echo '</div><div class="row">';
           }
-
+          $itemLink = "listing.php?item_id=" . urlencode($row['ItemAuctionID']);
           // Display the details for each auction listing in a column
+          
           echo '<div class="col-md-3">';
+          echo '<a href="' . $itemLink . '" class="item-link">';
           echo '<div class="item-box">';
           echo "<h5>" . htmlspecialchars($row['Title']) . "</h5>";
           // Truncate the description to a specific character length for a non-CSS solution
