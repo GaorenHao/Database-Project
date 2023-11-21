@@ -7,6 +7,7 @@
 
 <?php
 
+
 include 'db_connect.php';
 
 ini_set('display_errors', 1);
@@ -15,14 +16,14 @@ error_reporting(E_ALL);
 
  
   
-   // TODO: Check user's credentials (cookie/session).
+ 
 
    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSION['account_type'] == 'admin') {
 
     $stmt = $connection->prepare('SELECT * FROM Users');
 
     if ($stmt === false) {
-        // Corrected the concatenation in the die statement
+       
         die("Error: " . $connection->error);
     }
     
@@ -41,8 +42,8 @@ error_reporting(E_ALL);
         echo "No users found.";
     }   
 
-    // Close the statement if needed
-    $stmt->close();
+   
+    
 
 } else {
     echo "Access denied. Only admin can view this page.";
@@ -51,7 +52,5 @@ error_reporting(E_ALL);
 
 ?>
 </div>
-
-
 
 

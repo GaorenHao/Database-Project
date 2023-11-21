@@ -15,14 +15,12 @@
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSION['account_type'] == 'buyer') {
         $UserID = $_SESSION['username'];
 
-        // Prepare statement for BuyerID
         $stmt = $connection->prepare('SELECT BuyerID FROM Buyer WHERE UserID = ?');
         if (!$stmt) {
             die("Prepare failed: " . htmlspecialchars($connection->error));
         }
 
-        // Bind and execute
-        $stmt->bind_param("i", $UserID); // Ensure the data type is correct
+        $stmt->bind_param("i", $UserID);
         if (!$stmt->execute()) {
             die("Execute failed: " . htmlspecialchars($stmt->error));
         }
@@ -32,63 +30,50 @@
             $row = $result->fetch_assoc();
             $BuyerID = $row['BuyerID'];
 
-            // Prepare statement for ItemAuctionIDs
             $stmt = $connection->prepare("SELECT DISTINCT ItemAuctionID FROM Bid WHERE BuyerID = ?");
-            if (!$stmt) {
-                die("Prepare failed: " . htmlspecialchars($connection->error));
-            }
             $stmt->bind_param("i", $BuyerID);
-            if (!$stmt->execute()) {
-                die("Execute failed: " . htmlspecialchars($stmt->error));
-            }
+            $stmt->execute();
             $result = $stmt->get_result();
 
-            $ItemAuctionIDs = [];
+            $recommendedItemAuctionIDs = [];
             while ($row = $result->fetch_assoc()) {
-                $ItemAuctionIDs[] = $row['ItemAuctionID'];
+                $ItemAuctionID = $row['ItemAuctionID'];
+
+          
+                $stmt2 = $connection->prepare("SELECT DISTINCT BuyerID FROM Bid WHERE ItemAuctionID = ? AND BuyerID != ?");
+                $stmt2->bind_param("ii", $ItemAuctionID, $BuyerID);
+                $stmt2->execute();
+                $result2 = $stmt2->get_result();
+
+                while ($row2 = $result2->fetch_assoc()) {
+                    $otherBuyerID = $row2['BuyerID'];
+
+                    $stmt3 = $connection->prepare("SELECT DISTINCT ItemAuctionID FROM Bid WHERE BuyerID = ? AND ItemAuctionID != ?");
+                    $stmt3->bind_param("ii", $otherBuyerID, $ItemAuctionID);
+                    $stmt3->execute();
+                    $result3 = $stmt3->get_result();
+
+                    while ($row3 = $result3->fetch_assoc()) {
+                        $recommendedItemAuctionIDs[] = $row3['ItemAuctionID'];
+                    }
+                }
             }
 
-            foreach ($ItemAuctionIDs as $ItemAuctionID) {
-                
-                $stmt = $connection->prepare("SELECT DISTINCT BuyerID FROM Bid WHERE ItemAuctionID = ? AND BuyerID != ?");
-                if (!$stmt) {
-                    die("Prepare failed: " . htmlspecialchars($connection->error));
-                }
-                $stmt->bind_param("ii", $ItemAuctionID, $BuyerID);
-                if (!$stmt->execute()) {
-                    die("Execute failed: " . htmlspecialchars($stmt->error));
-                }
-                $result = $stmt->get_result();
+            $recommendedItemAuctionIDs = array_unique($recommendedItemAuctionIDs);
 
-                while ($row = $result->fetch_assoc()) {
-                    $otherBuyerID = $row['BuyerID'];
+            foreach ($recommendedItemAuctionIDs as $recItemAuctionID) {
+                $stmt4 = $connection->prepare("SELECT Title, Description, StartingPrice, EndDate FROM AuctionItem WHERE ItemAuctionID = ?");
+                $stmt4->bind_param("i", $recItemAuctionID); 
+                $stmt4->execute();
+                $recItemsResult = $stmt4->get_result();
 
-                    
-                    $stmt = $connection->prepare("SELECT Title, Description, StartingPrice, EndDate FROM AuctionItem WHERE ItemAuctionID = ?");
-                    if (!$stmt) {
-                        die("Prepare failed: " . htmlspecialchars($connection->error));
-                    }
-                    $stmt->bind_param("i", $otherBuyerID);
-                    if (!$stmt->execute()) {
-                        die("Execute failed: " . htmlspecialchars($stmt->error));
-                    }
-                    $result = $stmt->get_result();
-
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            $title = $row['Title'];
-                            $description = $row['Description'];
-                            $startingprice = $row['StartingPrice'];
-                            $enddate = $row['EndDate'];
-
-                            echo "<li>";
-                            echo "<h3>" . htmlspecialchars($title) . "</h3>";
-                            echo "<p>Description: " . htmlspecialchars($description) . "</p>";
-                            echo "<p>Starting Price: " . htmlspecialchars($startingprice) . "</p>";
-                            echo "<p>End Date: " . htmlspecialchars($enddate) . "</p>";
-                            echo "</li>";
-                        }
-                    }
+                while ($recItemRow = $recItemsResult->fetch_assoc()) {
+                    echo "<li>";
+                    echo "<h3>" . htmlspecialchars($recItemRow['Title']) . "</h3>";
+                    echo "<p>Description: " . htmlspecialchars($recItemRow['Description']) . "</p>";
+                    echo "<p>Starting Price: " . htmlspecialchars($recItemRow['StartingPrice']) . "</p>";
+                    echo "<p>End Date: " . htmlspecialchars($recItemRow['EndDate']) . "</p>";
+                    echo "</li>";
                 }
             }
         } else {
