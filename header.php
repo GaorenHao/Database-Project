@@ -187,7 +187,7 @@
         <a class="nav-link" href="admin.php">View Users</a>
       </li>
     <li class="nav-item ml-3">
-    <a class="nav-link btn border-light" href="admin.php">- Manage Users</a>
+    <a class="nav-link btn border-light" href="edit_users.php">- Manage Users</a>
     </li>');
     
    
