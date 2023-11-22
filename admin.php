@@ -3,7 +3,7 @@
 
 <div class="container">
 
-<h2 class="my-3">View Users</h2>
+<h2 class="my-3">Registered Accounts</h2>
 
 <?php
 
