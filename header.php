@@ -68,9 +68,11 @@
   <!-- Bootstrap and FontAwesome CSS -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
 
   <!-- Custom CSS file -->
-  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" type="text/css" href="css/custom.css">
+
 
   <style>
     .description {
@@ -100,6 +102,15 @@
     .item-info p {
         margin-bottom: 0; /* Removes bottom margin from paragraphs */
     }
+
+    body, body * {
+    color: rgb(158, 36, 240);
+  }
+  
+  body {
+    color: rgb(255, 186, 230); 
+    background-color: rgb(255, 186, 230); 
+  }
   </style>
 
   <script>
@@ -128,7 +139,7 @@
     </script>
 
 
-  <title>Awesome Auction</title>
+  <title>Auctions Auctions Auctions!</title>
 </head>
 
 
@@ -136,7 +147,7 @@
 
 <!-- Navbars -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
-  <a class="navbar-brand" href="browse.php">Awesome Auctions<!--CHANGEME!--></a>
+  <a class="navbar-brand" href="browse.php"> Auctions Forever<!--CHANGEME!--></a>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
     

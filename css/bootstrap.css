@@ -153,13 +153,13 @@ sup {
 }
 
 a {
-  color: #007bff;
+  color: #e83e8c;
   text-decoration: none;
   background-color: transparent;
 }
 
 a:hover {
-  color: #0056b3;
+  color: #e83e8c;
   text-decoration: underline;
 }
 
@@ -477,7 +477,7 @@ mark,
 
 .img-thumbnail {
   padding: 0.25rem;
-  background-color: #fff;
+  background-color: #ffbce2;
   border: 1px solid #dee2e6;
   border-radius: 0.25rem;
   max-width: 100%;

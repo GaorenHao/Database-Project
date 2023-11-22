@@ -125,7 +125,7 @@ if ($userID == $userIDConfirmation) {
                         $stmt->execute();
 
                         echo "<li>";
-                        echo "<h3>User deleted successfully</h3>";
+                        echo "<h3 >User deleted successfully</h3>";
                         echo "<p>User ID: " . htmlspecialchars($userID) . " is no longer registered</p>";
                         echo "<p>If this was a mistake please create a new account!</p>";
                         echo "<p>All data has been removed.</p>";

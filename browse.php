@@ -34,12 +34,32 @@ include 'db_connect.php';?>
         <label for="cat" class="sr-only">Search within:</label>
         <select class="form-control" id="cat" name="cat">
           <option selected value="all">All categories</option>
-          <option value="fashion">fashion</option>
-          <option value="electronics">electronics</option>
-          <option value="home">home</option>
-          <option value="beauty">beauty</option>
-          <option value="outdoor">outdoor</option>
-          <option value="art">art</option>
+          <option value="fashion">Fashion</option>
+          <option value="electronics">Electronics</option>
+          <option value="beauty">Beauty</option>
+          <option value="home">Home</option>
+          <option value="outdoor">Outdoor</option>
+          <option value="art">Art</option>
+          <option value="books">Books</option>
+          <option value="toys">Toys</option>
+          <option value="sports">Sports</option>
+          <option value="music">Music</option>
+          <option value="clothing">Clothing</option>
+          <option value="furniture">Furniture</option>
+          <option value="technology">Technology</option>
+          <option value="automotive">Automotive</option>
+          <option value="gardening">Gardening</option>
+          <option value="stationery">Stationery</option>
+          <option value="pets">Pets</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="footwear">Footwear</option>
+          <option value="jewelry">Jewelry</option>
+          <option value="cosmetics">Cosmetics</option>
+          <option value="groceries">Groceries</option>
+          <option value="beverages">Beverages</option>
+          <option value="cookware">Cookware</option>
+          <option value="bedding">Bedding</option>
+          <option value="decor">Decor</option>
         </select>
       </div>
     </div>
