@@ -46,7 +46,7 @@ error_reporting(E_ALL);
     
 
 } else {
-    echo "Access denied. Only admin can view this page.";
+    echo "Only admin can view this page.";
 }
 
 
