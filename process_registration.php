@@ -27,10 +27,10 @@ $stmt->bind_param("sssss", $accountType, $email, $password, $firstName, $lastNam
 
 // Execute the prepared statement
 
-if ($password !== $passwordConfirmation) {
-  echo "Passwords do not match:".$stmt->error;
-  exit;
-}
+//if ($password !== $passwordConfirmation) {
+  //echo "Passwords do not match:".$stmt->error;
+  //exit;
+//}
 if ($stmt->execute()) {
   
   
@@ -40,12 +40,15 @@ if ($stmt->execute()) {
     
     $stmt = $connection->prepare("INSERT INTO sellers (UserID) VALUES (?)");
     $stmt->bind_param("i", $recent_userID);
+    
 
     if (!$stmt->execute()) {
       
       echo "Error creating seller:".$stmt->error;
       exit;
     }
+
+    echo "seller created";
   }
 
   elseif ($accountType === 'buyer'){
@@ -58,6 +61,8 @@ if ($stmt->execute()) {
       echo "Error creating Buyer:".$stmt->error;
       exit;
     }
+
+    echo "buyer created";
 
   }
 

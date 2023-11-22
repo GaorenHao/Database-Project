@@ -18,51 +18,58 @@
         $stmt = $connection->prepare('SELECT BuyerID FROM Buyer WHERE UserID = ?');
         $stmt->bind_param("i", $UserID);
         $stmt->execute();
-        $result = $stmt->get_result();
+        $result1 = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            $BuyerID = $row['BuyerID'];
+        if ($result1->num_rows > 0) {
+            $row1 = $result1->fetch_assoc();
+            $BuyerID = $row1['BuyerID'];
 
             $stmt = $connection->prepare("SELECT DISTINCT ItemAuctionID FROM Bid WHERE BuyerID = ?");
             $stmt->bind_param("i", $BuyerID);
             $stmt->execute();
-            $result = $stmt->get_result();
+            $result2 = $stmt->get_result();
 
-            $recommendItemAuctionID = [];
+            
 
-            while ($row = $result->fetch_assoc()) {
-                $ItemAuctionID = $row['ItemAuctionID'];
+            while ($row2 = $result2->fetch_assoc()) {
+                $ItemAuctionID = $row2['ItemAuctionID'];
 
                 $stmt = $connection->prepare("SELECT DISTINCT BuyerID FROM Bid WHERE ItemAuctionID = ? AND BuyerID != ?");
                 $stmt->bind_param("ii", $ItemAuctionID, $BuyerID);
                 $stmt->execute();
-                $result = $stmt->get_result();
+                $result3 = $stmt->get_result();
 
-                while ($row = $result->fetch_assoc()) {
-                    $otherBuyerID = $row['BuyerID'];
+                while ($row3 = $result3->fetch_assoc()) {
+                    $buyerID = $row3['BuyerID'];
 
                     $stmt = $connection->prepare("SELECT DISTINCT ItemAuctionID FROM Bid WHERE BuyerID = ? AND ItemAuctionID != ?");
-                    $stmt->bind_param("ii", $otherBuyerID, $ItemAuctionID);
+                    $stmt->bind_param("ii", $buyerID, $ItemAuctionID);
                     $stmt->execute();
-                    $result = $stmt->get_result();
+                    $result4 = $stmt->get_result();
 
-                    $stmt = $connection->prepare("SELECT Title, Description, StartingPrice, EndDate From AuctionItem WHERE ItemAuctionID = ?");
-                    $stmt->bind_param("i", $itemAuctionID);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
+                    if ($result4->num_rows > 0) {
+                        $row4 = $result4->fetch_assoc();
+                        $itemAuctionID = $row4["ItemAuctionID"];
 
-                    while ($row = $result->fetch_assoc()) {
-                        $recommendedItemAuctionIDs[] = $row['ItemAuctionID'];
-                        echo "<li>";
-                        echo "<h3>" . htmlspecialchars($row['Title']) . "</h3>";
-                        echo "<p>Description: " . htmlspecialchars($row['Description']) . "</p>";
-                        echo "<p>Starting Price: " . htmlspecialchars($row['StartingPrice']) . "</p>";
-                        echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
-                        echo "</li>";
+                        $stmt = $connection->prepare("SELECT Title, Description, StartingPrice, EndDate From AuctionItem WHERE ItemAuctionID = ?");
+                        $stmt->bind_param("i", $itemAuctionID);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
+                        while ($row = $result->fetch_assoc()) {
+                        
+                            echo "<li>";
+                            echo "<h3>" . htmlspecialchars($row['Title']) . "</h3>";
+                            echo "<p>Description: " . htmlspecialchars($row['Description']) . "</p>";
+                            echo "<p>Starting Price: " . htmlspecialchars($row['StartingPrice']) . "</p>";
+                            echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
+                            echo "</li>";
                     }
+                }else{
+                    echo "You have no recommended items yet. Place a bid and come back to this page.";
                 }
             }
+        }
 
 
         } else {
