@@ -68,7 +68,7 @@ if ($result->num_rows > 0) {
 			}
 		}
 
-		echo "<p>Password correct! Yay :) </p>";
+		echo "<p>Password correct! Yaay :) </p>";
 	} else {
 		// Notify user of success/failure and redirect/give navigation options.
 		echo "<p>Password incorrect... please enter your credentials again </p>";
