@@ -44,7 +44,7 @@ $item_id = $_POST['item_id'];
 $current_price = $_POST['current_price'];
 $previous_highest_buyerid = $_POST['previous_highest_buyerid'];
 
-if ($bid < $current_price) {
+if ($bid <= $current_price) {
   // Handle the error
   // Redirect back to the form with an error message or display the message directly
   echo('Your bid is too low. Please submit a bid higher than the current bid. Redirecting you back to the listing ... ');
