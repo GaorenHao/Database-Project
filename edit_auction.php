@@ -35,6 +35,14 @@
     $auctionStartPrice = $row['StartingPrice'];
     $auctionReservePrice = $row['ReservePrice'];
     $auctionEndDate = $row['EndDate'];
+
+    // Fetch images for the auction item
+    $imageStmt = $connection->prepare("SELECT ImageID, ImagePath FROM ItemImages WHERE ItemAuctionID = ?");
+    $imageStmt->bind_param("i", $itemAuctionID);
+    $imageStmt->execute();
+    $imagesResult = $imageStmt->get_result();
+    $currentImages = $imagesResult->fetch_all(MYSQLI_ASSOC);
+    
   } else {
     echo "Auction item not found.";
     exit;
@@ -51,7 +59,7 @@
     <h2 class="my-3">Edit Auction</h2>
     <div class="card">
       <div class="card-body">
-        <form method="post" action="edit_auction_result.php" id="editAuctionForm">
+        <form method="post" action="edit_auction_result.php" id="editAuctionForm" enctype="multipart/form-data">
           <input type="hidden" name="itemAuctionID" value="<?php echo htmlspecialchars($itemAuctionID); ?>">
 
           <div class="form-group row">
@@ -114,6 +122,28 @@
             </div>
           </div>
 
+          <!-- Section for current images -->
+          <div class='current-images'>
+            <p>Current Images:</p>
+            <?php foreach ($currentImages as $image): ?>
+              <div class='image-container'>
+                <img src='<?php echo htmlspecialchars($image['ImagePath']); ?>' alt='Item Image' style='width: 150px; height: auto;' />
+                <label>
+                  <input type='checkbox' name='deleteImages[]' value='<?php echo $image['ImageID']; ?>'> Delete this image
+                </label>
+              </div>
+            <?php endforeach; ?>
+          </div>
+          
+          <!-- Image upload input -->
+          <div class="form-group row">
+            <label for="auctionImages" class="col-sm-2 col-form-label text-right">Add Images</label>
+            <div class="col-sm-10">
+              <input type="file" class="form-control-file" id="auctionImages" name="auctionImages[]" multiple>
+              <small class="form-text text-muted">Upload new images for the item. Existing images marked for deletion will be removed.</small>
+            </div>
+          </div>
+
           <button type="submit" class="btn btn-primary form-control">Update Auction</button>
           <button type="button" class="btn btn-danger form-control mt-2" onclick="confirmDeletion(<?php echo $itemAuctionID; ?>)">Delete Auction</button>
           
@@ -135,6 +165,19 @@
                 if (reservePrice < startingPrice) {
                   e.preventDefault(); // Prevent form submission
                   alert("Reserve price must be higher than the starting price.");
+                }
+
+                // Image validation
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                var imageInputs = document.getElementById('auctionImages');
+                
+                for (var i = 0; i < imageInputs.files.length; i++) {
+                  var file = imageInputs.files[i];
+                  if (!allowedExtensions.exec(file.name)) {
+                    e.preventDefault();
+                    alert('Please only upload image format files (jpg, jpeg, png, gif).');
+                    break;
+                  }
                 }
               });
             });

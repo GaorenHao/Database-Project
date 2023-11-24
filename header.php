@@ -77,30 +77,56 @@
   <style>
     .description {
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 2; /* Limit to two lines */
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        height: 3em;
+        margin-bottom: 0; /* Remove extra margin below the description */
     }
     .item-box {
     border: 1px solid #ddd; /* Light grey border */
     padding: 10px; /* Space inside the box */
     margin-bottom: 15px; /* Space outside the box */
     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for depth */
-    min-height: 250px; /* Minimum height */
-    height: auto; /* Allow height to expand as needed */
+    height: 400px; /* Allow height to expand as needed */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: #ffffff;
+    overflow: hidden;
+    border: none;
     }
+    img {
+    border: none;
+    outline: none;
+    }
+    .image-wrapper {
+      position: relative;
+      width: 100%; /* Set a width */
+      padding-top: 100%; /* Padding top as percentage of width gives a square */
+      overflow: hidden; /* Hide the overflow to maintain the square shape */
+    }
+
+    .item-box img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: auto;
+      height: 100%;
+      object-fit: cover; /* This will cover the area without stretching */
+      transform: translate(-50%, -50%); /* Center the image */
+    }
+
     .item-info {
     margin-top: auto; /* Pushes the info to the bottom */
     padding-top: 5px; /* Reduced top padding */
     line-height: 1.2; /* Reduces the space between lines */
+    border-top: none;
     }
     .item-info p {
-        margin-bottom: 0; /* Removes bottom margin from paragraphs */
+    margin-bottom: 0; /* Removes bottom margin from paragraphs */
+    border-bottom: none;
     }
 
     body, body * {

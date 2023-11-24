@@ -99,12 +99,42 @@
   } else {
     echo "Error: " . $stmt->error;
   }
-              
+  
+  // After inserting the auction item
+  $last_id = $connection->insert_id; // Get the ID of the last inserted item
+  $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+  $imageUploadSuccess = true;
 
-  // If all is successful, let user know.
-  echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
+  if (isset($_FILES['auctionImages'])) {
+      $total = count($_FILES['auctionImages']['name']);
 
+      for ($i = 0; $i < $total; $i++) {
+          $tmpFilePath = $_FILES['auctionImages']['tmp_name'][$i];
+          $fileType = mime_content_type($tmpFilePath);
 
+          if (in_array($fileType, $allowedMimeTypes)) {
+              $newFilePath = "./uploads/" . basename($_FILES['auctionImages']['name'][$i]);
+              if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                  $stmt = $connection->prepare("INSERT INTO ItemImages (ItemAuctionID, ImagePath) VALUES (?, ?)");
+                  $stmt->bind_param("is", $last_id, $newFilePath);
+                  $stmt->execute();
+              } else {
+                  echo "Failed to upload image: " . htmlspecialchars($_FILES['auctionImages']['name'][$i]);
+                  $imageUploadSuccess = false;
+              }
+          } else {
+              echo "Invalid file type: " . htmlspecialchars($_FILES['auctionImages']['name'][$i]);
+              $imageUploadSuccess = false;
+          }
+      }
+  }
+
+  if ($imageUploadSuccess) {
+      echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
+  } else {
+      echo "Some images failed to upload.";
+      // Optional: Consider rolling back the auction item insertion if image upload is critical
+  }
 ?>
 
 </div>
