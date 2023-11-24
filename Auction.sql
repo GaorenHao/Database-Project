@@ -185,7 +185,8 @@ CREATE TABLE `Notification` (
   `UserID` int(4) NOT NULL,
   `DateTime` datetime NOT NULL,
   `Message` text NOT NULL,
-  `Type` text NOT NULL
+  `Type` text NOT NULL,
+  `Read` boolean NOT NULL DEFAULT FALSE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

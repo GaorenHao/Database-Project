@@ -9,15 +9,24 @@
   error_reporting(E_ALL);
 
   include 'db_connect.php';
+  include 'win_funcs.php';
+
+  /// the below is all creation of the notificaton pop up... 
   // Get the current user's ID
-  $userId = $_SESSION['username']; // Assuming the user ID is stored in the session
+  // Assuming the user ID is stored in the session
+
+  if (isset($_SESSION['username'])) {
+    $userId = $_SESSION['username']; 
+  
+
+  check_ending_listings($connection, $userId);
 
   // Create the DateTime object
   $now = new DateTime();
   // Format the DateTime object to a string
   $formattedNow = $now->format('Y-m-d H:i:s');
   // Prepare the query
-  $notifQuery = "SELECT Message, NotificationID FROM Notification WHERE UserID = '$userId' AND DateTime < NOW()";
+  $notifQuery = "SELECT Message, NotificationID FROM Notification WHERE UserID = '$userId' AND DateTime < NOW() AND `Read` = 0";
   // Execute the query
   $result = $connection->query($notifQuery);
   // Check for a matching notification
@@ -27,23 +36,25 @@
       // Pass the notification to JavaScript
       echo "<script>";
     echo "var notificationMessage = " . json_encode($notification['Message']) . ";";
-    echo "var deleteNotifId = " . json_encode($notification['NotificationID']) . ";"; // Assuming 'id' is the column name
+    echo "var markNotifRead = " . json_encode($notification['NotificationID']) . ";"; 
     echo "</script>";
     }
 
   // Check if this is an AJAX request for deleting a notification
-  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deleteNotifId'])) {
-    $deleteNotifQuery = $connection->prepare("DELETE FROM Notification WHERE NotificationID = ?");
-    $deleteNotifQuery->bind_param("i", $_POST['deleteNotifId']); 
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['markNotifRead'])) {
+    $deleteNotifQuery = $connection->prepare("UPDATE Notification SET `Read` = 1 WHERE NotificationID = ?");
+    $deleteNotifQuery->bind_param("i", $_POST['markNotifRead']); 
     $deleteNotifQuery->execute();
 
     if ($deleteNotifQuery->affected_rows > 0) {
-        echo "Notification dismissed and data deleted successfully";
+        echo "Notification marked as read successfully";
     } else {
-        echo "Error or no data found to delete";
+        echo "Error or no notif found to mark as read";
     }
   }
-
+} else {
+  echo "Not logged in";
+}
 ?>
 
 
@@ -63,14 +74,14 @@
 
   <script>
         // Check if the notificationMessage variable is set
-        if (typeof notificationMessage !== 'undefined' && typeof deleteNotifId !== 'undefined') { //////// change undefined to null maybe ?
+        if (typeof notificationMessage !== 'undefined' && typeof markNotifRead !== 'undefined') { //////// change undefined to null maybe ?
           window.onload = function() {
               alert("Notification: " + notificationMessage);
-              sendDismissNotification(deleteNotifId); // Pass the notification ID to the function
+              sendDismissNotification(markNotifRead); // Pass the notification ID to the function
           };
         }
 
-        function sendDismissNotification(deleteNotifId) {
+        function sendDismissNotification(markNotifRead) {
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "", true); // Same file
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -81,7 +92,7 @@
                 }
             }
 
-            xhr.send("deleteNotifId=" + deleteNotifId); ////// where is this being sent to 
+            xhr.send("markNotifRead=" + markNotifRead); ////// where is this being sent to 
         }
         
     </script>
