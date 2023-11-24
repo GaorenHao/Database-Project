@@ -142,7 +142,7 @@ if ($bid < $current_price) {
             echo "Error: " . mysqli_error($connection);
         }
     }
-
+    include('send_notification.php');
     // Assign values to session variables
     $_SESSION['most_recent_item_id'] = $item_id;
     $_SESSION['current_price'] = $current_price;
