@@ -1,7 +1,7 @@
 <?php
   // FIXME: At the moment, I've allowed these values to be set manually.
   // But eventually, with a database, these should be set automatically
-  // ONLY after the user's login credentials have been verified via a 
+  // ONLY after the user's login credentials have been verified via a
   // database query.
   session_start();
   ini_set('display_errors', 1);
@@ -11,16 +11,23 @@
   include 'db_connect.php';
   include 'win_funcs.php';
 
+  /// think the below is duplicated so can probably remove on code review 
+  
   /// the below is all creation of the notificaton pop up... 
   // Get the current user's ID
-  // Assuming the user ID is stored in the session
-
   if (isset($_SESSION['username'])) {
-    $userId = $_SESSION['username']; 
+    $username = $_SESSION['username']; // If it's set, use it
+  } else {
+    $username = null; // If not set, assign a default value (e.g., null)
+  }
+  // Initialize $userId with a default value (e.g., null)
+  $userId = null;
+
+  // Check if the session variable is set and assign its value to $userId
+  if (isset($_SESSION['userId'])) {
+      $userId = $_SESSION['userId'];
+  }
   
-
-  check_ending_listings($connection, $userId);
-
   // Create the DateTime object
   $now = new DateTime();
   // Format the DateTime object to a string
@@ -68,9 +75,76 @@
   <!-- Bootstrap and FontAwesome CSS -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
 
   <!-- Custom CSS file -->
-  <link rel="stylesheet" href="css/custom.css">
+  <link rel="stylesheet" type="text/css" href="css/custom.css">
+
+
+  <style>
+    .description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limit to two lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 3em;
+        margin-bottom: 0; /* Remove extra margin below the description */
+    }
+    .item-box {
+    border: 1px solid #ddd; /* Light grey border */
+    padding: 10px; /* Space inside the box */
+    margin-bottom: 15px; /* Space outside the box */
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for depth */
+    height: 400px; /* Allow height to expand as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #ffffff;
+    overflow: hidden;
+    border: none;
+    }
+    img {
+    border: none;
+    outline: none;
+    }
+    .image-wrapper {
+      position: relative;
+      width: 100%; /* Set a width */
+      padding-top: 100%; /* Padding top as percentage of width gives a square */
+      overflow: hidden; /* Hide the overflow to maintain the square shape */
+    }
+
+    .item-box img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: auto;
+      height: 100%;
+      object-fit: cover; /* This will cover the area without stretching */
+      transform: translate(-50%, -50%); /* Center the image */
+    }
+
+    .item-info {
+    margin-top: auto; /* Pushes the info to the bottom */
+    padding-top: 5px; /* Reduced top padding */
+    line-height: 1.2; /* Reduces the space between lines */
+    border-top: none;
+    }
+    .item-info p {
+    margin-bottom: 0; /* Removes bottom margin from paragraphs */
+    border-bottom: none;
+    }
+
+    body, body * {
+    color: rgb(158, 36, 240);
+  }
+  
+  body {
+    color: rgb(255, 186, 230); 
+    background-color: rgb(255, 186, 230); 
+  }
+  </style>
 
   <script>
         // Check if the notificationMessage variable is set
@@ -97,7 +171,8 @@
         
     </script>
 
-  <title>Awesome Auction</title>
+
+  <title>Auctions Auctions Auctions!</title>
 </head>
 
 
@@ -105,7 +180,7 @@
 
 <!-- Navbars -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
-  <a class="navbar-brand" href="browse.php">Awesome Auctions<!--CHANGEME!--></a>
+  <a class="navbar-brand" href="browse.php"> Auctions Forever<!--CHANGEME!--></a>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
     
@@ -156,7 +231,7 @@
         <a class="nav-link" href="admin.php">View Users</a>
       </li>
     <li class="nav-item ml-3">
-    <a class="nav-link btn border-light" href="admin.php">- Manage Users</a>
+    <a class="nav-link btn border-light" href="edit_users.php">- Manage Users</a>
     </li>');
     
    

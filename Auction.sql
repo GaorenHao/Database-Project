@@ -28,15 +28,17 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `AuctionItem` (
-  `ItemAuctionID` int(4) NOT NULL,
+  `ItemAuctionID` int(4) NOT NULL AUTO_INCREMENT,
   `Title` text NOT NULL,
   `SellerID` int(4) NOT NULL,
   `CategoryID` int(4) NOT NULL,
   `Description` text NOT NULL,
   `StartingPrice` int(11) NOT NULL,
   `ReservePrice` int(11) NOT NULL,
-  `EndDate` datetime NOT NULL
+  `EndDate` datetime NOT NULL,
+  PRIMARY KEY (`ItemAuctionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- Dumping data for table `AuctionItem`
@@ -280,19 +282,23 @@ CREATE TABLE `WatchListItems` (
   `BuyerID` int(11) NOT NULL,
   `ItemAuctionID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
-
 --
 -- Indexes for table `AuctionItem`
 --
 ALTER TABLE `AuctionItem`
-  ADD PRIMARY KEY (`ItemAuctionID`),
   ADD KEY `FK2_AuctionItem` (`CategoryID`),
   ADD KEY `FK1_AuctionItem` (`SellerID`);
 
+--
+-- Table structure for table `ItemImages`
+--
+CREATE TABLE `ItemImages` (
+  `ImageID` int NOT NULL AUTO_INCREMENT,
+  `ItemAuctionID` int NOT NULL,
+  `ImagePath` varchar(255) NOT NULL,
+  PRIMARY KEY (`ImageID`),
+  FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem`(`ItemAuctionID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
 -- Indexes for table `Bid`
 --
@@ -446,8 +452,14 @@ ALTER TABLE `Transactions`
 ALTER TABLE `WatchListItems`
   ADD CONSTRAINT `FK_WatchListItems_Buyer` FOREIGN KEY (`BuyerID`) REFERENCES `Buyer` (`BuyerID`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_WatchListItems_Items` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE;
-COMMIT;
+
+--
+-- Constraints for table `ItemImages`
+--
+ALTER TABLE `ItemImages`
+ ADD CONSTRAINT `FK_ItemAuctionID` FOREIGN KEY (ItemAuctionID) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+COMMIT;

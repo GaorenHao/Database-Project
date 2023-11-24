@@ -59,7 +59,7 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
             $reserveprice = $row['ReservePrice'];
             $enddate = $row['EndDate'];
             $itemAuctionID =$row['ItemAuctionID'];
-            // Inside the loop that displays each auction item
+            
             echo "<a href='edit_auction.php?item_id=" . $itemAuctionID . "' class='btn btn-secondary'>Edit</a>";
             echo "<li>";
             echo "<h3>" . htmlspecialchars($title) . "</h3>";

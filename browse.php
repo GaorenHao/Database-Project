@@ -12,14 +12,14 @@ include 'db_connect.php';?>
 
 <div id="searchSpecs">
 <!-- When this form is submitted, this PHP page is what processes it.
-     Search/sort specs are passed to this page through parameters in the URL
-     (GET method of passing data to a page). -->
+    Search/sort specs are passed to this page through parameters in the URL
+    (GET method of passing data to a page). -->
 <form method="get" action="browse.php">
   <div class="row">
     <div class="col-md-5 pr-0">
       <div class="form-group">
         <label for="keyword" class="sr-only">Search keyword:</label>
-	    <div class="input-group">
+            <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text bg-transparent pr-0 text-muted">
               <i class="fa fa-search"></i>
@@ -34,12 +34,32 @@ include 'db_connect.php';?>
         <label for="cat" class="sr-only">Search within:</label>
         <select class="form-control" id="cat" name="cat">
           <option selected value="all">All categories</option>
-          <option value="fashion">fashion</option>
-          <option value="electronics">electronics</option>
-          <option value="home">home</option>
-          <option value="beauty">beauty</option>
-          <option value="outdoor">outdoor</option>
-          <option value="art">art</option>
+          <option value="fashion">Fashion</option>
+          <option value="electronics">Electronics</option>
+          <option value="beauty">Beauty</option>
+          <option value="home">Home</option>
+          <option value="outdoor">Outdoor</option>
+          <option value="art">Art</option>
+          <option value="books">Books</option>
+          <option value="toys">Toys</option>
+          <option value="sports">Sports</option>
+          <option value="music">Music</option>
+          <option value="clothing">Clothing</option>
+          <option value="furniture">Furniture</option>
+          <option value="technology">Technology</option>
+          <option value="automotive">Automotive</option>
+          <option value="gardening">Gardening</option>
+          <option value="stationery">Stationery</option>
+          <option value="pets">Pets</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="footwear">Footwear</option>
+          <option value="jewelry">Jewelry</option>
+          <option value="cosmetics">Cosmetics</option>
+          <option value="groceries">Groceries</option>
+          <option value="beverages">Beverages</option>
+          <option value="cookware">Cookware</option>
+          <option value="bedding">Bedding</option>
+          <option value="decor">Decor</option>
         </select>
       </div>
     </div>
@@ -67,33 +87,36 @@ include 'db_connect.php';?>
   $ordering = isset($_GET['order_by']) ? $_GET['order_by'] : 'pricelow';
   $curr_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
-  // Construct the SQL query based on parameters
-  $sql = "SELECT AuctionItem.*, Categories.CategoryName FROM AuctionItem ";
+  // Construct the SQL query to fetch auction items and bid information
+  $sql = "SELECT AuctionItem.*, Categories.CategoryName, COUNT(Bid.BidID) AS BidCount, MAX(Bid.BidAmount) AS MaxBid ";
+  $sql .= "FROM AuctionItem ";
   $sql .= "LEFT JOIN Categories ON AuctionItem.CategoryID = Categories.CategoryID ";
+  $sql .= "LEFT JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID ";
 
-   if ($category != 'all') {
-    $sql .= "WHERE Categories.CategoryName = '$category' ";
-    }
+  // Add conditions based on category and keyword
+  if ($category != 'all') {
+      $sql .= "WHERE Categories.CategoryName = '$category' ";
+      if (!empty($keyword)) {
+          $sql .= "AND (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
+      }
+  } elseif (!empty($keyword)) {
+      $sql .= "WHERE (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
+  }
 
-    if (!empty($keyword)) {
-        if ($category != 'all') {
-            $sql .= "AND (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
-        } else {
-            $sql .= "WHERE (AuctionItem.Description LIKE '%$keyword%' OR AuctionItem.Title LIKE '%$keyword%') ";
-        }
-    }
+  // Group by ItemAuctionID to aggregate bid data
+  $sql .= "GROUP BY AuctionItem.ItemAuctionID ";
 
 // Apply the Order By condition last
 if ($ordering == 'pricelow') {
-    $sql .= "ORDER BY AuctionItem.StartingPrice ASC ";
+    $sql .= "ORDER BY COALESCE(MAX(Bid.BidAmount), AuctionItem.StartingPrice) ASC ";
 } elseif ($ordering == 'pricehigh') {
-    $sql .= "ORDER BY AuctionItem.StartingPrice DESC ";
+    $sql .= "ORDER BY COALESCE(MAX(Bid.BidAmount), AuctionItem.StartingPrice) DESC ";
 } else {
     $sql .= "ORDER BY AuctionItem.EndDate ASC ";
 }
 
   // Pagination Logic
-  $results_per_page = 10;
+  $results_per_page = 12;
   $offset = ($curr_page - 1) * $results_per_page;
 
   // First, fetch the total number of items for pagination
@@ -106,43 +129,61 @@ if ($ordering == 'pricelow') {
   $sql .= " LIMIT $results_per_page OFFSET $offset";
   $result = $connection->query($sql);
 
+ 
   if ($result && $result->num_rows > 0) {
+    $itemCount = 0;
+    echo '<div class="row">'; // Start the first row
     while ($row = $result->fetch_assoc()) {
-      echo "Title: " . htmlspecialchars($row["Title"]) . "<br>";
-      echo "Description: " . htmlspecialchars($row["Description"]) . "<br>";
-      echo "Starting Price: " . htmlspecialchars($row["StartingPrice"]) . "<br>";
-      echo "End Date: " . htmlspecialchars($row["EndDate"]) . "<br>";
-      echo "Category: " . htmlspecialchars($row["CategoryName"]) . "<br><br>";
+        // Check if we need to end the current row and start a new one
+        if ($itemCount > 0 && $itemCount % 4 == 0) {
+            echo '</div><div class="row">';
+        }
+        $itemLink = "listing.php?item_id=" . urlencode($row['ItemAuctionID']);
+        // Display the details for each auction listing in a column
+        
+        echo '<div class="col-md-3">';
+        echo '<a href="' . $itemLink . '" class="item-link">';
+        echo '<div class="item-box">';
+        // Fetch the first image for the item or use the default image
+        $imageSql = "SELECT ImagePath FROM ItemImages WHERE ItemAuctionID = " . $row['ItemAuctionID'] . " LIMIT 1";
+        $imageResult = $connection->query($imageSql);
+
+        echo '<div class="image-wrapper">'; // Start of image wrapper
+        if ($imageResult && $imageResult->num_rows > 0) {
+            $imageRow = $imageResult->fetch_assoc();
+            $relativeImagePath = strpos($imageRow['ImagePath'], 'uploads/') !== false ? htmlspecialchars($imageRow['ImagePath']) : $imageFolderPath . htmlspecialchars($imageRow['ImagePath']);
+            if (file_exists($relativeImagePath)) {
+                echo '<img src="' . $relativeImagePath . '" alt="Item Image" class="item-image">';
+            } else {
+                echo '<img src="default.jpg" alt="Default Image" class="item-image">';
+            }
+        } else {
+            echo '<img src="default.jpg" alt="Default Image" class="item-image">';
+        }
+        echo '</div>'; // End of image wrapper
+
+        echo "<h5>" . htmlspecialchars($row['Title']) . "</h5>";
+        echo "<p class='description'>" . htmlspecialchars($row['Description']) . "</p>";
+        
+        echo '<div class="item-info">';
+        $currentBid = $row['MaxBid'] ? $row['MaxBid'] : $row['StartingPrice'];
+        echo "<p>Current Bid: £" . htmlspecialchars($currentBid) . "</p>";
+        echo "  <p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
+        echo "  <p>Category: " . htmlspecialchars($row['CategoryName']) . "</p>";
+        echo '</div>'; 
+        echo '</div>'; // End of item-box
+        echo '</a>';
+        echo '</div>'; // End of col-md-3
+        $itemCount++; // Increment the item count
     }
 
-    // Proceed with the second query only if the first query had results
-    $itemSummary_query = "SELECT AuctionItem.*, COUNT(Bid.BidID) as BidCount, MAX(Bid.BidAmount) as MaxBid FROM AuctionItem JOIN Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID GROUP BY AuctionItem.ItemAuctionID";
-    $itemSummary_result = $connection->query($itemSummary_query);
-
-    if ($itemSummary_result && $itemSummary_result->num_rows > 0) {
-      while ($row = $itemSummary_result->fetch_assoc()) {
-        $item_id = $row['ItemAuctionID']; // Fetching the correct columns
-        $title = htmlspecialchars($row['Title']);
-        $description = htmlspecialchars($row['Description']);
-        $current_price = htmlspecialchars($row['MaxBid']);
-        $num_bids = htmlspecialchars($row['BidCount']);
-        $end_date = new DateTime($row['EndDate']);
-
-        // Display the details for each auction listing
-        // Replace this with your actual listing display logic
-        echo "Item ID: " . $item_id . "<br>";
-        echo "Title: " . $title . "<br>";
-        echo "Description: " . $description . "<br>";
-        echo "Current Price: " . $current_price . "<br>";
-        echo "Number of Bids: " . $num_bids . "<br>";
-        echo "End Date: " . $end_date->format('Y-m-d H:i:s') . "<br><br>";
-      }
-    }
-
-  } else { 
+    echo '</div>'; // Close the last row div
+} else {
     echo "No listings found.";
-  }
+}
+
 ?>
+
 
 <!-- Pagination for results listings -->
 <nav aria-label="Search results pages" class="mt-5">
