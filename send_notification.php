@@ -34,19 +34,18 @@ function sendMail($email, $subject, $body) {
         $mail->send();
         echo 'Message has been sent to ' . $email . "\n";
     } catch (Exception $e) {
+        error_log("Mailer Error: " . $mail->ErrorInfo); // Log to PHP error log.
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}\n";
     }
 }
 
 // Adjust this query based on your application's logic
 $query = "
-    SELECT DISTINCT u.Email, a.Title, b.BidAmount AS LatestBid
-    FROM Bid b
-    JOIN AuctionItem a ON b.ItemAuctionID = a.ItemAuctionID
-    JOIN WatchListItems wl ON a.ItemAuctionID = wl.ItemAuctionID
-    JOIN Users u ON wl.BuyerID = u.UserID
-    WHERE b.BidAmount = (SELECT MAX(BidAmount) FROM Bid WHERE ItemAuctionID = a.ItemAuctionID)
-    AND wl.BuyerID != (SELECT BuyerID FROM Bid WHERE BidAmount = b.BidAmount AND ItemAuctionID = a.ItemAuctionID LIMIT 1)
+        SELECT u.Email
+        FROM Notification n
+        JOIN Users u ON n.UserID = u.UserID
+        ORDER BY n.DateTime DESC
+        LIMIT 1;
 ";
 
 $result = $connection->query($query);
