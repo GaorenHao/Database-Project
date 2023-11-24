@@ -39,29 +39,54 @@ function sendMail($email, $subject, $body) {
     }
 }
 
-// Adjust this query based on your application's logic
-$query = "
-        SELECT u.Email
-        FROM Notification n
-        JOIN Users u ON n.UserID = u.UserID
-        ORDER BY n.DateTime DESC
-        LIMIT 1;
+// Email Query
+$emailQuery = "
+    SELECT u.Email
+    FROM Notification n
+    JOIN Users u ON n.UserID = u.UserID
+    ORDER BY n.DateTime DESC
+    LIMIT 1;
 ";
 
-$result = $connection->query($query);
+$emailStmt = $connection->prepare($emailQuery);
+$emailStmt->execute();
+$emailResult = $emailStmt->get_result();
 
-if (!$result) {
-    echo "Error: " . $connection->error;
-} elseif ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $email = $row['Email'];
-        $subject = 'You have been outbid!';
-        $body = 'Hello, <br><br> You have been outbid on the item <b>' . $row['Title'] . '</b>. The current highest bid is £' . $row['LatestBid'] . '.<br><br> Visit the item page to place a new bid.';
-
-        sendMail($email, $subject, $body);
-    }
+if ($emailResult->num_rows > 0) {
+    $emailRow = $emailResult->fetch_assoc();
+    $userEmail = $emailRow['Email'];
 } else {
     echo "No notifications to send.";
+    exit;
+}
+
+// Item Query with Prepared Statement
+$itemQuery = "
+    SELECT a.Title, b.BidAmount AS LatestBid
+    FROM Bid b
+    JOIN AuctionItem a ON b.ItemAuctionID = a.ItemAuctionID
+    WHERE b.BidTime = (
+        SELECT MAX(BidTime) 
+        FROM Bid
+    )
+";
+
+$itemStmt = $connection->prepare($itemQuery);
+$itemStmt->bind_param("s", $userEmail);
+$itemStmt->execute();
+$itemResult = $itemStmt->get_result();
+
+if ($itemResult->num_rows > 0) {
+    $itemRow = $itemResult->fetch_assoc();
+    $itemTitle = $itemRow['Title'];
+    $latestBid = $itemRow['LatestBid'];
+
+    // Send email
+    $subject = 'You have been outbid!';
+    $body = "Hello, <br><br> You have been outbid on the item <b>$itemTitle</b>. The current highest bid is &pound;$latestBid<br> <br><br> Visit the item page to place a new bid.";
+    sendMail($userEmail, $subject, $body);
+} else {
+    echo "No relevant auction item found for notification.";
 }
 
 $connection->close();
