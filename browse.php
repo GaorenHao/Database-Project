@@ -108,9 +108,9 @@ include 'db_connect.php';?>
 
 // Apply the Order By condition last
 if ($ordering == 'pricelow') {
-    $sql .= "ORDER BY AuctionItem.StartingPrice ASC ";
+    $sql .= "ORDER BY COALESCE(MAX(Bid.BidAmount), AuctionItem.StartingPrice) ASC ";
 } elseif ($ordering == 'pricehigh') {
-    $sql .= "ORDER BY AuctionItem.StartingPrice DESC ";
+    $sql .= "ORDER BY COALESCE(MAX(Bid.BidAmount), AuctionItem.StartingPrice) DESC ";
 } else {
     $sql .= "ORDER BY AuctionItem.EndDate ASC ";
 }
@@ -131,42 +131,57 @@ if ($ordering == 'pricelow') {
 
  
   if ($result && $result->num_rows > 0) {
-      $itemCount = 0;
-      echo '<div class="row">'; // Start the first row
+    $itemCount = 0;
+    echo '<div class="row">'; // Start the first row
+    while ($row = $result->fetch_assoc()) {
+        // Check if we need to end the current row and start a new one
+        if ($itemCount > 0 && $itemCount % 4 == 0) {
+            echo '</div><div class="row">';
+        }
+        $itemLink = "listing.php?item_id=" . urlencode($row['ItemAuctionID']);
+        // Display the details for each auction listing in a column
+        
+        echo '<div class="col-md-3">';
+        echo '<a href="' . $itemLink . '" class="item-link">';
+        echo '<div class="item-box">';
+        // Fetch the first image for the item or use the default image
+        $imageSql = "SELECT ImagePath FROM ItemImages WHERE ItemAuctionID = " . $row['ItemAuctionID'] . " LIMIT 1";
+        $imageResult = $connection->query($imageSql);
 
-      while ($row = $result->fetch_assoc()) {
-          // Check if we need to end the current row and start a new one
-          if ($itemCount > 0 && $itemCount % 4 == 0) {
-              echo '</div><div class="row">';
-          }
-          $itemLink = "listing.php?item_id=" . urlencode($row['ItemAuctionID']);
-          // Display the details for each auction listing in a column
-          
-          echo '<div class="col-md-3">';
-          echo '<a href="' . $itemLink . '" class="item-link">';
-          echo '<div class="item-box">';
-          echo "<h5>" . htmlspecialchars($row['Title']) . "</h5>";
-          // Truncate the description to a specific character length for a non-CSS solution
-          $maxLength = 100; 
-          $description = $row['Description'];
-          $shortDescription = (strlen($description) > $maxLength) ? substr($description, 0, $maxLength) . "..." : $description;
+        echo '<div class="image-wrapper">'; // Start of image wrapper
+        if ($imageResult && $imageResult->num_rows > 0) {
+            $imageRow = $imageResult->fetch_assoc();
+            $relativeImagePath = strpos($imageRow['ImagePath'], 'uploads/') !== false ? htmlspecialchars($imageRow['ImagePath']) : $imageFolderPath . htmlspecialchars($imageRow['ImagePath']);
+            if (file_exists($relativeImagePath)) {
+                echo '<img src="' . $relativeImagePath . '" alt="Item Image" class="item-image">';
+            } else {
+                echo '<img src="default.jpg" alt="Default Image" class="item-image">';
+            }
+        } else {
+            echo '<img src="default.jpg" alt="Default Image" class="item-image">';
+        }
+        echo '</div>'; // End of image wrapper
 
-          echo "<p class='description'>" . htmlspecialchars($shortDescription) . "</p>";
-          
-          echo '<div class="item-info">';
-          echo "  <p>Starting Price: £" . htmlspecialchars($row['StartingPrice']) . "</p>";
-          echo "  <p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
-          echo "  <p>Category: " . htmlspecialchars($row['CategoryName']) . "</p>";
-          echo '</div>'; 
-          echo '</div>';
-          echo '</div>';
-          $itemCount++; // Increment the item count
-      }
+        echo "<h5>" . htmlspecialchars($row['Title']) . "</h5>";
+        echo "<p class='description'>" . htmlspecialchars($row['Description']) . "</p>";
+        
+        echo '<div class="item-info">';
+        $currentBid = $row['MaxBid'] ? $row['MaxBid'] : $row['StartingPrice'];
+        echo "<p>Current Bid: £" . htmlspecialchars($currentBid) . "</p>";
+        echo "  <p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
+        echo "  <p>Category: " . htmlspecialchars($row['CategoryName']) . "</p>";
+        echo '</div>'; 
+        echo '</div>'; // End of item-box
+        echo '</a>';
+        echo '</div>'; // End of col-md-3
+        $itemCount++; // Increment the item count
+    }
 
-      echo '</div>'; // Close the last row div
-  } else {
-      echo "No listings found.";
-  }
+    echo '</div>'; // Close the last row div
+} else {
+    echo "No listings found.";
+}
+
 ?>
 
 

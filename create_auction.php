@@ -24,7 +24,7 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
         before they try to send it, but that kind of functionality should be
         extremely low-priority / only done after all database functions are
         complete. -->
-        <form method="post" action="create_auction_result.php" id="createAuctionForm">
+        <form method="post" action="create_auction_result.php" id="createAuctionForm" enctype="multipart/form-data">
           <div class="form-group row">
             <label for="auctionTitle" class="col-sm-2 col-form-label text-right">Title of auction</label>
             <div class="col-sm-10">
@@ -85,6 +85,13 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
               <small id="endDateHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Day for the auction to end.</small>
             </div>
           </div>
+          <div class="form-group row">
+            <label for="auctionImages" class="col-sm-2 col-form-label text-right">Item Images</label>
+            <div class="col-sm-10">
+              <input type="file" class="form-control-file" id="auctionImages" name="auctionImages[]" multiple>
+              <small class="form-text text-muted">Upload up to 4 images for the item.</small>
+            </div>
+          </div>
           <button type="submit" class="btn btn-primary form-control">Create Auction</button>
           <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -104,6 +111,19 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
                 if (reservePrice < startingPrice) {
                   e.preventDefault(); // Prevent form submission
                   alert("Reserve price must be higher than the starting price.");
+                }
+
+                // Image validation
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                var imageInputs = document.getElementById('auctionImages');
+                
+                for (var i = 0; i < imageInputs.files.length; i++) {
+                  var file = imageInputs.files[i];
+                  if (!allowedExtensions.exec(file.name)) {
+                    e.preventDefault();
+                    alert('Please only upload image format files (jpg, jpeg, png, gif).');
+                    break;
+                  }
                 }
               });
             });
