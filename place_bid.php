@@ -6,9 +6,9 @@
 // Notify user of success/failure and redirect/give navigation options.
 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(0);
 
 include 'db_connect.php';
 
@@ -19,17 +19,11 @@ include 'db_connect.php';
             make sure it can be inserted into the database. If there is an
             issue, give some semi-helpful feedback to user. */
 
-var_dump($_POST);
-session_start();
-echo '<pre>';
-print_r($_SESSION);
-echo '</pre>';
-
-if (isset($_SESSION['username'])) {
-    echo $_SESSION['username'];
-} else {
-    echo 'Username is not set in the session.';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
+
+
 
 // Create the DateTime object
 $now = new DateTime();
@@ -104,11 +98,7 @@ if ($bid <= $current_price) {
             $insert_notif->bind_param("isss", $userId, $formattedNow, $message, $type);
 
             // Execute the prepared statement
-            if ($insert_notif->execute()) {
-                echo "Notification type '$type' inserted successfully";
-            } else {
-                echo "Error: " . $insert_notif->error;
-            }
+            
         }
     } else {
         echo "Error: " . mysqli_error($connection);
@@ -155,7 +145,7 @@ if ($bid <= $current_price) {
 
 
   // If all is successful, let user know.
-  echo('<div class="text-center"><a href="FIXME">View your new listing.</a></div>');
+  echo('<div class="text-center"><a href="mybids.php">View your new listing.</a></div>');
 }
 
 

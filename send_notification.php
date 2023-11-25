@@ -13,7 +13,7 @@ function sendMail($email, $subject, $body) {
     $mail = new PHPMailer(true);
     try {
         // Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Enable verbose debug output
+        $mail->SMTPDebug = 0; // Enable verbose debug output
         $mail->isSMTP(); // Send using SMTP
         $mail->Host       = 'smtp.gmail.com'; // Set the SMTP server to send through
         $mail->SMTPAuth   = true; // Enable SMTP authentication
@@ -32,10 +32,8 @@ function sendMail($email, $subject, $body) {
         $mail->Body    = $body;
 
         $mail->send();
-        echo 'Message has been sent to ' . $email . "\n";
     } catch (Exception $e) {
         error_log("Mailer Error: " . $mail->ErrorInfo); // Log to PHP error log.
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}\n";
     }
 }
 
