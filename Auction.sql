@@ -243,7 +243,8 @@ CREATE TABLE `Users` (
   `Password` text NOT NULL,
   `FirstName` text NOT NULL,
   `LastName` text NOT NULL,
-  `Role` text NOT NULL
+  `Role` text NOT NULL, 
+  `LastLogout` DATETIME DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

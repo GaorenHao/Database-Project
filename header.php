@@ -11,23 +11,21 @@
   include 'db_connect.php';
   include 'win_funcs.php';
 
+
+
   /// think the below is duplicated so can probably remove on code review 
   
+
   /// the below is all creation of the notificaton pop up... 
   // Get the current user's ID
-  if (isset($_SESSION['username'])) {
-    $username = $_SESSION['username']; // If it's set, use it
-  } else {
-    $username = null; // If not set, assign a default value (e.g., null)
-  }
-  // Initialize $userId with a default value (e.g., null)
-  $userId = null;
+  // Assuming the user ID is stored in the session
 
-  // Check if the session variable is set and assign its value to $userId
-  if (isset($_SESSION['userId'])) {
-      $userId = $_SESSION['userId'];
-  }
-  
+  if (isset($_SESSION['username'])) {
+    $userId = $_SESSION['username']; 
+
+
+  check_ending_listings($connection, $userId);
+
   // Create the DateTime object
   $now = new DateTime();
   // Format the DateTime object to a string
@@ -146,7 +144,7 @@
   }
   </style>
 
-  <script>
+<script>
         // Check if the notificationMessage variable is set
         if (typeof notificationMessage !== 'undefined' && typeof markNotifRead !== 'undefined') { //////// change undefined to null maybe ?
           window.onload = function() {
@@ -159,7 +157,6 @@
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "", true); // Same file
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
             xhr.onreadystatechange = function() {
                 if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                     console.log(this.responseText); // Log server response
@@ -168,7 +165,7 @@
 
             xhr.send("markNotifRead=" + markNotifRead); ////// where is this being sent to 
         }
-        
+
     </script>
 
 
