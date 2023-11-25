@@ -7,13 +7,13 @@
 
 <?php
 // Start the session
-session_start();
+//session_start();
 
 // Check if there are any session variables set
 if (!empty($_SESSION)) {
-    echo "<pre>";
-    print_r($_SESSION);
-    echo "</pre>";
+    //echo "<pre>";
+    //print_r($_SESSION);
+    //echo "</pre>";
 } else {
     echo "No session variables are set.";
 }

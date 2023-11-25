@@ -117,7 +117,7 @@ LEFT JOIN Buyer ON Buyer.BuyerID = WinningTransactions.BuyerID;
           $type = "Winning Transaction Buyer";
           // Insert into notifications table
 
-          // check first if the notifications alreeady exist, based on everything other than time
+          // check first if the notifications already exist, based on everything other than time
             $no_duplicate_notif_query = "INSERT INTO Notification (UserID, DateTime, Message, Type) SELECT ?, ?, ?, ?
             WHERE NOT EXISTS (SELECT 1 FROM Notification WHERE UserID = ? AND Message = ? AND Type = ?)";
 
@@ -129,10 +129,27 @@ LEFT JOIN Buyer ON Buyer.BuyerID = WinningTransactions.BuyerID;
 
           // Execute the prepared statement
           if ($insert_notif->execute()) {
-                  echo "Notification type '$type' inserted successfully";
+                  //echo "Notification type '$type' inserted successfully";
           } else {
                   echo "Error: " . $insert_notif->error;
           }
+
+          // delete item from everyones watchlist after winning notification is sent
+          $WatchlistItems_delete_query = $connection->prepare("DELETE FROM WatchlistItems WHERE ItemAuctionID = ?");
+          $WatchlistItems_delete_query->bind_param("i", $item_id);
+          $WatchlistItems_delete_query->execute();
+          
+          // Check if the delete operation was successful
+          /* if ($WatchlistItems_delete_query->affected_rows > 0) {
+            ob_end_clean();
+            echo "success";
+            exit();
+          } else {
+            ob_end_clean();
+            echo "error";
+            exit(); 
+          } */
+          
 
           // create notification for seller of winning transaction
           $seller_msg = "CONGRATZ Seller $seller_id, your listing $item_name (item $item_id) has been sold to Buyer $buyer_id for $win_bid.";
@@ -148,7 +165,7 @@ LEFT JOIN Buyer ON Buyer.BuyerID = WinningTransactions.BuyerID;
 
           // Execute the prepared statement
           if ($insert_notif->execute()) {
-                  echo "Notification type '$type' inserted successfully";
+                  //echo "Notification type '$type' inserted successfully";
           } else {
                   echo "Error: " . $insert_notif->error;
           }

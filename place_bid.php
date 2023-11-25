@@ -124,7 +124,7 @@ if ($bid <= $current_price) {
 
             // Execute the prepared statement
             if ($insert_notif->execute()) {
-                echo "Notification type '$type' inserted successfully";
+                //echo "Notification type '$type' inserted successfully";
             } else {
                 echo "Error: " . $insert_notif->error;
             }
@@ -145,7 +145,7 @@ if ($bid <= $current_price) {
 
 
   // If all is successful, let user know.
-  echo('<div class="text-center"><a href="mybids.php">View your new listing.</a></div>');
+  echo('<div class="text-center"><a href="mybids.php">View all your bids.</a></div>');
 }
 
 

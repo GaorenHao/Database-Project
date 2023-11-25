@@ -8,16 +8,45 @@
 
   include 'db_connect.php';
 
+  // Get item_id from the URL:
+  $item_id = $_GET['item_id'];
+
+  // TODO: If the user has a session, use it to make a query to the database
+  //       to determine if the user is already watching this item.
+  //       For now, this is hardcoded.
+  $has_session = true;
+  $watching = false; 
+
+  
+
   if (!empty($_SESSION)) {
     echo "<pre>";
     print_r($_SESSION);
     echo "</pre>";
+    $has_session = true;
+    // the watchlist is only relevant to buyers only, so only if account type is buyer, 
+    // start executing the search inside watchlist 
+    if ($_SESSION['account_type'] == 'buyer') {
+      $buyerID = $_SESSION['buyerid'];
+      // check if current listing item is being watched by the current buyer... 
+      $searchWatchlist_query = $connection->prepare("SELECT * FROM WatchListItems WHERE BuyerID = ? AND ItemAuctionID = ?");
+      $searchWatchlist_query->bind_param("ii", $buyerID, $item_id); // 'ii' specifies that both parameters are integers
+      $searchWatchlist_query->execute();
+      $searchWatchlist_query->store_result();
+      // Check if the watchlist contains the buyer id and item id pairing
+      if ($searchWatchlist_query->num_rows > 0) {
+          // Pairing exists
+          $watching = true;
+      } else {
+          // Pairing does not exist
+          $watching = false;
+    }
+    }
   } else {
     echo "No session variables are set.";
+    $has_session = false;
+    $watching = false;
   }
-
-  // Get info from the URL:
-  $item_id = $_GET['item_id'];
 
   // TODO: Use item_id to make a query to the database.
   $sql = "SELECT * FROM AuctionItem WHERE ItemAuctionID = $item_id";
@@ -71,14 +100,6 @@
     $time_to_end = date_diff($now, $end_time);
     $time_remaining = ' (in ' . display_time_remaining($time_to_end) . ')';
   }
-  
-  // TODO: If the user has a session, use it to make a query to the database
-  //       to determine if the user is already watching this item.
-  //       For now, this is hardcoded.
-  $has_session = true;
-  $watching = false;
-  
-  
 
 
 ?>
@@ -98,12 +119,11 @@
   if ($now < $end_time):
 ?>
     <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?> >
-      <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist(this)" 
-      data-item-id="<?php echo $item_id; ?>">+ Add to watchlist</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist(this)" data-item-id="<?php echo $item_id; ?>">+ Add to watchlist</button>
     </div>
     <div id="watch_watching" <?php if (!$has_session || !$watching) echo('style="display: none"');?> >
       <button type="button" class="btn btn-success btn-sm" disabled>Watching</button>
-      <button type="button" class="btn btn-danger btn-sm" onclick="removeFromWatchlist()">Remove watch</button>
+      <button type="button" class="btn btn-danger btn-sm" onclick="removeFromWatchlist(this)" data-item-id="<?php echo $item_id; ?>">Remove watch</button>
     </div>
 <?php endif /* Print nothing otherwise */ ?>
   </div>
@@ -197,8 +217,6 @@
 // JavaScript functions: addToWatchlist and removeFromWatchlist.
 
 function addToWatchlist(button) {
-  //console.log("These print statements are helpful for debugging btw");
-  //console.log($item_id);
 
   var itemId = button.getAttribute('data-item-id'); // Retrieve item_id from data attribute
   console.log(itemId)
@@ -208,11 +226,19 @@ function addToWatchlist(button) {
     url: 'watchlist_funcs.php', // The PHP file where you handle the item_id
     type: 'POST',
     data: { item_id: itemId, functionname: 'add_to_watchlist',}, // Send item_id as POST data
-    success: function(response) {
-      // Handle success (e.g., show a message, update UI)
-      console.log('Item added to watchlist', response);
-      console.log(itemId);
+    success: function(data) {
+      console.log('added to watchlist')
+      var trimmedData = data.trim();
+      if (trimmedData === "success") {
+        $("#watch_nowatch").hide();
+        $("#watch_watching").show();
+      } else {
+        var mydiv = document.getElementById("watch_nowatch");
+        mydiv.appendChild(document.createElement("br"));
+        mydiv.appendChild(document.createTextNode("Add to watch failed. Try again later."));
+      }
     },
+
     error: function(error) {
       // Handle error
       console.error('Error adding item to watchlist', error);
@@ -253,7 +279,38 @@ function addToWatchlist(button) {
 
 } // End of addToWatchlist func
 
+
 function removeFromWatchlist(button) {
+
+var itemId = button.getAttribute('data-item-id'); // Retrieve item_id from data attribute
+console.log(itemId)
+
+// AJAX call to send item_id to the server
+$.ajax({
+  url: 'watchlist_funcs.php', // The PHP file where you handle the item_id
+  type: 'POST',
+  data: { item_id: itemId, functionname: 'remove_from_watchlist',}, // Send item_id as POST data
+  success: function(data) {
+      console.log('removed from watchlist')
+      var trimmedData = data.trim();
+      if (trimmedData === "success") {
+        $("#watch_watching").hide();
+        $("#watch_nowatch").show();
+      } else {
+        var mydiv = document.getElementById("watch_watching");
+          mydiv.appendChild(document.createElement("br"));
+          mydiv.appendChild(document.createTextNode("Watch removal failed. Try again later."));
+      }
+    },
+  error: function(error) {
+    console.error('Error removing item from watchlist', error);
+  }
+});
+
+} 
+
+
+/* function removeFromWatchlist(button) {
   // This performs an asynchronous call to a PHP function using POST method.
   // Sends item ID as an argument to that function.
   $.ajax('watchlist_funcs.php', {
@@ -283,5 +340,5 @@ function removeFromWatchlist(button) {
       }
   }); // End of AJAX call
 
-} // End of addToWatchlist func
+} // End of addToWatchlist func */
 </script>

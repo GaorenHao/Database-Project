@@ -1,10 +1,15 @@
-<?php include_once("header.php")?>
-<?php
+<?php ob_start();
+include_once("header.php");
 
-ini_set('display_errors', 1);
+?>
+<?php
+// Start output buffering
+
+
+/* ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-error_log("Received data: " . print_r($_POST, true));
+error_log("Received data: " . print_r($_POST, true)); */
 
 include 'db_connect.php';
 
@@ -14,37 +19,51 @@ if (!isset($_POST['functionname']) || !isset($_POST['item_id'])) {
 
 // Extract arguments from the POST variables:
 $item_id = $_POST['item_id'];
-print_r($item_id);
+//print_r($item_id);
 
 if (isset($_SESSION['buyerid'])) {
   $buyerId = $_SESSION['buyerid'];
-  echo "Buyer ID: " . $buyerId;
+  //echo "Buyer ID: " . $buyerId;
   // You can now use $buyerId in your PHP script as needed
 } else {
-  echo "Buyer ID is not set in the session.";
+  //echo "Buyer ID is not set in the session.";
 }
 
-//$watchListId = 1;
+/////////////////////// ADDING & REMOVING FROM WATCHLIST 
 
 if ($_POST['functionname'] == "add_to_watchlist") {
   $WatchlistItems_insert_query = $connection -> prepare("INSERT INTO WatchlistItems (BuyerID, ItemAuctionID) VALUES (?, ?)");
-  //$stmt = $connection->prepare("INSERT INTO Watchlist (avaisconfused) VALUES (?, ?, ?, ?, ?)");
   $WatchlistItems_insert_query->bind_param("ii", $buyerId, $item_id);
   // TODO: Update database and return success/failure.
 
   if ($WatchlistItems_insert_query->execute()) {
-    echo "Watchlist added successfully.";
+    ob_end_clean();
+    echo "success";
+    exit();
   } else {
-    echo "Error: " . $WatchlistItems_insert_query->error;
+    ob_end_clean();
+    echo "error";
+    exit(); 
   }
 
-  $res = "success";
 }
 else if ($_POST['functionname'] == "remove_from_watchlist") {
-  // TODO: Update database and return success/failure.
 
+  $WatchlistItems_delete_query = $connection->prepare("DELETE FROM WatchlistItems WHERE BuyerID = ? AND ItemAuctionID = ?");
+  $WatchlistItems_delete_query->bind_param("ii", $buyerId, $item_id);
+  $WatchlistItems_delete_query->execute();
+  
+  // Check if the delete operation was successful
+  if ($WatchlistItems_delete_query->affected_rows > 0) {
+    ob_end_clean();
+    echo "success";
+    exit();
+  } else {
+    ob_end_clean();
+    echo "error";
+    exit(); 
+  }
 
-  $res = "success";
 }
 
 
@@ -55,7 +74,7 @@ else if ($_POST['functionname'] == "remove_from_watchlist") {
 // If multiple echo's in this file exist, they will concatenate together,
 // so be careful. You can also return JSON objects (in string form) using
 // echo json_encode($res).
-echo $res;
+//echo $res;
 
 // Define a function
 /* function highest_bid_watchlist() {
@@ -86,6 +105,7 @@ function new_bid_watchlist_funcs($connection, $buyer) {
   $sql1 = "SELECT WatchListItems.ItemAuctionID, MAX(Bid.BidAmount) AS max_bid_amount
   FROM WatchListItems
   LEFT JOIN Bid ON WatchListItems.ItemAuctionID = Bid.ItemAuctionID
+  WHERE WatchListItems.BuyerID = $buyer
   GROUP BY WatchListItems.ItemAuctionID";
   $result1 = $connection->query($sql1);
 
@@ -93,6 +113,7 @@ function new_bid_watchlist_funcs($connection, $buyer) {
   $sql2 = "SELECT Bid.ItemAuctionID, MAX(Bid.BidAmount) AS max_bid_per_buyer
   FROM WatchListItems
   LEFT JOIN Bid ON WatchListItems.ItemAuctionID = Bid.ItemAuctionID AND Bid.BuyerID = $buyer
+  WHERE WatchListItems.BuyerID = $buyer AND Bid.BuyerID = $buyer
   GROUP BY WatchListItems.ItemAuctionID";
   $result2 = $connection->query($sql2);
 
