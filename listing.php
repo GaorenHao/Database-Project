@@ -61,6 +61,7 @@
     $reservePrice = $row['ReservePrice'];
     $num_bids = 1; //// hard coded, need to change 
     $end_time = new DateTime($row['EndDate']);
+    $listing_seller = $row['SellerID'];
 
     ////  <!-- BID LOGIC >>>> NEW BIDS MUST BE HIGHER THAN THE CURRENT HIGHEST BID -->
 
@@ -116,8 +117,9 @@
 <?php
   /* The following watchlist functionality uses JavaScript, but could
      just as easily use PHP as in other places in the code */
-  if ($now < $end_time):
+  if ($now < $end_time && $_SESSION['account_type'] == 'buyer'):
 ?>
+
     <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?> >
       <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist(this)" data-item-id="<?php echo $item_id; ?>">+ Add to watchlist</button>
     </div>
@@ -154,7 +156,7 @@
 <?php else: ?>
      Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
-
+    <?php if ($_SESSION['account_type'] == 'buyer'): ?>
     <!-- Bidding form -->
     <form method="POST" action="place_bid.php">
       <div class="input-group">
@@ -174,13 +176,16 @@
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
+    <?php endif ?>
     <!-- TABLE OF ALL BIDS -->
-    <table>
+    <?php if ($_SESSION['account_type'] == 'buyer' || ($_SESSION['account_type'] == 'seller' && $listing_seller == $_SESSION['sellerid'])): ?>
+    <div style="margin-top:45px;">
+    <table border='1'>
           <thead>
               <tr>
-                  <th>User</th>
+                  <th>Buyer ID</th>
                   <th>Bid</th>
-                  <th>Time</th>
+                  <th>Date & Time of Bid</th>
               </tr>
           </thead>
           <tbody>
@@ -200,7 +205,9 @@
           </tbody>
           
       </table>
+            </div>
       <p>The highest bidder is currently buyerID <?php echo $highest_buyerid ?></p>
+      <?php endif ?>
 <?php endif ?>
 
   
@@ -282,30 +289,30 @@ function addToWatchlist(button) {
 
 function removeFromWatchlist(button) {
 
-var itemId = button.getAttribute('data-item-id'); // Retrieve item_id from data attribute
-console.log(itemId)
+  var itemId = button.getAttribute('data-item-id'); // Retrieve item_id from data attribute
+  console.log(itemId)
 
-// AJAX call to send item_id to the server
-$.ajax({
-  url: 'watchlist_funcs.php', // The PHP file where you handle the item_id
-  type: 'POST',
-  data: { item_id: itemId, functionname: 'remove_from_watchlist',}, // Send item_id as POST data
-  success: function(data) {
-      console.log('removed from watchlist')
-      var trimmedData = data.trim();
-      if (trimmedData === "success") {
-        $("#watch_watching").hide();
-        $("#watch_nowatch").show();
-      } else {
-        var mydiv = document.getElementById("watch_watching");
-          mydiv.appendChild(document.createElement("br"));
-          mydiv.appendChild(document.createTextNode("Watch removal failed. Try again later."));
-      }
-    },
-  error: function(error) {
-    console.error('Error removing item from watchlist', error);
-  }
-});
+  // AJAX call to send item_id to the server
+  $.ajax({
+    url: 'watchlist_funcs.php', // The PHP file where you handle the item_id
+    type: 'POST',
+    data: { item_id: itemId, functionname: 'remove_from_watchlist',}, // Send item_id as POST data
+    success: function(data) {
+        console.log('removed from watchlist')
+        var trimmedData = data.trim();
+        if (trimmedData === "success") {
+          $("#watch_watching").hide();
+          $("#watch_nowatch").show();
+        } else {
+          var mydiv = document.getElementById("watch_watching");
+            mydiv.appendChild(document.createElement("br"));
+            mydiv.appendChild(document.createTextNode("Watch removal failed. Try again later."));
+        }
+      },
+    error: function(error) {
+      console.error('Error removing item from watchlist', error);
+    }
+  });
 
 } 
 
