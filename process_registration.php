@@ -12,7 +12,7 @@ include 'db_connect.php';
 
 // Now you can use $connection to interact with the database
 
-var_dump($_POST);
+//var_dump($_POST);
 $accountType = $_POST['accountType'];
 $email = $_POST['email'];
 $password = $_POST['password'];
