@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
 
 include 'db_connect.php';
 
 
 // TODO: Extract $_POST variables, check they're OK, and attempt to login.
-var_dump($_POST);
+//var_dump($_POST);
 $email = $_POST['email'];
 $password = $_POST['password'];
 
@@ -22,9 +22,9 @@ if ($result->num_rows > 0) {
 	//$allRows = $result->fetch_all(MYSQLI_ASSOC);
     //print_r($allRows); // Print all rows at once
 	$row = $result->fetch_assoc();
-	print_r($row);
-	print_r($row['Password']);
-	echo $password;
+	//print_r($row);
+	//print_r($row['Password']);
+	//echo $password;
 	if ($row['Password'] == $password) {
 		
 		$_SESSION['logged_in'] = true;
@@ -40,9 +40,9 @@ if ($result->num_rows > 0) {
 		
 			if ($result->num_rows > 0) {
 				$row = $result->fetch_assoc();
-				print_r($row);
+				//print_r($row);
 				$_SESSION['sellerid'] = $row['SellerID'];
-				echo $_SESSION['sellerid'];
+				//echo $_SESSION['sellerid'];
 			} else {
 				// Handle the case where the seller ID does not exist
 				echo "Error - Seller ID not found";
@@ -58,7 +58,7 @@ if ($result->num_rows > 0) {
 			if ($result->num_rows > 0) {
 				$row = $result->fetch_assoc();
 				$_SESSION['buyerid'] = $row['BuyerID'];
-				echo $_SESSION['buyerid'];
+				//echo $_SESSION['buyerid'];
 			} else {
 				// Handle the case where the buyer ID does not exist
 				echo "Error - Buyer ID not found";
@@ -66,17 +66,18 @@ if ($result->num_rows > 0) {
 			}
 		}
 
-		echo "<p>Password correct! Yay :) </p>";
+		//echo "<p>Password correct! Yay :) </p>";
 		// only at this point, has the user actually signed in. so we store a timestamp of when they have logged in 
-		$now = new DateTime();
-		$_SESSION['login_time'] = $now->format('Y-m-d H:i:s');  // the login time should now be available to access across the web app 
+		//$now = new DateTime();
+		//$_SESSION['login_time'] = $now->format('Y-m-d H:i:s');  // the login time should now be available to access across the web app 
+		echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
 	} else {
 		// Notify user of success/failure and redirect/give navigation options.
 		echo "<p>Password incorrect... please enter your credentials again </p>";
 		header("refresh:5;url=index.php");
 	}
   } else {
-    echo "<p>Email is not found. Need to send user to try again</p>";
+    echo "<p>Email is not found. </p>";
 	header("refresh:5;url=index.php");
   }
 
@@ -89,10 +90,10 @@ if ($result->num_rows > 0) {
 
 
 
-echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
-echo $_SESSION['username'];
-echo $_SESSION['account_type'];
-echo $_SESSION['login_time'];
+//echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
+//echo $_SESSION['username'];
+//echo $_SESSION['account_type'];
+//echo $_SESSION['login_time'];
 
 // Redirect to index after 5 seconds
 header("refresh:5;url=index.php");

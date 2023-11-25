@@ -101,11 +101,11 @@
   }
   
   // After inserting the auction item
-  $last_id = $connection->insert_id; // Get the ID of the last inserted item
-  $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-  $imageUploadSuccess = true;
+  //$last_id = $connection->insert_id; // Get the ID of the last inserted item
+  //$allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+  //$imageUploadSuccess = true;
 
-  if (isset($_FILES['auctionImages'])) {
+  /* if (isset($_FILES['auctionImages'])) {
       $total = count($_FILES['auctionImages']['name']);
 
       for ($i = 0; $i < $total; $i++) {
@@ -132,9 +132,9 @@
   if ($imageUploadSuccess) {
       echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
   } else {
-      echo "Some images failed to upload.";
+      echo "Some images failed to upload."; */
       // Optional: Consider rolling back the auction item insertion if image upload is critical
-  }
+  //}
 ?>
 
 </div>

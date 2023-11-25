@@ -6,9 +6,9 @@
 // Notify user of success/failure and redirect/give navigation options.
 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
 
 include 'db_connect.php';
 
@@ -19,14 +19,14 @@ include 'db_connect.php';
             make sure it can be inserted into the database. If there is an
             issue, give some semi-helpful feedback to user. */
 
-var_dump($_POST);
+//var_dump($_POST);
 session_start();
-echo '<pre>';
-print_r($_SESSION);
-echo '</pre>';
+//echo '<pre>';
+//print_r($_SESSION);
+//echo '</pre>';
 
 if (isset($_SESSION['username'])) {
-    echo $_SESSION['username'];
+    //echo $_SESSION['username'];
 } else {
     echo 'Username is not set in the session.';
 }
@@ -48,6 +48,7 @@ if ($bid <= $current_price) {
   // Handle the error
   // Redirect back to the form with an error message or display the message directly
   echo('Your bid is too low. Please submit a bid higher than the current bid. Redirecting you back to the listing ... ');
+
 } else {
     // insert data into the table 
   $stmt = $connection->prepare("INSERT INTO Bid (BuyerID, ItemAuctionID, BidTime, BidAmount) VALUES (?, ?, ?, ?)");
@@ -55,13 +56,16 @@ if ($bid <= $current_price) {
 
   // Execute the prepared statement
   if ($stmt->execute()) {
-    echo "New bid added successfully.";
+    //echo "New bid added successfully.";
 
     // check if this item_id & buyerid pair is in watchlist already. add if not. 
     $checkwatchlist_stmt = $connection->prepare("SELECT * FROM WatchListItems WHERE BuyerID = ? AND ItemAuctionID = ?");
     $checkwatchlist_stmt->bind_param("ii", $buyerid, $item_id); // Assuming both IDs are strings; use "ii" if they are integers
     $checkwatchlist_stmt->execute();
     $result = $checkwatchlist_stmt->get_result();
+    echo "New bid added successfully.";
+    header("refresh:5;url=mybids.php");
+
 
     // If the pair doesn't exist, insert it
     if ($result->num_rows == 0) {
@@ -71,12 +75,12 @@ if ($bid <= $current_price) {
         $insertwatchlist_stmt->execute();
 
         if ($insertwatchlist_stmt->affected_rows > 0) {
-            echo "New watchlisted created successfully";
+            //echo "New watchlisted created successfully";
         } else {
-            echo "Error: " . $insertwatchlist_stmt->error;
+            //echo "Error: " . $insertwatchlist_stmt->error;
         }
     } else {
-        echo "Already in watchlist :)";
+        //echo "Already in watchlist :)";
     }
 
 
@@ -105,9 +109,9 @@ if ($bid <= $current_price) {
 
             // Execute the prepared statement
             if ($insert_notif->execute()) {
-                echo "Notification type '$type' inserted successfully";
+                //echo "Notification type '$type' inserted successfully";
             } else {
-                echo "Error: " . $insert_notif->error;
+                //echo "Error: " . $insert_notif->error;
             }
         }
     } else {
@@ -155,7 +159,9 @@ if ($bid <= $current_price) {
 
 
   // If all is successful, let user know.
-  echo('<div class="text-center"><a href="FIXME">View your new listing.</a></div>');
+  //echo('<div class="text-center"><a href="mybids.php">View your bids.</a></div>');
+  //echo "Bid placed, you will now mbe redirected to your bids."
+  //header("refresh:5;url=mybids.php");
 }
 
 
