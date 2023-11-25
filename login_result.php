@@ -44,7 +44,7 @@ if ($result->num_rows > 0) {
 				$_SESSION['sellerid'] = $row['SellerID'];
 				//echo $_SESSION['sellerid'];
 			} else {
-				// Handle the case where the seller ID does not exist
+				
 				echo "Error - Seller ID not found";
 				exit;
 			}
@@ -60,13 +60,20 @@ if ($result->num_rows > 0) {
 				$_SESSION['buyerid'] = $row['BuyerID'];
 				//echo $_SESSION['buyerid'];
 			} else {
-				// Handle the case where the buyer ID does not exist
+				
 				echo "Error - Buyer ID not found";
 				exit;
 			}
 		}
 
 		echo "<p>Password correct! Yay :) </p>";
+		echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
+//echo $_SESSION['username'];
+//echo $_SESSION['account_type'];
+//echo $_SESSION['login_time'];
+
+// Redirect to index after 5 seconds
+		header("refresh:5;url=index.php");
 		// only at this point, has the user actually signed in. so we store a timestamp of when they have logged in 
 		$now = new DateTime();
 		$_SESSION['login_time'] = $now->format('Y-m-d H:i:s');  // the login time should now be available to access across the web app 
@@ -76,7 +83,7 @@ if ($result->num_rows > 0) {
 		header("refresh:5;url=index.php");
 	}
   } else {
-    echo "<p>Email is not found. Need to send user to try again</p>";
+    //echo "<p>Email is not found. Need to send user to try again</p>";
 	header("refresh:5;url=index.php");
   }
 
@@ -89,13 +96,13 @@ if ($result->num_rows > 0) {
 
 
 
-echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
+//echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
 //echo $_SESSION['username'];
 //echo $_SESSION['account_type'];
 //echo $_SESSION['login_time'];
 
 // Redirect to index after 5 seconds
-header("refresh:5;url=index.php");
+//header("refresh:5;url=index.php");
 
 // now need some way of ... utilising this user information that we have gathered, to modify the browser view.
 

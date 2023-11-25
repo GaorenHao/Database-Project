@@ -1,15 +1,16 @@
 <?php
 include_once("header.php");
+include 'db_connect.php';
 session_start();
 
 $userID = $_SESSION['username']; // get user id
 
-include 'db_connect.php';
+
 
 // update user table
 $logout_query = "UPDATE Users SET LastLogout = NOW() WHERE UserID = $userID";
 
-//$logout_result = $connection->query($logout_query);
+$logout_result = $connection->query($logout_query);
 
 if ($connection->query($logout_query) === TRUE) {
 
@@ -20,9 +21,11 @@ if ($connection->query($logout_query) === TRUE) {
 
     echo "Successfully logged out & tracked log out time";
 
-    // Redirect to index
+    //Redirect to index
     header("Location: index.php");
 
 } else {
     echo "Error updating logout time & logging out ";}
+
+    //header("Location: index.php");
 ?>

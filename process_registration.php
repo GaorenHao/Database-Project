@@ -3,7 +3,7 @@
 // TODO: Extract $_POST variables, check they're OK, and attempt to create
 // an account. Notify user of success/failure and redirect/give navigation 
 // options.
-
+//session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -31,6 +31,7 @@ $stmt->bind_param("sssss", $accountType, $email, $password, $firstName, $lastNam
   //echo "Passwords do not match:".$stmt->error;
   //exit;
 //}
+//$stmt->execute();
 if ($stmt->execute()) {
   
   
@@ -65,13 +66,10 @@ if ($stmt->execute()) {
     echo "buyer created";
 
   }
-
-
-  
   $_SESSION['logged_in'] = true;
 	$_SESSION['username'] = $row['UserID'];
 	$_SESSION['account_type'] = $row['Role'];
-  header('Location: login_result.php');
+  header('Location: index.php');
   exit();
 } else {
   echo "Error: " . $stmt->error;
