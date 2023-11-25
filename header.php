@@ -11,6 +11,11 @@
   include 'db_connect.php';
   include 'win_funcs.php';
 
+
+
+  /// think the below is duplicated so can probably remove on code review 
+  
+
   /// the below is all creation of the notificaton pop up... 
   // Get the current user's ID
   // Assuming the user ID is stored in the session

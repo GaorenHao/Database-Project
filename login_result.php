@@ -31,8 +31,6 @@ if ($result->num_rows > 0) {
 		$_SESSION['username'] = $row['UserID'];
 		$_SESSION['account_type'] = $row['Role'];
 
-		// add here, the sellerID & buyerID mapping ... 
-		//// *************************** mapping category name to category id... can probably condense this down but do later... 
 		if ($_SESSION['account_type'] == 'seller') {
 			// Query the Sellers table to find the SellerID
 			$stmt = $connection->prepare("SELECT `SellerID` FROM `Sellers` WHERE `UserID` = ?");
@@ -68,7 +66,10 @@ if ($result->num_rows > 0) {
 			}
 		}
 
-		echo "<p>Password correct! Yaay :) </p>";
+		echo "<p>Password correct! Yay :) </p>";
+		// only at this point, has the user actually signed in. so we store a timestamp of when they have logged in 
+		$now = new DateTime();
+		$_SESSION['login_time'] = $now->format('Y-m-d H:i:s');  // the login time should now be available to access across the web app 
 	} else {
 		// Notify user of success/failure and redirect/give navigation options.
 		echo "<p>Password incorrect... please enter your credentials again </p>";
@@ -91,6 +92,7 @@ if ($result->num_rows > 0) {
 echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
 echo $_SESSION['username'];
 echo $_SESSION['account_type'];
+echo $_SESSION['login_time'];
 
 // Redirect to index after 5 seconds
 header("refresh:5;url=index.php");
