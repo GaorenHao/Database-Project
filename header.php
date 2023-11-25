@@ -135,12 +135,12 @@
     }
 
     body, body * {
-    color: rgb(158, 36, 240);
+    color: rgb(0, 0, 0);
   }
   
   body {
-    color: rgb(255, 186, 230); 
-    background-color: rgb(255, 186, 230); 
+    color: rgb(0, 0, 0); 
+    background-color: rgb(255, 255, 255); 
   }
   </style>
 
