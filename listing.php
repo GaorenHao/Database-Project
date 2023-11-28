@@ -138,6 +138,30 @@
     <?php echo($description); ?>
     </div>
 
+    <!-- Image gallery section -->
+    <div class="image-gallery">
+      <?php
+      $imageQuery = "SELECT ImagePath FROM ItemImages WHERE ItemAuctionID = ?";
+      $stmt = $connection->prepare($imageQuery);
+      $stmt->bind_param("i", $item_id);
+      $stmt->execute();
+      $imageResult = $stmt->get_result();
+
+      $hasImages = false;
+      if ($imageResult->num_rows > 0) {
+          while ($imageRow = $imageResult->fetch_assoc()) {
+              echo "<img src='" . htmlspecialchars($imageRow['ImagePath']) . "' alt='Item Image' class='img-thumbnail' onclick='changeMainImage(\"" . htmlspecialchars($imageRow['ImagePath']) . "\")'>";
+              $hasImages = true;
+          }
+      }
+      
+      if (!$hasImages) {
+          // Display default image
+          echo "<img src='default.jpg' alt='Default Image' class='img-thumbnail'>";
+      }
+      ?>
+    </div>
+
   </div>
 
   <div class="col-sm-4"> <!-- Right col with bidding info -->
