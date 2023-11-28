@@ -112,8 +112,15 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
                   e.preventDefault(); // Prevent form submission
                   alert("Reserve price must be higher than the starting price.");
                 }
+                // Image upload validation
+                var imageInputs = document.getElementById('auctionImages');
+                var maxImages = 4;
 
-                // Image validation
+                if (imageInputs.files.length > maxImages) {
+                  e.preventDefault(); // Prevent form submission
+                  alert('You can only upload a maximum of ' + maxImages + ' images.');
+                }
+                // Image format validation
                 var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
                 var imageInputs = document.getElementById('auctionImages');
                 
