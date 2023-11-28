@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Nov 28, 2023 at 07:26 AM
+-- Generation Time: Nov 28, 2023 at 07:58 AM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -43,26 +43,26 @@ CREATE TABLE `AuctionItem` (
 --
 
 INSERT INTO `AuctionItem` (`ItemAuctionID`, `Title`, `SellerID`, `CategoryID`, `Description`, `StartingPrice`, `ReservePrice`, `EndDate`) VALUES
-(6, 'Classic Book', 1, 1, 'A classic novel', 10, 20, '2023-12-31 23:59:00'),
-(7, 'Toy Train Set', 2, 2, 'Electric train set for kids', 30, 50, '2023-12-31 23:59:00'),
-(8, 'Football', 3, 3, 'Professional football', 15, 25, '2023-12-31 23:59:00'),
-(9, 'Guitar', 4, 4, 'Acoustic guitar', 100, 150, '2023-12-31 23:59:00'),
-(10, 'Designer T-Shirt', 5, 5, 'Fashionable T-shirt', 20, 40, '2023-12-31 23:59:00'),
+(6, 'Classic Book', 1, 7, 'A classic novel', 11, 20, '2023-12-31 23:59:00'),
+(7, 'Toy Train Set', 2, 8, 'Electric train set for kids', 30, 50, '2023-12-31 23:59:00'),
+(8, 'Football', 3, 9, 'Professional football', 15, 25, '2023-12-31 23:59:00'),
+(9, 'Guitar', 4, 10, 'Acoustic guitar', 100, 150, '2023-12-31 23:59:00'),
+(10, 'Designer T-Shirt', 5, 11, 'Fashionable T-shirt', 20, 40, '2023-12-31 23:59:00'),
 (11, 'Dining Chair', 6, 6, 'Wooden dining chair', 45, 70, '2023-12-31 23:59:00'),
-(12, 'Smartphone', 7, 7, 'Latest model smartphone', 200, 300, '2023-12-31 23:59:00'),
-(13, 'Car Accessories', 8, 8, 'Various car accessories', 50, 80, '2023-12-31 23:59:00'),
-(14, 'Gardening Tools', 9, 9, 'Complete set of gardening tools', 35, 55, '2023-12-31 23:59:00'),
-(15, 'Notebook Set', 1, 10, 'Set of high-quality notebooks', 10, 15, '2023-12-31 23:59:00'),
-(16, 'Pet Food', 2, 11, 'Premium dog food', 25, 40, '2023-12-31 23:59:00'),
-(17, 'Health Supplements', 3, 12, 'Vitamin supplements', 30, 45, '2023-12-31 23:59:00'),
-(18, 'Running Shoes', 4, 13, 'High-performance running shoes', 60, 90, '2023-12-31 23:59:00'),
-(19, 'Silver Necklace', 5, 14, 'Elegant silver necklace', 70, 100, '2023-12-31 23:59:00'),
+(12, 'Smartphone', 7, 13, 'Latest model smartphone', 200, 300, '2023-12-31 23:59:00'),
+(13, 'Car Accessories', 8, 14, 'Various car accessories', 50, 80, '2023-12-31 23:59:00'),
+(14, 'Gardening Tools', 9, 15, 'Complete set of gardening tools', 35, 55, '2023-12-31 23:59:00'),
+(15, 'Notebook Set', 1, 16, 'Set of high-quality notebooks', 10, 15, '2023-12-31 23:59:00'),
+(16, 'Pet Food', 2, 17, 'Premium dog food', 25, 40, '2023-12-31 23:59:00'),
+(17, 'Health Supplements', 3, 18, 'Vitamin supplements', 30, 45, '2023-12-31 23:59:00'),
+(18, 'Running Shoes', 4, 19, 'High-performance running shoes', 60, 90, '2023-12-31 23:59:00'),
+(19, 'Silver Necklace', 5, 20, 'Elegant silver necklace', 70, 100, '2023-12-31 23:59:00'),
 (20, 'Makeup Kit', 6, 15, 'Professional makeup kit', 40, 60, '2023-12-31 23:59:00'),
-(21, 'Organic Tea', 7, 16, 'Assorted organic tea', 15, 25, '2023-12-31 23:59:00'),
-(22, 'Craft Beer Set', 8, 17, 'Selection of craft beers', 20, 30, '2023-12-31 23:59:00'),
-(23, 'Kitchenware Set', 9, 18, 'Stainless steel kitchenware', 50, 75, '2023-12-31 23:59:00'),
-(24, 'Luxury Bed Linen', 1, 19, 'Egyptian cotton bed linen', 80, 120, '2023-12-31 23:59:00'),
-(25, 'Wall Art', 2, 20, 'Modern wall art decor', 45, 70, '2023-12-31 23:59:00');
+(21, 'Organic Tea', 7, 23, 'Assorted organic tea', 15, 25, '2023-12-31 23:59:00'),
+(22, 'Craft Beer Set', 8, 23, 'Selection of craft beers', 20, 30, '2023-12-31 23:59:00'),
+(23, 'Kitchenware Set', 9, 24, 'Stainless steel kitchenware', 50, 75, '2023-12-31 23:59:00'),
+(24, 'Luxury Bed Linen', 1, 25, 'Egyptian cotton bed linen', 80, 120, '2023-12-31 23:59:00'),
+(25, 'Wall Art', 2, 6, 'Modern wall art decor', 45, 70, '2023-12-31 23:59:00');
 
 -- --------------------------------------------------------
 
@@ -289,23 +289,23 @@ CREATE TABLE `Users` (
 
 INSERT INTO `Users` (`UserID`, `Email`, `Password`, `FirstName`, `LastName`, `Role`, `LastLogout`) VALUES
 (1, 'buyer1@example.com', 'buyerPass1', 'John', 'Doe', 'buyer', NULL),
-(2, 'seller1@example.com', 'sellerPass1', 'Jane', 'Smith', 'seller', '2023-11-28 06:40:58'),
+(2, 'seller1@example.com', 'sellerPass1', 'Jane', 'Smith', 'seller', '2023-11-28 07:52:48'),
 (3, 'buyer2@example.com', 'buyerPass2', 'Alice', 'Johnson', 'buyer', NULL),
-(4, 'seller2@example.com', 'sellerPass2', 'Bob', 'Davis', 'seller', '2023-11-28 06:47:19'),
+(4, 'seller2@example.com', 'sellerPass2', 'Bob', 'Davis', 'seller', '2023-11-28 07:54:11'),
 (5, 'buyer3@example.com', 'buyerPass3', 'Charlie', 'Brown', 'buyer', NULL),
-(6, 'seller3@example.com', 'sellerPass3', 'Emily', 'White', 'seller', '2023-11-28 06:54:47'),
+(6, 'seller3@example.com', 'sellerPass3', 'Emily', 'White', 'seller', '2023-11-28 07:55:07'),
 (7, 'buyer4@example.com', 'buyerPass4', 'Michael', 'Green', 'buyer', NULL),
-(8, 'seller4@example.com', 'sellerPass4', 'Sarah', 'Taylor', 'seller', '2023-11-28 06:58:28'),
+(8, 'seller4@example.com', 'sellerPass4', 'Sarah', 'Taylor', 'seller', '2023-11-28 07:55:44'),
 (9, 'buyer5@example.com', 'buyerPass5', 'Daniel', 'Martin', 'buyer', NULL),
-(10, 'seller5@example.com', 'sellerPass5', 'Laura', 'Wilson', 'seller', '2023-11-28 07:07:55'),
+(10, 'seller5@example.com', 'sellerPass5', 'Laura', 'Wilson', 'seller', '2023-11-28 07:56:35'),
 (11, 'buyer6@example.com', 'buyerPass6', 'David', 'Clark', 'buyer', NULL),
 (12, 'seller6@example.com', 'sellerPass6', 'Nancy', 'Lewis', 'seller', '2023-11-28 07:11:09'),
 (13, 'buyer7@example.com', 'buyerPass7', 'Karen', 'Walker', 'buyer', NULL),
-(14, 'seller7@example.com', 'sellerPass7', 'Brian', 'Hill', 'seller', '2023-11-28 07:18:49'),
+(14, 'seller7@example.com', 'sellerPass7', 'Brian', 'Hill', 'seller', '2023-11-28 07:57:20'),
 (15, 'buyer8@example.com', 'buyerPass8', 'Lisa', 'Lee', 'buyer', NULL),
-(16, 'seller8@example.com', 'sellerPass8', 'Kevin', 'Hall', 'seller', '2023-11-28 07:22:34'),
+(16, 'seller8@example.com', 'sellerPass8', 'Kevin', 'Hall', 'seller', '2023-11-28 07:57:50'),
 (17, 'buyer9@example.com', 'buyerPass9', 'Diana', 'Adams', 'buyer', NULL),
-(18, 'seller9@example.com', 'sellerPass9', 'George', 'Baker', 'seller', NULL),
+(18, 'seller9@example.com', 'sellerPass9', 'George', 'Baker', 'seller', '2023-11-28 07:58:28'),
 (19, 'buyer10@example.com', 'buyerPass10', 'Angela', 'Gonzalez', 'buyer', NULL),
 (20, 'admin@example.com', 'adminPass', 'Super', 'User', 'admin', NULL);
 
