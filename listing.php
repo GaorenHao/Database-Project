@@ -40,7 +40,7 @@
     }
     }
   } else {
-    echo "No session variables are set.";
+    // echo "No session variables are set.";
     $has_session = false;
     $watching = false;
   }
@@ -177,7 +177,7 @@
 <?php else: ?>
      Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
-    <?php if ($_SESSION['account_type'] == 'buyer'): ?>
+    <?php if ($_SESSION['account_type'] && $_SESSION['account_type'] == 'buyer'): ?>
     <!-- Bidding form -->
     <form method="POST" action="place_bid.php">
       <div class="input-group">
@@ -197,6 +197,9 @@
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
+    <?php else: ?>
+           <!-- Display the register message for users who are not logged in as buyers -->
+           <p class="alert alert-info">Register as a buyer to make a bid!</p>
     <?php endif ?>
     <!-- TABLE OF ALL BIDS -->
     <?php if ($_SESSION['account_type'] == 'buyer' || ($_SESSION['account_type'] == 'seller' && $listing_seller == $_SESSION['sellerid'])): ?>
