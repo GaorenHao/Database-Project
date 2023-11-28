@@ -2,9 +2,9 @@
 <?php require("utilities.php")?>
 
 <?php
-  ini_set('display_errors', 1);
-  ini_set('display_startup_errors', 1);
-  error_reporting(E_ALL);
+  ini_set('display_errors', 0);
+  ini_set('display_startup_errors', 0);
+  error_reporting(0);
 
   include 'db_connect.php';
 
@@ -20,9 +20,6 @@
   
 
   if (!empty($_SESSION)) {
-    echo "<pre>";
-    print_r($_SESSION);
-    echo "</pre>";
     $has_session = true;
     // the watchlist is only relevant to buyers only, so only if account type is buyer, 
     // start executing the search inside watchlist 
