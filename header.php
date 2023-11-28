@@ -57,8 +57,6 @@
         echo "Error or no notif found to mark as read";
     }
   }
-} else {
-  echo "Not logged in";
 }
 ?>
 
