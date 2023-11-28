@@ -147,12 +147,12 @@ CREATE TABLE `Categories` (
 --
 
 INSERT INTO `Categories` (`CategoryID`, `CategoryName`) VALUES
-(1, 'fashion'),
-(2, 'electronics'),
-(3, 'beauty'),
-(4, 'home'),
-(5, 'outdoor'),
-(6, 'art'),
+(1, 'Fashion'),
+(2, 'Electronics'),
+(3, 'Beauty'),
+(4, 'Home'),
+(5, 'Outdoor'),
+(6, 'Art'),
 (7, 'Books'),
 (8, 'Toys'),
 (9, 'Sports'),
