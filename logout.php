@@ -1,31 +1,33 @@
 <?php
+session_start(); // Start the session
+ob_start(); // Start output buffering
 include_once("header.php");
-include 'db_connect.php';
-session_start();
+include 'db_connect.php'; // Include database connection
 
-$userID = $_SESSION['username']; // get user id
+// Check if the user is logged in
+if (isset($_SESSION['username'])) {
+    $userID = $_SESSION['username']; // Get user id from the session
 
+    // Prepare and execute logout query
+    $logout_query = "UPDATE Users SET LastLogout = NOW() WHERE UserID = ?";
+    $stmt = $connection->prepare($logout_query);
+    $stmt->bind_param("i", $userID); // Assuming userID is an integer, use "s" if it's a string
 
+    if ($stmt->execute()) {
+        // Clear session data and destroy the session
+        $_SESSION = array();
+        setcookie(session_name(), "", time() - 3600, "/");
+        session_destroy();
 
-// update user table
-$logout_query = "UPDATE Users SET LastLogout = NOW() WHERE UserID = $userID";
-
-$logout_result = $connection->query($logout_query);
-
-if ($connection->query($logout_query) === TRUE) {
-
-    unset($_SESSION['logged_in']);
-    unset($_SESSION['account_type']);
-    setcookie(session_name(), "", time() - 360);
-    session_destroy();
-
-    echo "Successfully logged out & tracked log out time";
-
-    //Redirect to index
-    header("Location: index.php");
-
+        // Redirect to index.php
+        header("Location: index.php");
+        exit(); // Ensure no further execution
+    } else {
+        echo "Error updating logout time: " . $stmt->error;
+    }
 } else {
-    echo "Error updating logout time & logging out ";}
+    echo "Not logged in or invalid session.";
+}
 
-    //header("Location: index.php");
+ob_end_flush(); // Send output buffer and turn off output buffering
 ?>
