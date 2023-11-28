@@ -45,26 +45,26 @@ CREATE TABLE `AuctionItem` (
 --
 
 INSERT INTO `AuctionItem` (`ItemAuctionID`, `Title`, `SellerID`, `CategoryID`, `Description`, `StartingPrice`, `ReservePrice`, `EndDate`) VALUES
-(6, 'Classic Book', 1, 1, 'A classic novel', 10, 20, '2023-12-31 23:59:59'),
-(7, 'Toy Train Set', 2, 2, 'Electric train set for kids', 30, 50, '2023-12-31 23:59:59'),
-(8, 'Football', 3, 3, 'Professional football', 15, 25, '2023-12-31 23:59:59'),
-(9, 'Guitar', 4, 4, 'Acoustic guitar', 100, 150, '2023-12-31 23:59:59'),
-(10, 'Designer T-Shirt', 5, 5, 'Fashionable T-shirt', 20, 40, '2023-12-31 23:59:59'),
-(11, 'Dining Chair', 6, 6, 'Wooden dining chair', 45, 70, '2023-12-31 23:59:59'),
-(12, 'Smartphone', 7, 7, 'Latest model smartphone', 200, 300, '2023-12-31 23:59:59'),
-(13, 'Car Accessories', 8, 8, 'Various car accessories', 50, 80, '2023-12-31 23:59:59'),
-(14, 'Gardening Tools', 9, 9, 'Complete set of gardening tools', 35, 55, '2023-12-31 23:59:59'),
-(15, 'Notebook Set', 1, 10, 'Set of high-quality notebooks', 10, 15, '2023-12-31 23:59:59'),
-(16, 'Pet Food', 2, 11, 'Premium dog food', 25, 40, '2023-12-31 23:59:59'),
-(17, 'Health Supplements', 3, 12, 'Vitamin supplements', 30, 45, '2023-12-31 23:59:59'),
-(18, 'Running Shoes', 4, 13, 'High-performance running shoes', 60, 90, '2023-12-31 23:59:59'),
-(19, 'Silver Necklace', 5, 14, 'Elegant silver necklace', 70, 100, '2023-12-31 23:59:59'),
-(20, 'Makeup Kit', 6, 15, 'Professional makeup kit', 40, 60, '2023-12-31 23:59:59'),
-(21, 'Organic Tea', 7, 16, 'Assorted organic tea', 15, 25, '2023-12-31 23:59:59'),
-(22, 'Craft Beer Set', 8, 17, 'Selection of craft beers', 20, 30, '2023-12-31 23:59:59'),
-(23, 'Kitchenware Set', 9, 18, 'Stainless steel kitchenware', 50, 75, '2023-12-31 23:59:59'),
-(24, 'Luxury Bed Linen', 1, 19, 'Egyptian cotton bed linen', 80, 120, '2023-12-31 23:59:59'),
-(25, 'Wall Art', 2, 20, 'Modern wall art decor', 45, 70, '2023-12-31 23:59:59');
+(6, 'Classic Book', 1, 1, 'A classic novel', 10, 20, '2023-12-31 23:59'),
+(7, 'Toy Train Set', 2, 2, 'Electric train set for kids', 30, 50, '2023-12-31 23:59'),
+(8, 'Football', 3, 3, 'Professional football', 15, 25, '2023-12-31 23:59'),
+(9, 'Guitar', 4, 4, 'Acoustic guitar', 100, 150, '2023-12-31 23:59'),
+(10, 'Designer T-Shirt', 5, 5, 'Fashionable T-shirt', 20, 40, '2023-12-31 23:59'),
+(11, 'Dining Chair', 6, 6, 'Wooden dining chair', 45, 70, '2023-12-31 23:59'),
+(12, 'Smartphone', 7, 7, 'Latest model smartphone', 200, 300, '2023-12-31 23:59'),
+(13, 'Car Accessories', 8, 8, 'Various car accessories', 50, 80, '2023-12-31 23:59'),
+(14, 'Gardening Tools', 9, 9, 'Complete set of gardening tools', 35, 55, '2023-12-31 23:59'),
+(15, 'Notebook Set', 1, 10, 'Set of high-quality notebooks', 10, 15, '2023-12-31 23:59'),
+(16, 'Pet Food', 2, 11, 'Premium dog food', 25, 40, '2023-12-31 23:59'),
+(17, 'Health Supplements', 3, 12, 'Vitamin supplements', 30, 45, '2023-12-31 23:59'),
+(18, 'Running Shoes', 4, 13, 'High-performance running shoes', 60, 90, '2023-12-31 23:59'),
+(19, 'Silver Necklace', 5, 14, 'Elegant silver necklace', 70, 100, '2023-12-31 23:59'),
+(20, 'Makeup Kit', 6, 15, 'Professional makeup kit', 40, 60, '2023-12-31 23:59'),
+(21, 'Organic Tea', 7, 16, 'Assorted organic tea', 15, 25, '2023-12-31 23:59'),
+(22, 'Craft Beer Set', 8, 17, 'Selection of craft beers', 20, 30, '2023-12-31 23:59'),
+(23, 'Kitchenware Set', 9, 18, 'Stainless steel kitchenware', 50, 75, '2023-12-31 23:59'),
+(24, 'Luxury Bed Linen', 1, 19, 'Egyptian cotton bed linen', 80, 120, '2023-12-31 23:59'),
+(25, 'Wall Art', 2, 20, 'Modern wall art decor', 45, 70, '2023-12-31 23:59');
 
 -- --------------------------------------------------------
 
