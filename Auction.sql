@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Nov 20, 2023 at 06:05 PM
+-- Generation Time: Nov 28, 2023 at 07:26 AM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `Auction`
+-- Database: `auction`
 --
 
 -- --------------------------------------------------------
@@ -28,43 +28,41 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `AuctionItem` (
-  `ItemAuctionID` int(4) NOT NULL AUTO_INCREMENT,
+  `ItemAuctionID` int(4) NOT NULL,
   `Title` text NOT NULL,
   `SellerID` int(4) NOT NULL,
   `CategoryID` int(4) NOT NULL,
   `Description` text NOT NULL,
   `StartingPrice` int(11) NOT NULL,
   `ReservePrice` int(11) NOT NULL,
-  `EndDate` datetime NOT NULL,
-  PRIMARY KEY (`ItemAuctionID`)
+  `EndDate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 --
 -- Dumping data for table `AuctionItem`
 --
 
 INSERT INTO `AuctionItem` (`ItemAuctionID`, `Title`, `SellerID`, `CategoryID`, `Description`, `StartingPrice`, `ReservePrice`, `EndDate`) VALUES
-(6, 'Classic Book', 1, 1, 'A classic novel', 10, 20, '2023-12-31 23:59'),
-(7, 'Toy Train Set', 2, 2, 'Electric train set for kids', 30, 50, '2023-12-31 23:59'),
-(8, 'Football', 3, 3, 'Professional football', 15, 25, '2023-12-31 23:59'),
-(9, 'Guitar', 4, 4, 'Acoustic guitar', 100, 150, '2023-12-31 23:59'),
-(10, 'Designer T-Shirt', 5, 5, 'Fashionable T-shirt', 20, 40, '2023-12-31 23:59'),
-(11, 'Dining Chair', 6, 6, 'Wooden dining chair', 45, 70, '2023-12-31 23:59'),
-(12, 'Smartphone', 7, 7, 'Latest model smartphone', 200, 300, '2023-12-31 23:59'),
-(13, 'Car Accessories', 8, 8, 'Various car accessories', 50, 80, '2023-12-31 23:59'),
-(14, 'Gardening Tools', 9, 9, 'Complete set of gardening tools', 35, 55, '2023-12-31 23:59'),
-(15, 'Notebook Set', 1, 10, 'Set of high-quality notebooks', 10, 15, '2023-12-31 23:59'),
-(16, 'Pet Food', 2, 11, 'Premium dog food', 25, 40, '2023-12-31 23:59'),
-(17, 'Health Supplements', 3, 12, 'Vitamin supplements', 30, 45, '2023-12-31 23:59'),
-(18, 'Running Shoes', 4, 13, 'High-performance running shoes', 60, 90, '2023-12-31 23:59'),
-(19, 'Silver Necklace', 5, 14, 'Elegant silver necklace', 70, 100, '2023-12-31 23:59'),
-(20, 'Makeup Kit', 6, 15, 'Professional makeup kit', 40, 60, '2023-12-31 23:59'),
-(21, 'Organic Tea', 7, 16, 'Assorted organic tea', 15, 25, '2023-12-31 23:59'),
-(22, 'Craft Beer Set', 8, 17, 'Selection of craft beers', 20, 30, '2023-12-31 23:59'),
-(23, 'Kitchenware Set', 9, 18, 'Stainless steel kitchenware', 50, 75, '2023-12-31 23:59'),
-(24, 'Luxury Bed Linen', 1, 19, 'Egyptian cotton bed linen', 80, 120, '2023-12-31 23:59'),
-(25, 'Wall Art', 2, 20, 'Modern wall art decor', 45, 70, '2023-12-31 23:59');
+(6, 'Classic Book', 1, 1, 'A classic novel', 10, 20, '2023-12-31 23:59:00'),
+(7, 'Toy Train Set', 2, 2, 'Electric train set for kids', 30, 50, '2023-12-31 23:59:00'),
+(8, 'Football', 3, 3, 'Professional football', 15, 25, '2023-12-31 23:59:00'),
+(9, 'Guitar', 4, 4, 'Acoustic guitar', 100, 150, '2023-12-31 23:59:00'),
+(10, 'Designer T-Shirt', 5, 5, 'Fashionable T-shirt', 20, 40, '2023-12-31 23:59:00'),
+(11, 'Dining Chair', 6, 6, 'Wooden dining chair', 45, 70, '2023-12-31 23:59:00'),
+(12, 'Smartphone', 7, 7, 'Latest model smartphone', 200, 300, '2023-12-31 23:59:00'),
+(13, 'Car Accessories', 8, 8, 'Various car accessories', 50, 80, '2023-12-31 23:59:00'),
+(14, 'Gardening Tools', 9, 9, 'Complete set of gardening tools', 35, 55, '2023-12-31 23:59:00'),
+(15, 'Notebook Set', 1, 10, 'Set of high-quality notebooks', 10, 15, '2023-12-31 23:59:00'),
+(16, 'Pet Food', 2, 11, 'Premium dog food', 25, 40, '2023-12-31 23:59:00'),
+(17, 'Health Supplements', 3, 12, 'Vitamin supplements', 30, 45, '2023-12-31 23:59:00'),
+(18, 'Running Shoes', 4, 13, 'High-performance running shoes', 60, 90, '2023-12-31 23:59:00'),
+(19, 'Silver Necklace', 5, 14, 'Elegant silver necklace', 70, 100, '2023-12-31 23:59:00'),
+(20, 'Makeup Kit', 6, 15, 'Professional makeup kit', 40, 60, '2023-12-31 23:59:00'),
+(21, 'Organic Tea', 7, 16, 'Assorted organic tea', 15, 25, '2023-12-31 23:59:00'),
+(22, 'Craft Beer Set', 8, 17, 'Selection of craft beers', 20, 30, '2023-12-31 23:59:00'),
+(23, 'Kitchenware Set', 9, 18, 'Stainless steel kitchenware', 50, 75, '2023-12-31 23:59:00'),
+(24, 'Luxury Bed Linen', 1, 19, 'Egyptian cotton bed linen', 80, 120, '2023-12-31 23:59:00'),
+(25, 'Wall Art', 2, 20, 'Modern wall art decor', 45, 70, '2023-12-31 23:59:00');
 
 -- --------------------------------------------------------
 
@@ -179,6 +177,44 @@ INSERT INTO `Categories` (`CategoryID`, `CategoryName`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ItemImages`
+--
+
+CREATE TABLE `ItemImages` (
+  `ImageID` int(11) NOT NULL,
+  `ItemAuctionID` int(11) NOT NULL,
+  `ImagePath` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `ItemImages`
+--
+
+INSERT INTO `ItemImages` (`ImageID`, `ItemAuctionID`, `ImagePath`) VALUES
+(1, 6, './uploads/1-1.png'),
+(2, 15, './uploads/15-1.png'),
+(3, 24, './uploads/24-1.png'),
+(4, 7, './uploads/7-1.png'),
+(5, 16, './uploads/16-1.png'),
+(6, 25, './uploads/25-1.png'),
+(7, 8, './uploads/8-1.png'),
+(8, 17, './uploads/17-1.png'),
+(9, 9, './uploads/9-1.png'),
+(10, 18, './uploads/18-1.png'),
+(13, 10, './uploads/10-1.png'),
+(14, 19, './uploads/19-1.png'),
+(15, 11, './uploads/11-1.png'),
+(16, 20, './uploads/20-1.png'),
+(17, 12, './uploads/12-1.png'),
+(18, 21, './uploads/21-1.png'),
+(19, 13, './uploads/13-1.png'),
+(20, 22, './uploads/22-1.png'),
+(21, 14, './uploads/14-1.png'),
+(22, 23, './uploads/23-1.png');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Notification`
 --
 
@@ -188,7 +224,7 @@ CREATE TABLE `Notification` (
   `DateTime` datetime NOT NULL,
   `Message` text NOT NULL,
   `Type` text NOT NULL,
-  `Read` boolean NOT NULL DEFAULT FALSE
+  `Read` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -243,35 +279,35 @@ CREATE TABLE `Users` (
   `Password` text NOT NULL,
   `FirstName` text NOT NULL,
   `LastName` text NOT NULL,
-  `Role` text NOT NULL, 
-  `LastLogout` DATETIME DEFAULT NULL
+  `Role` text NOT NULL,
+  `LastLogout` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Users`
 --
 
-INSERT INTO `Users` (`UserID`, `Email`, `Password`, `FirstName`, `LastName`, `Role`) VALUES
-(1, 'buyer1@example.com', 'buyerPass1', 'John', 'Doe', 'buyer'),
-(2, 'seller1@example.com', 'sellerPass1', 'Jane', 'Smith', 'seller'),
-(3, 'buyer2@example.com', 'buyerPass2', 'Alice', 'Johnson', 'buyer'),
-(4, 'seller2@example.com', 'sellerPass2', 'Bob', 'Davis', 'seller'),
-(5, 'buyer3@example.com', 'buyerPass3', 'Charlie', 'Brown', 'buyer'),
-(6, 'seller3@example.com', 'sellerPass3', 'Emily', 'White', 'seller'),
-(7, 'buyer4@example.com', 'buyerPass4', 'Michael', 'Green', 'buyer'),
-(8, 'seller4@example.com', 'sellerPass4', 'Sarah', 'Taylor', 'seller'),
-(9, 'buyer5@example.com', 'buyerPass5', 'Daniel', 'Martin', 'buyer'),
-(10, 'seller5@example.com', 'sellerPass5', 'Laura', 'Wilson', 'seller'),
-(11, 'buyer6@example.com', 'buyerPass6', 'David', 'Clark', 'buyer'),
-(12, 'seller6@example.com', 'sellerPass6', 'Nancy', 'Lewis', 'seller'),
-(13, 'buyer7@example.com', 'buyerPass7', 'Karen', 'Walker', 'buyer'),
-(14, 'seller7@example.com', 'sellerPass7', 'Brian', 'Hill', 'seller'),
-(15, 'buyer8@example.com', 'buyerPass8', 'Lisa', 'Lee', 'buyer'),
-(16, 'seller8@example.com', 'sellerPass8', 'Kevin', 'Hall', 'seller'),
-(17, 'buyer9@example.com', 'buyerPass9', 'Diana', 'Adams', 'buyer'),
-(18, 'seller9@example.com', 'sellerPass9', 'George', 'Baker', 'seller'),
-(19, 'buyer10@example.com', 'buyerPass10', 'Angela', 'Gonzalez', 'buyer'),
-(20, 'admin@example.com', 'adminPass', 'Super', 'User', 'admin');
+INSERT INTO `Users` (`UserID`, `Email`, `Password`, `FirstName`, `LastName`, `Role`, `LastLogout`) VALUES
+(1, 'buyer1@example.com', 'buyerPass1', 'John', 'Doe', 'buyer', NULL),
+(2, 'seller1@example.com', 'sellerPass1', 'Jane', 'Smith', 'seller', '2023-11-28 06:40:58'),
+(3, 'buyer2@example.com', 'buyerPass2', 'Alice', 'Johnson', 'buyer', NULL),
+(4, 'seller2@example.com', 'sellerPass2', 'Bob', 'Davis', 'seller', '2023-11-28 06:47:19'),
+(5, 'buyer3@example.com', 'buyerPass3', 'Charlie', 'Brown', 'buyer', NULL),
+(6, 'seller3@example.com', 'sellerPass3', 'Emily', 'White', 'seller', '2023-11-28 06:54:47'),
+(7, 'buyer4@example.com', 'buyerPass4', 'Michael', 'Green', 'buyer', NULL),
+(8, 'seller4@example.com', 'sellerPass4', 'Sarah', 'Taylor', 'seller', '2023-11-28 06:58:28'),
+(9, 'buyer5@example.com', 'buyerPass5', 'Daniel', 'Martin', 'buyer', NULL),
+(10, 'seller5@example.com', 'sellerPass5', 'Laura', 'Wilson', 'seller', '2023-11-28 07:07:55'),
+(11, 'buyer6@example.com', 'buyerPass6', 'David', 'Clark', 'buyer', NULL),
+(12, 'seller6@example.com', 'sellerPass6', 'Nancy', 'Lewis', 'seller', '2023-11-28 07:11:09'),
+(13, 'buyer7@example.com', 'buyerPass7', 'Karen', 'Walker', 'buyer', NULL),
+(14, 'seller7@example.com', 'sellerPass7', 'Brian', 'Hill', 'seller', '2023-11-28 07:18:49'),
+(15, 'buyer8@example.com', 'buyerPass8', 'Lisa', 'Lee', 'buyer', NULL),
+(16, 'seller8@example.com', 'sellerPass8', 'Kevin', 'Hall', 'seller', '2023-11-28 07:22:34'),
+(17, 'buyer9@example.com', 'buyerPass9', 'Diana', 'Adams', 'buyer', NULL),
+(18, 'seller9@example.com', 'sellerPass9', 'George', 'Baker', 'seller', NULL),
+(19, 'buyer10@example.com', 'buyerPass10', 'Angela', 'Gonzalez', 'buyer', NULL),
+(20, 'admin@example.com', 'adminPass', 'Super', 'User', 'admin', NULL);
 
 -- --------------------------------------------------------
 
@@ -283,23 +319,19 @@ CREATE TABLE `WatchListItems` (
   `BuyerID` int(11) NOT NULL,
   `ItemAuctionID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
 --
 -- Indexes for table `AuctionItem`
 --
 ALTER TABLE `AuctionItem`
+  ADD PRIMARY KEY (`ItemAuctionID`),
   ADD KEY `FK2_AuctionItem` (`CategoryID`),
   ADD KEY `FK1_AuctionItem` (`SellerID`);
 
---
--- Table structure for table `ItemImages`
---
-CREATE TABLE `ItemImages` (
-  `ImageID` int NOT NULL AUTO_INCREMENT,
-  `ItemAuctionID` int NOT NULL,
-  `ImagePath` varchar(255) NOT NULL,
-  PRIMARY KEY (`ImageID`),
-  FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem`(`ItemAuctionID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
 -- Indexes for table `Bid`
 --
@@ -320,6 +352,13 @@ ALTER TABLE `Buyer`
 --
 ALTER TABLE `Categories`
   ADD PRIMARY KEY (`CategoryID`);
+
+--
+-- Indexes for table `ItemImages`
+--
+ALTER TABLE `ItemImages`
+  ADD PRIMARY KEY (`ImageID`),
+  ADD KEY `FK_ItemAuctionID` (`ItemAuctionID`);
 
 --
 -- Indexes for table `Notification`
@@ -386,6 +425,12 @@ ALTER TABLE `Categories`
   MODIFY `CategoryID` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
+-- AUTO_INCREMENT for table `ItemImages`
+--
+ALTER TABLE `ItemImages`
+  MODIFY `ImageID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
@@ -433,6 +478,13 @@ ALTER TABLE `Buyer`
   ADD CONSTRAINT `FK_UserID_2` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`);
 
 --
+-- Constraints for table `ItemImages`
+--
+ALTER TABLE `ItemImages`
+  ADD CONSTRAINT `FK_ItemAuctionID` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `itemimages_ibfk_1` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `Sellers`
 --
 ALTER TABLE `Sellers`
@@ -453,14 +505,8 @@ ALTER TABLE `Transactions`
 ALTER TABLE `WatchListItems`
   ADD CONSTRAINT `FK_WatchListItems_Buyer` FOREIGN KEY (`BuyerID`) REFERENCES `Buyer` (`BuyerID`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_WatchListItems_Items` FOREIGN KEY (`ItemAuctionID`) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE;
-
---
--- Constraints for table `ItemImages`
---
-ALTER TABLE `ItemImages`
- ADD CONSTRAINT `FK_ItemAuctionID` FOREIGN KEY (ItemAuctionID) REFERENCES `AuctionItem` (`ItemAuctionID`) ON DELETE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-COMMIT;
