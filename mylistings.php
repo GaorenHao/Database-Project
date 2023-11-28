@@ -4,6 +4,7 @@
 <div class="container">
 
 <h2 class="my-3">My listings</h2>
+<p class="text-center">👇 Click to edit your listed auction item</p>
 
 <?php
 
@@ -51,28 +52,45 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
 
          // TODO: Loop through results and print them out as list items.
 
-        if ($result->num_rows>0){
-          while ($row = $result->fetch_assoc()){
-            $title = $row['Title'];
-            $description = $row['Description'];
-            $startingprice = $row['StartingPrice'];
-            $reserveprice = $row['ReservePrice'];
-            $enddate = $row['EndDate'];
-            $itemAuctionID =$row['ItemAuctionID'];
-            
-            echo "<a href='edit_auction.php?item_id=" . $itemAuctionID . "' class='btn btn-secondary'>Edit</a>";
-            echo "<li>";
-            echo "<h3>" . htmlspecialchars($title) . "</h3>";
-            echo "<p>Description: " . htmlspecialchars($description) . "</p>";
-            echo "<p>Starting Price: " . htmlspecialchars($startingprice) . "</p>";
-            echo "<p>Reserve Price: " . htmlspecialchars($reserveprice) . "</p>";
-            echo "<p>End Date: " . htmlspecialchars($enddate) . "</p>";
-            echo "</li>";
+         if ($result->num_rows > 0) {
+          echo '<div class="row">'; // Start of row
+          while ($row = $result->fetch_assoc()) {
+              $itemLink = "edit_auction.php?item_id=" . $row['ItemAuctionID'];
+      
+              echo '<div class="col-md-3">';
+              echo '<a href="' . $itemLink . '" class="item-link">';
+              echo '<div class="item-box">';
+      
+              // Fetch the first image for the item or use the default image
+              $imageSql = "SELECT ImagePath FROM ItemImages WHERE ItemAuctionID = " . $row['ItemAuctionID'] . " LIMIT 1";
+              $imageResult = $connection->query($imageSql);
+      
+              echo '<div class="image-wrapper">'; // Start of image wrapper
+              if ($imageResult && $imageResult->num_rows > 0) {
+                  $imageRow = $imageResult->fetch_assoc();
+                  echo '<img src="' . htmlspecialchars($imageRow['ImagePath']) . '" alt="Item Image" class="item-image">';
+              } else {
+                  echo '<img src="default.jpg" alt="Default Image" class="item-image">';
+              }
+              echo '</div>'; // End of image wrapper
+      
+              echo "<h5>" . htmlspecialchars($row['Title']) . "</h5>";
+              echo "<p class='description'>" . htmlspecialchars($row['Description']) . "</p>";
+      
+              echo '<div class="item-info">';
+              echo "<p>Starting Price: £" . htmlspecialchars($row['StartingPrice']) . "</p>";
+              echo "<p>Reserve Price: £" . htmlspecialchars($row['ReservePrice']) . "</p>";
+              echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
+              echo '</div>'; // End of item-info
+              echo '</div>'; // End of item-box
+              echo '</a>';
+              echo '</div>'; // End of col-md-3
           }
-        }else{
+          echo '</div>'; // End of row
+      } else {
           echo "<p>You have no listed items.</p>";
-        }
-    
+      }
+      
       }
       
     }
