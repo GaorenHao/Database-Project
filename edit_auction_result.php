@@ -15,6 +15,7 @@ $auctionDetails = $_POST['auctionDetails'];
 $auctionStartPrice = $_POST['auctionStartPrice']; 
 $auctionReservePrice = $_POST['auctionReservePrice']; 
 $auctionEndDate = $_POST['auctionEndDate'];
+$auctionCategoryID = $_POST['auctionCategory']; 
 $deleteImages = $_POST['deleteImages'] ?? []; // Images marked for deletion
 
 // Convert the auction end date to a DateTime object
@@ -34,8 +35,8 @@ $connection->begin_transaction();
 
 try {
   // Update the database with new details
-  $stmt = $connection->prepare("UPDATE AuctionItem SET Title = ?, Description = ?, StartingPrice = ?, ReservePrice = ?, EndDate = ? WHERE ItemAuctionID = ?");
-  $stmt->bind_param("ssddsi", $auctionTitle, $auctionDetails, $auctionStartPrice, $auctionReservePrice, $auctionEndDate, $itemAuctionID);
+  $stmt = $connection->prepare("UPDATE AuctionItem SET Title = ?, Description = ?, CategoryID = ?, StartingPrice = ?, ReservePrice = ?, EndDate = ? WHERE ItemAuctionID = ?");
+  $stmt->bind_param("ssiddsi", $auctionTitle, $auctionDetails, $auctionCategoryID, $auctionStartPrice, $auctionReservePrice, $auctionEndDate, $itemAuctionID);
   if (!$stmt->execute()) {
       throw new Exception($stmt->error);
   }
