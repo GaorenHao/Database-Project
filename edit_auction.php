@@ -166,8 +166,21 @@
                   e.preventDefault(); // Prevent form submission
                   alert("Reserve price must be higher than the starting price.");
                 }
+                
+                 // Calculate the total number of images after deletion and new uploads
+                var existingImageCount = document.querySelectorAll('.current-images .image-container').length;
+                var imagesMarkedForDeletion = document.querySelectorAll('.current-images input[type="checkbox"]:checked').length;
+                var maxImages = 4;
+                var newImageInputs = document.getElementById('auctionImages');
+                var totalNewImages = newImageInputs.files.length;
+                var totalImagesAfterUpdate = existingImageCount - imagesMarkedForDeletion + totalNewImages;
 
-                // Image validation
+                if (totalImagesAfterUpdate > maxImages) {
+                  e.preventDefault(); // Prevent form submission
+                  alert('You can only have a maximum of ' + maxImages + ' images per auction. Please adjust your images accordingly.');
+                }
+
+                // Image format validation
                 var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
                 var imageInputs = document.getElementById('auctionImages');
                 
