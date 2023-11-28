@@ -104,9 +104,11 @@
   $last_id = $connection->insert_id; // Get the ID of the last inserted item
   $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
   $imageUploadSuccess = true;
+  $maxImages = 4;
 
   if (isset($_FILES['auctionImages'])) {
       $total = count($_FILES['auctionImages']['name']);
+      $total = min($total, $maxImages); // Process at most 4 images
 
       for ($i = 0; $i < $total; $i++) {
           $tmpFilePath = $_FILES['auctionImages']['tmp_name'][$i];
@@ -133,8 +135,9 @@
       echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
   } else {
       echo "Some images failed to upload.";
-      // Optional: Consider rolling back the auction item insertion if image upload is critical
   }
+
+
 ?>
 
 </div>
