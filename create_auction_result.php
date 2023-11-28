@@ -107,35 +107,43 @@
   $maxImages = 4;
 
   if (isset($_FILES['auctionImages'])) {
-      $total = count($_FILES['auctionImages']['name']);
-      $total = min($total, $maxImages); // Process at most 4 images
+    $total = count($_FILES['auctionImages']['name']);
+    $total = min($total, $maxImages); // Process at most 4 images
 
-      for ($i = 0; $i < $total; $i++) {
-          $tmpFilePath = $_FILES['auctionImages']['tmp_name'][$i];
-          $fileType = mime_content_type($tmpFilePath);
+    for ($i = 0; $i < $total; $i++) {
+        // Check if a file is uploaded
+        if (!empty($_FILES['auctionImages']['name'][$i])) {
+            $tmpFilePath = $_FILES['auctionImages']['tmp_name'][$i];
+            $fileType = mime_content_type($tmpFilePath);
 
-          if (in_array($fileType, $allowedMimeTypes)) {
-              $newFilePath = "./uploads/" . basename($_FILES['auctionImages']['name'][$i]);
-              if (move_uploaded_file($tmpFilePath, $newFilePath)) {
-                  $stmt = $connection->prepare("INSERT INTO ItemImages (ItemAuctionID, ImagePath) VALUES (?, ?)");
-                  $stmt->bind_param("is", $last_id, $newFilePath);
-                  $stmt->execute();
-              } else {
-                  echo "Failed to upload image: " . htmlspecialchars($_FILES['auctionImages']['name'][$i]);
-                  $imageUploadSuccess = false;
-              }
-          } else {
-              echo "Invalid file type: " . htmlspecialchars($_FILES['auctionImages']['name'][$i]);
-              $imageUploadSuccess = false;
-          }
-      }
-  }
+            if (in_array($fileType, $allowedMimeTypes)) {
+                $newFilePath = "./uploads/" . basename($_FILES['auctionImages']['name'][$i]);
+                if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    $stmt = $connection->prepare("INSERT INTO ItemImages (ItemAuctionID, ImagePath) VALUES (?, ?)");
+                    $stmt->bind_param("is", $last_id, $newFilePath);
+                    if (!$stmt->execute()) {
+                        // Handle the case where the image insert query fails
+                        echo "Failed to save image data: " . $stmt->error;
+                        $imageUploadSuccess = false;
+                    }
+                } else {
+                    echo "Failed to upload image: " . htmlspecialchars($_FILES['auctionImages']['name'][$i]);
+                    $imageUploadSuccess = false;
+                }
+            } else {
+                echo "Invalid file type: " . htmlspecialchars($_FILES['auctionImages']['name'][$i]);
+                $imageUploadSuccess = false;
+            }
+        }
+    }
+}
 
   if ($imageUploadSuccess) {
       echo('<div class="text-center"><a href="mylistings.php">View your listing.</a></div>');
   } else {
       echo "Some images failed to upload.";
   }
+
 
 
 ?>
