@@ -37,14 +37,30 @@ $mergedResults = new_bid_watchlist_funcs($connection, $_SESSION['buyerid']);
 
 // Start of the HTML table
 echo "<table border='1'>"; // Adding border for visibility, you can style it as needed
-echo "<tr><th>Item ID</th><th>My Highest Bid</th><th>Current Highest Bid</th><th>Status</th></tr>"; // Table headers
+echo "<tr><th>Item ID</th><th>Item Name</th><th>My Highest Bid</th><th>Current Highest Bid</th><th>Status</th></tr>"; // Table headers
 
 // Display the merged results in table rows
 foreach ($mergedResults as $row) {
+    $itemAuctionID = $row['ItemAuctionID'];
+    $name_query = "SELECT Title, StartingPrice FROM Auctionitem WHERE ItemAuctionID = '$itemAuctionID'";
+
+    $result = mysqli_query($connection, $name_query);
+    if ($result && $item_row = mysqli_fetch_assoc($result)) {
+        $itemName = $item_row['Title'];
+        $startingPrice = $item_row['StartingPrice'];
+    }
+    
+    if (empty($row['max_bid_amount'])) {
+        $maxBidAmount = "No bids yet, starting price is " . $startingPrice;
+    } else {
+        $maxBidAmount = $row['max_bid_amount'];
+    }
+
     echo "<tr>";
-    echo "<td>" . $row['ItemAuctionID'] . "</td>";
+    echo "<td>" . $itemAuctionID . "</td>";
+    echo "<td>" . $itemName . "</td>";
     echo "<td>" . $row['max_bid_per_buyer'] . "</td>";
-    echo "<td>" . $row['max_bid_amount'] . "</td>";
+    echo "<td>" . $maxBidAmount . "</td>";
     echo "<td>" . $row['status']  . "</td>";
     echo "</tr>";
 }
