@@ -8,7 +8,6 @@
 <?php
 
 include 'db_connect.php';
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -19,18 +18,15 @@ error_reporting(E_ALL);
   // Feel free to extract out useful functions from browse.php and put them in
   // the shared "utilities.php" where they can be shared by multiple files.
   
-  //Ava: we want it to select the items from the auction table that correspond to the Seller ID that is currently logged in.
-  
    // TODO: Check user's credentials (cookie/session).
 
 if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSION['account_type'] == 'seller'){
-// Ava: I think the error might be here - i'm not sure if I am using th esession variables correctly as I have trid to interpret the log in page, could be an issue with strings being stored as integers?
+
   $UserID = $_SESSION['username'];
 
   $stmt = $connection -> prepare("SELECT SellerID FROM Sellers WHERE UserID = ?");
   if($stmt){
 
-    
     $stmt-> bind_param("i", $UserID);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -38,8 +34,6 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
     if ($result->num_rows>0){
       $row = $result->fetch_assoc();
       $SellerID = $row['SellerID'];
-  
-
   
   // TODO: Perform a query to pull up their auctions.
 
@@ -78,16 +72,6 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
     }
   }
 }
-
-
-
-  
-
-  
-
-
- 
-  
   
 ?>
 
