@@ -36,7 +36,7 @@ $buyer = $_SESSION['buyerid']; // Specify the buyer
 $mergedResults = new_bid_watchlist_funcs($connection, $_SESSION['buyerid']);
 
 // Start of the HTML table
-echo "<table border='1'>"; // Adding border for visibility, you can style it as needed
+echo "<table border='1'>";
 echo "<tr><th>Item ID</th><th>Item Name</th><th>My Highest Bid</th><th>Current Highest Bid</th><th>Status</th></tr>"; // Table headers
 
 // Display the merged results in table rows
