@@ -30,9 +30,8 @@
   $now = new DateTime();
   // Format the DateTime object to a string
   $formattedNow = $now->format('Y-m-d H:i:s');
-  // Prepare the query
+  // Get the notification
   $notifQuery = "SELECT Message, NotificationID FROM Notification WHERE UserID = '$userId' AND DateTime < NOW() AND `Read` = 0";
-  // Execute the query
   $result = $connection->query($notifQuery);
   // Check for a matching notification
   if ($result->num_rows > 0) {
@@ -45,7 +44,7 @@
     echo "</script>";
     }
 
-  // Check if this is an AJAX request for deleting a notification
+  // Mark as read
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['markNotifRead'])) {
     $deleteNotifQuery = $connection->prepare("UPDATE Notification SET `Read` = 1 WHERE NotificationID = ?");
     $deleteNotifQuery->bind_param("i", $_POST['markNotifRead']); 
@@ -57,8 +56,6 @@
         echo "Error or no notif found to mark as read";
     }
   }
-} else {
-  echo "Not logged in";
 }
 ?>
 
@@ -163,7 +160,7 @@
                 }
             }
 
-            xhr.send("markNotifRead=" + markNotifRead); ////// where is this being sent to 
+            xhr.send("markNotifRead=" + markNotifRead); 
         }
 
     </script>

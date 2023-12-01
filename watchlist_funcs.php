@@ -148,13 +148,13 @@ function new_bid_watchlist_funcs($connection, $buyer) {
   $mergedResults[$row1['ItemAuctionID']] = [
     'ItemAuctionID' => $row1['ItemAuctionID'],
     'max_bid_amount' => $row1['max_bid_amount'],
-    'max_bid_per_buyer' => "None yet", // Assuming null if not present in $results2 - aka, where buyer has not bidded anything, but is on the watch list 
+    'max_bid_per_buyer' => "None yet", // null if not present in $results2 - aka, where buyer has not bidded anything, but is on the watch list 
     'status' => "You have not yet made a bid."
   ];
   }
   }
 
-  // If you need the results to be re-indexed numerically
+
   $mergedResults = array_values($mergedResults);
 
   // Return the merged results

@@ -2,9 +2,9 @@
 <?php require("utilities.php")?>
 
 <?php
-  ini_set('display_errors', 1);
-  ini_set('display_startup_errors', 1);
-  error_reporting(E_ALL);
+  ini_set('display_errors', 0);
+  ini_set('display_startup_errors', 0);
+  error_reporting(0);
 
   include 'db_connect.php';
 
@@ -20,9 +20,6 @@
   
 
   if (!empty($_SESSION)) {
-    echo "<pre>";
-    print_r($_SESSION);
-    echo "</pre>";
     $has_session = true;
     // the watchlist is only relevant to buyers only, so only if account type is buyer, 
     // start executing the search inside watchlist 
@@ -43,7 +40,7 @@
     }
     }
   } else {
-    echo "No session variables are set.";
+    // echo "No session variables are set.";
     $has_session = false;
     $watching = false;
   }
@@ -138,6 +135,30 @@
     <?php echo($description); ?>
     </div>
 
+    <!-- Image gallery section -->
+    <div class="image-gallery">
+      <?php
+      $imageQuery = "SELECT ImagePath FROM ItemImages WHERE ItemAuctionID = ?";
+      $stmt = $connection->prepare($imageQuery);
+      $stmt->bind_param("i", $item_id);
+      $stmt->execute();
+      $imageResult = $stmt->get_result();
+
+      $hasImages = false;
+      if ($imageResult->num_rows > 0) {
+          while ($imageRow = $imageResult->fetch_assoc()) {
+              echo "<img src='" . htmlspecialchars($imageRow['ImagePath']) . "' alt='Item Image' class='img-thumbnail' onclick='changeMainImage(\"" . htmlspecialchars($imageRow['ImagePath']) . "\")'>";
+              $hasImages = true;
+          }
+      }
+      
+      if (!$hasImages) {
+          // Display default image
+          echo "<img src='default.jpg' alt='Default Image' class='img-thumbnail'>";
+      }
+      ?>
+    </div>
+
   </div>
 
   <div class="col-sm-4"> <!-- Right col with bidding info -->
@@ -156,7 +177,7 @@
 <?php else: ?>
      Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
-    <?php if ($_SESSION['account_type'] == 'buyer'): ?>
+    <?php if ($_SESSION['account_type'] && $_SESSION['account_type'] == 'buyer'): ?>
     <!-- Bidding form -->
     <form method="POST" action="place_bid.php">
       <div class="input-group">
@@ -176,6 +197,9 @@
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
+    <?php else: ?>
+           <!-- Display the register message for users who are not logged in as buyers -->
+           <p class="alert alert-info">Register as a buyer to make a bid!</p>
     <?php endif ?>
     <!-- TABLE OF ALL BIDS -->
     <?php if ($_SESSION['account_type'] == 'buyer' || ($_SESSION['account_type'] == 'seller' && $listing_seller == $_SESSION['sellerid'])): ?>

@@ -39,9 +39,17 @@
           <?php
                   //$mybids_query = "SELECT * FROM Bid WHERE BuyerID = $buyerid";
                   // ordered by time within id
-                   $mybids_query = "SELECT Bid.BidAmount, Bid.ItemAuctionID, Bid.BidTime, AuctionItem.Title, AuctionItem.EndDate, AuctionItem.ReservePrice, Bid.BuyerID 
-                   FROM Bid JOIN AuctionItem ON Bid.ItemAuctionID = AuctionItem.ItemAuctionID
-                   ORDER BY Bid.ItemAuctionID, Bid.BidTime DESC;";
+                   /* $mybids_query = "SELECT 
+                   Bid.BidAmount, 
+                   Bid.ItemAuctionID, 
+                   Bid.BidTime, 
+                   AuctionItem.Title, 
+                   AuctionItem.EndDate, 
+                   AuctionItem.ReservePrice, 
+                   Bid.BuyerID 
+                   FROM Bid 
+                   JOIN AuctionItem ON Bid.ItemAuctionID = AuctionItem.ItemAuctionID
+                   ORDER BY Bid.ItemAuctionID, Bid.BidTime DESC;"; */
 
                    // ordering where the most recent transaction appears first and then any previous transactions of that item id are grouped together,
                    $mybids_query = "SELECT 
@@ -92,10 +100,8 @@
                           //$listingStatus = ($row["BidTime"] < $row["EndDate"]) ? "Ongoing" : "Ended";
 
                           // identifying the highest bid for that item_id
-                          $item_id = $row["ItemAuctionID"];
-                          // does not differentiate between the highest bid and other bids by the same buyer... basically gets all of them ... 
+                          $item_id = $row["ItemAuctionID"]; 
 
-                          //// prob need to comment this out! 
                           $highestbid_query = "SELECT MAX(BidAmount) as maxbid FROM Bid WHERE ItemAuctionID = $item_id;";
                           $result2 = $connection->query($highestbid_query);
                           $highestBidRow = $result2->fetch_assoc();
@@ -107,11 +113,9 @@
                           $buyerHighestBidRow = $buyerResult->fetch_assoc();
                           $buyerHighestBid = $buyerHighestBidRow["buyerMaxBid"];
 
-                          //$bidStatus = ($row["BidAmount"] >= $highestBid) ? "Highest" : "NA";
-
-                          if ($listingStatus == "Ended" && $highestBid < $row["ReservePrice"]) {
-                            $bidStatus = "Reserve not met, item not sold :(";
-                          } elseif ($listingStatus == "Ended" && $highestBid >= $row["ReservePrice"] && $row["BidAmount"] == $buyerHighestBid) {
+                          if ($listingStatus == "Ended" && $highestBid < $row["ReservePrice"] && $row["BidAmount"] == $highestBid) {
+                            $bidStatus = "You had the highest bid, but the reserve was not met, item not sold :(";
+                          } elseif ($listingStatus == "Ended" && $highestBid >= $row["ReservePrice"] && $row["BidAmount"] == $highestBid) {
                             $bidStatus = "YOU ARE THE WINNER OF THIS ITEM. This is your winning bid.";
                           } elseif ($listingStatus == "Ongoing" && $row["BidAmount"] >= $highestBid) {
                             $bidStatus = "Current Highest";
