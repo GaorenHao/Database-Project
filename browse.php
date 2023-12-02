@@ -151,7 +151,8 @@ if ($ordering == 'pricelow') {
         echo '<div class="image-wrapper">'; // Start of image wrapper
         if ($imageResult && $imageResult->num_rows > 0) {
             $imageRow = $imageResult->fetch_assoc();
-            $relativeImagePath = strpos($imageRow['ImagePath'], 'uploads/') !== false ? htmlspecialchars($imageRow['ImagePath']) : $imageFolderPath . htmlspecialchars($imageRow['ImagePath']);
+            $relativeImagePath = strpos($imageRow['ImagePath'], 'uploads/') !== false ? 
+            htmlspecialchars($imageRow['ImagePath']) : $imageFolderPath . htmlspecialchars($imageRow['ImagePath']);
             if (file_exists($relativeImagePath)) {
                 echo '<img src="' . $relativeImagePath . '" alt="Item Image" class="item-image">';
             } else {
