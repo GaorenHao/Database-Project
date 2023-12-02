@@ -23,8 +23,8 @@
               issue, give some semi-helpful feedback to user. */
 
   $auctionTitle = $_POST['auctionTitle']; 
-  $auctionDetails = $_POST['auctionDetails']; // and leave this one out for now :) 
-  $auctionCategory = $_POST['auctionCategory']; // hmm... do we need to connect the database options to here? maybe leave it out for now ... 
+  $auctionDetails = $_POST['auctionDetails'];
+  $auctionCategory = $_POST['auctionCategory'];  
   $auctionStartPrice = $_POST['auctionStartPrice'];
   $auctionReservePrice = $_POST['auctionReservePrice'];
   $auctionEndDate = $_POST['auctionEndDate'];
@@ -71,20 +71,6 @@
       exit;
   }
 
-  //// *************************** mapping userid to sellerid
-  $stmt = $connection->prepare("SELECT `CategoryID` FROM `Categories` WHERE `CategoryName` = ?");
-  $stmt->bind_param("s", $auctionCategory);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-  if ($result->num_rows > 0) {
-      $row = $result->fetch_assoc();
-      $categoryID = $row['CategoryID'];
-  } else {
-      // Handle the case where the category does not exist
-      echo "Category not found";
-      exit;
-  }
 
 
   /* TODO #3: If everything looks good, make the appropriate call to insert
