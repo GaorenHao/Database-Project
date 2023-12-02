@@ -8,6 +8,10 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
     header('Location: browse.php');
   }
 
+// Fetch categories for the dropdown
+$categoryQuery = "SELECT * FROM Categories";
+$categoryResult = $connection->query($categoryQuery);
+$categories = $categoryResult->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="container">
@@ -29,7 +33,7 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
             <label for="auctionTitle" class="col-sm-2 col-form-label text-right">Title of auction</label>
             <div class="col-sm-10">
               <input type="text" class="form-control" id="auctionTitle" name="auctionTitle" placeholder="e.g. Black mountain bike">
-              <small id="titleHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> A short description of the item you're selling, which will display in listings.</small>
+              <small id="titleHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
             </div>
           </div>
           <div class="form-group row">
@@ -43,16 +47,17 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
             <label for="auctionCategory" class="col-sm-2 col-form-label text-right">Category</label>
             <div class="col-sm-10">
               <select class="form-control" id="auctionCategory" name="auctionCategory">
-                <option selected>Choose...</option>
-                <option value="fashion">fashion</option>
-                <option value="electronics">electronics</option>
-                <option value="home">home</option>
-                <option value="beauty">beauty</option>
-                <option value="outdoor">outdoor</option>
-                <option value="art">art</option>
+                  <option selected>Choose...</option>
+                  <?php foreach ($categories as $category): ?>
+                      <option value="<?php echo htmlspecialchars($category['CategoryID']); ?>">
+                          <?php echo htmlspecialchars($category['CategoryName']); ?>
+                      </option>
+                  <?php endforeach; ?>
               </select>
-              <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Select a category for this item.</small>
-            </div>
+              <small id="categoryHelp" class="form-text text-muted">
+                  <span class="text-danger">* Required.</span> Select a category for this item.
+              </small>
+          </div>
           </div>
           <div class="form-group row">
             <label for="auctionStartPrice" class="col-sm-2 col-form-label text-right">Starting price</label>
@@ -75,7 +80,7 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
                 </div>
                 <input type="number" class="form-control" id="auctionReservePrice" name="auctionReservePrice">
               </div>
-              <small id="reservePriceHelp" class="form-text text-muted">Optional. Auctions that end below this price will not go through. This value is not displayed in the auction listing.</small>
+              <small id="reservePriceHelp" class="form-text text-muted">Auctions that end below this price will not go through. This value is not displayed in the auction listing. If not specified, it will be automatically set to your starting price.</small>
             </div>
           </div>
           <div class="form-group row">
@@ -95,46 +100,71 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
           <button type="submit" class="btn btn-primary form-control">Create Auction</button>
           <script>
             document.addEventListener('DOMContentLoaded', function() {
-              document.getElementById('createAuctionForm').addEventListener('submit', function(e) {
-                var endDateInput = document.getElementById('auctionEndDate');
-                var selectedDate = new Date(endDateInput.value);
-                var now = new Date();
+                document.getElementById('createAuctionForm').addEventListener('submit', function(e) {
 
-                if (selectedDate <= now) {
-                  e.preventDefault(); // Prevent form submission
-                  alert('Please select a future date for the auction end.');
-                }
-                var startingPrice = parseFloat(document.getElementById("auctionStartPrice").value);
-                var reservePrice = parseFloat(document.getElementById("auctionReservePrice").value);
+                    // Fetching form field values
+                    var auctionTitle = document.getElementById("auctionTitle").value;
+                    var auctionCategory = document.getElementById("auctionCategory").value;
+                    var auctionStartPrice = document.getElementById("auctionStartPrice").value;
+                    var auctionEndDate = document.getElementById("auctionEndDate").value;
 
-                // Check if reserve price is not higher than starting price
-                if (reservePrice < startingPrice) {
-                  e.preventDefault(); // Prevent form submission
-                  alert("Reserve price must be higher than the starting price.");
-                }
-                // Image upload validation
-                var imageInputs = document.getElementById('auctionImages');
-                var maxImages = 4;
+                    // Validattion for required fields
+                    if (!auctionTitle.trim()) {
+                        alert("Please enter a title for the auction.");
+                        e.preventDefault();
+                        return;
+                    }
+                    if (auctionCategory === "Choose..." || !auctionCategory.trim()) {
+                        alert("Please select a category.");
+                        e.preventDefault();
+                        return;
+                    }
+                    if (!auctionStartPrice.trim()) {
+                        alert("Please enter a starting price.");
+                        e.preventDefault();
+                        return;
+                    }
 
-                if (imageInputs.files.length > maxImages) {
-                  e.preventDefault(); // Prevent form submission
-                  alert('You can only upload a maximum of ' + maxImages + ' images.');
-                }
-                // Image format validation
-                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-                var imageInputs = document.getElementById('auctionImages');
-                
-                for (var i = 0; i < imageInputs.files.length; i++) {
-                  var file = imageInputs.files[i];
-                  if (!allowedExtensions.exec(file.name)) {
-                    e.preventDefault();
-                    alert('Please only upload image format files (jpg, jpeg, png, gif).');
-                    break;
-                  }
-                }
-              });
+                    // Validation for required date & future date
+                    var selectedDate = new Date(auctionEndDate);
+                    var now = new Date();
+                    if (!auctionEndDate.trim() || selectedDate <= now) {
+                        alert("Please select a future date for the auction end.");
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // Validation for reserve price
+                    var reservePrice = parseFloat(document.getElementById("auctionReservePrice").value);
+                    if (reservePrice && reservePrice < parseFloat(auctionStartPrice)) {
+                        alert("Reserve price must be higher than the starting price.");
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // Validation for image upload
+                    var imageInputs = document.getElementById('auctionImages');
+                    var maxImages = 4;
+                    if (imageInputs.files.length > maxImages) {
+                        alert('You can only upload a maximum of ' + maxImages + ' images.');
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // Validation for image format
+                    var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                    for (var i = 0; i < imageInputs.files.length; i++) {
+                        var file = imageInputs.files[i];
+                        if (!allowedExtensions.exec(file.name)) {
+                            alert('Please only upload image format files (jpg, jpeg, png, gif).');
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+                });
             });
           </script>
+
 
         </form>
       </div>

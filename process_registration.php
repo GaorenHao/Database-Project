@@ -43,13 +43,13 @@ if ($stmt->execute()) {
     $stmt->bind_param("i", $recent_userID);
     
 
-    if (!$stmt->execute()) {
-      
-      echo "Error creating seller:".$stmt->error;
-      exit;
+    if ($stmt->execute()) {
+        // Redirect to the result page instead of index.php
+        header('Location: process_registration_result.php');
+        exit();
+    } else {
+        echo "Error: " . $stmt->error;
     }
-
-    echo "seller created";
   }
 
   elseif ($accountType === 'buyer'){
@@ -57,13 +57,13 @@ if ($stmt->execute()) {
     $stmt = $connection->prepare("INSERT INTO buyer (UserID) VALUES (?)");
     $stmt->bind_param("i", $recent_userID);
 
-    if (!$stmt->execute()) {
-      
-      echo "Error creating Buyer:".$stmt->error;
-      exit;
+    if ($stmt->execute()) {
+        // Redirect to the result page instead of index.php
+        header('Location: process_registration_result.php');
+        exit();
+    } else {
+        echo "Error: " . $stmt->error;
     }
-
-    echo "buyer created";
 
   }
   $_SESSION['logged_in'] = true;

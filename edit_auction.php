@@ -66,6 +66,7 @@
             <label for="auctionTitle" class="col-sm-2 col-form-label text-right">Title of auction</label>
             <div class="col-sm-10">
               <input type="text" class="form-control" id="auctionTitle" name="auctionTitle" value="<?php echo htmlspecialchars($auctionTitle); ?>">
+              <small id="titleHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
             </div>
           </div>
 
@@ -73,6 +74,7 @@
             <label for="auctionDetails" class="col-sm-2 col-form-label text-right">Details</label>
             <div class="col-sm-10">
               <textarea class="form-control" id="auctionDetails" name="auctionDetails" rows="4"><?php echo htmlspecialchars($auctionDetails); ?></textarea>
+              <small id="detailsHelp" class="form-text text-muted">Full details of the listing to help bidders decide if it's what they're looking for.</small>
             </div>
           </div>
 
@@ -87,19 +89,20 @@
                 }
                 ?>
               </select>
+              <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Select a category for this item.</small>
             </div>
           </div>
-
           
           <div class="form-group row">
             <label for="auctionStartPrice" class="col-sm-2 col-form-label text-right">Starting price</label>
             <div class="col-sm-10">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">£</span>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">£</span>
+                    </div>
+                    <input type="number" class="form-control" id="auctionStartPrice" name="auctionStartPrice" value="<?php echo htmlspecialchars($auctionStartPrice); ?>" readonly>
+                    <small id="startBidHelp" class="form-text text-muted">* Cannot be changed. Please unlist your auction item and create a new auction if you would like to change this.</small>
                 </div>
-                <input type="number" class="form-control" id="auctionStartPrice" name="auctionStartPrice" value="<?php echo htmlspecialchars($auctionStartPrice); ?>">
-              </div>
             </div>
           </div>
 
@@ -112,6 +115,7 @@
                 </div>
                 <input type="number" class="form-control" id="auctionReservePrice" name="auctionReservePrice" value="<?php echo htmlspecialchars($auctionReservePrice); ?>">
               </div>
+              <small id="reservePriceHelp" class="form-text text-muted">Auctions that end below this price will not go through. This value is not displayed in the auction listing</small>
             </div>
           </div>
 
@@ -119,6 +123,7 @@
             <label for="auctionEndDate" class="col-sm-2 col-form-label text-right">End date</label>
             <div class="col-sm-10">
               <input type="datetime-local" class="form-control" id="auctionEndDate" name="auctionEndDate" value="<?php echo htmlspecialchars(str_replace(' ', 'T', $auctionEndDate)); ?>">
+              <small id="endDateHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Day for the auction to end.</small>
             </div>
           </div>
 
@@ -150,13 +155,40 @@
           <script>
             document.addEventListener('DOMContentLoaded', function() {
               document.getElementById('editAuctionForm').addEventListener('submit', function(e) {
+                var titleInput = document.getElementById("auctionTitle").value.trim();
+                var categorySelect = document.getElementById("auctionCategory");
+                var selectedCategory = categorySelect.options[categorySelect.selectedIndex].value;
+                var startDateInput = parseFloat(document.getElementById("auctionStartPrice").value);
                 var endDateInput = document.getElementById('auctionEndDate');
                 var selectedDate = new Date(endDateInput.value);
                 var now = new Date();
 
-                if (selectedDate <= now) {
-                  e.preventDefault(); // Prevent form submission
-                  alert('Please select a future date for the auction end.');
+                // Title validation
+                if (!titleInput) {
+                    alert("Please enter a title for the auction.");
+                    e.preventDefault();
+                    return;
+                }
+
+                // Category validation
+                if (!selectedCategory || selectedCategory === "Choose...") {
+                    alert("Please select a category for the auction.");
+                    e.preventDefault();
+                    return;
+                }
+
+                // Starting price validation
+                if (isNaN(startDateInput) || startDateInput <= 0) {
+                    alert("Please enter a valid starting price for the auction.");
+                    e.preventDefault();
+                    return;
+                }
+
+                // Date validation
+                if (!endDateInput.value.trim() || selectedDate <= now) {
+                    alert("Please select a future date for the auction end.");
+                    e.preventDefault();
+                    return;
                 }
                 var startingPrice = parseFloat(document.getElementById("auctionStartPrice").value);
                 var reservePrice = parseFloat(document.getElementById("auctionReservePrice").value);
