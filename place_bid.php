@@ -66,7 +66,9 @@ if ($bid <= $current_price) {
             WHERE BuyerID = ? AND ItemAuctionID = ?
         )";
         $insertwatchlist_stmt = $connection->prepare($insertwatchlist_query);
-        $insertwatchlist_stmt->bind_param("ii", $buyerid, $item_id); 
+    
+        // Bind four parameters instead of two
+        $insertwatchlist_stmt->bind_param("iiii", $buyerid, $item_id, $buyerid, $item_id);
         $insertwatchlist_stmt->execute();
 
         if ($insertwatchlist_stmt->affected_rows > 0) {
