@@ -11,7 +11,7 @@ if (isset($_SESSION['username'])) {
     // Prepare and execute logout query
     $logout_query = "UPDATE Users SET LastLogout = NOW() WHERE UserID = ?";
     $stmt = $connection->prepare($logout_query);
-    $stmt->bind_param("i", $userID); // Assuming userID is an integer, use "s" if it's a string
+    $stmt->bind_param("i", $userID); 
 
     if ($stmt->execute()) {
         // Clear session data and destroy the session

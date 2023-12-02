@@ -121,12 +121,12 @@ function new_bid_watchlist_funcs($connection, $buyer) {
   $results1 = $result1->fetch_all(MYSQLI_ASSOC);
   $results2 = $result2->fetch_all(MYSQLI_ASSOC);
 
+  //////// PART 2 - RESULT MERGING & PROCESSING
 
-
-  // Merge Results --- probably item5 is not in here ! 
+  // Merge Results
   $mergedResults = [];
 
-  // First, merge the results based on matching ItemAuctionID - where both tables have something 
+  // Part 2.1 - First, merge the results based on matching ItemAuctionID - where both tables have something 
   foreach ($results1 as $row1) {
   foreach ($results2 as $row2) {
   if ($row1['ItemAuctionID'] == $row2['ItemAuctionID']) {
@@ -142,7 +142,7 @@ function new_bid_watchlist_funcs($connection, $buyer) {
   }
   }
 
-  // Add unique entries from results1
+  // Part 2.2 - Add unique entries from results1
   foreach ($results1 as $row1) {
   if (!array_key_exists($row1['ItemAuctionID'], $mergedResults)) {
   $mergedResults[$row1['ItemAuctionID']] = [

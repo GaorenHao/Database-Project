@@ -31,7 +31,7 @@ $now = new DateTime();
 $formattedNow = $now->format('Y-m-d H:i:s');
 $buyerid = $_SESSION['buyerid']; 
 
-//// BID LOGIC >>>> NEW BIDS MUST BE HIGHER THAN THE CURRENT HIGHEST BID
+//// [1] BID LOGIC >>>> NEW BIDS MUST BE HIGHER THAN THE CURRENT HIGHEST BID
 
 $bid = $_POST['bid']; 
 $item_id = $_POST['item_id'];
@@ -50,7 +50,7 @@ if ($bid <= $current_price) {
   // Execute the prepared statement
   if ($stmt->execute()) {
     echo "New bid added successfully.";
-
+    //////////////////////////// [ 2 ] ADD TO WATCHLIST IF NOT IN ALREADY ////////////////////////
     // check if this item_id & buyerid pair is in watchlist already. add if not. 
     $checkwatchlist_stmt = $connection->prepare("SELECT * FROM WatchListItems WHERE BuyerID = ? AND ItemAuctionID = ?");
     $checkwatchlist_stmt->bind_param("ii", $buyerid, $item_id); // Assuming both IDs are strings; use "ii" if they are integers
@@ -74,6 +74,10 @@ if ($bid <= $current_price) {
     }
 
 
+    // simple query to get name of item, for display in the notif message
+    $name_query = "SELECT Title FROM AuctionItem WHERE ItemAuctionID = $item_id";
+    $name = mysqli_fetch_assoc(mysqli_query($connection, $name_query));
+
     // identify all other buyers who have watchlisted this item... 
     // $other_buyer_query = "SELECT BuyerID FROM WatchListItems WHERE ItemAuctionID = $item_id AND BuyerID <> $buyerid"; 
     // results a list of all other buyerIDs who have watchlisted this item ^^ 
@@ -81,6 +85,8 @@ if ($bid <= $current_price) {
     // need to send notification to all other watchlist buyerIDs, that there has been a new bid. (except for the previous highest buyer, who will get a different message)
     // need to do mapping between buyerID <-> userID... so this via join
     // this will give us a list of userid
+    //
+    /////////////// [ 3B ] FINDING ALL OTHER WATCHERS & CREATING NOTIFICATIONS //////////////////////////////
     $other_buyer_query = "SELECT Buyer.UserID 
     FROM WatchListItems JOIN Buyer ON WatchListItems.BuyerID = Buyer.BuyerID 
     WHERE WatchListItems.ItemAuctionID = $item_id AND Buyer.BuyerID <> $buyerid AND Buyer.BuyerID <> $previous_highest_buyerid"; 
@@ -90,7 +96,7 @@ if ($bid <= $current_price) {
         /// go through one row at a time
         while ($row = mysqli_fetch_assoc($result)) {
             $userId = $row['UserID'];
-            $message = "Your watchlist item $item_id has a new bid at $bid.";
+            $message = "Your watchlist item $item_id: $name has a new bid at $bid.";
             $type = "Watchlist General Update";
 
             // Insert into notifications table
@@ -104,8 +110,8 @@ if ($bid <= $current_price) {
         echo "Error: " . mysqli_error($connection);
     }
 
+    /////////////// [ 3A ] ALERTING PREVIOUS TOP BIDDER //////////////////////////////
     // if the current buyerid =/= previous buyerid, then we need to create a notification to alert that the buyer has been outbid ... 
-
     // map the previous buyer id to user id
     if ($buyerid != $previous_highest_buyerid) {
         $userid_map_query = "SELECT UserID FROM Buyer WHERE BuyerID = $previous_highest_buyerid";
@@ -115,7 +121,7 @@ if ($bid <= $current_price) {
             $row = mysqli_fetch_assoc($result);
 
             $userId = $row['UserID'];
-            $message = "Your watchlist item $item_id has been outbid. You were previously the highest bidder, but the highest bid is now $bid.";
+            $message = "Your watchlist item $item_id: $name has been outbid. You were previously the highest bidder, but the highest bid is now $bid.";
             $type = "Watchlist Winner Outbid";
     
             // Insert into notifications table

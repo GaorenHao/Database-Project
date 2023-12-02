@@ -38,7 +38,30 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
   
   // TODO: Perform a query to pull up their auctions.
 
-      $stmt = $connection->prepare("SELECT ItemAuctionID, Title, Description, StartingPrice, ReservePrice, EndDate  FROM AuctionItem WHERE SellerID = ?");
+      //$stmt = $connection->prepare("SELECT ItemAuctionID, Title, Description, StartingPrice, ReservePrice, EndDate  FROM AuctionItem WHERE SellerID = ?");
+
+      $stmt_query = "SELECT 
+      Bid.ItemAuctionID,
+      AuctionItem.Title,
+      AuctionItem.Description,
+      AuctionItem.StartingPrice,
+      AuctionItem.ReservePrice,
+      AuctionItem.EndDate,
+      Bid.BuyerID,
+      MAX(Bid.BidAmount) as MaxBid
+      FROM 
+          Bid
+      JOIN 
+          AuctionItem ON Bid.ItemAuctionID = AuctionItem.ItemAuctionID
+      WHERE 
+          AuctionItem.SellerID = ?
+      GROUP BY 
+          Bid.ItemAuctionID, Bid.BuyerID;
+      ";
+
+      $stmt = $connection->prepare($stmt_query);
+
+
       if($stmt){
         $stmt->bind_param("i", $SellerID);
         $stmt->execute();
@@ -49,6 +72,24 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
          if ($result->num_rows > 0) {
           echo '<div class="row">'; // Start of row
           while ($row = $result->fetch_assoc()) {
+              $now = new DateTime();
+              $endDateFormat = new DateTime($row["EndDate"]); // Assuming $row["EndDate"] is a valid date string
+              $listingStatus = ($now < $endDateFormat) ? "Ongoing" : "Ended";
+              $highestPriceLabel = "Current Price";
+              $highestBidderLabel = "Highest Bidder";
+
+              if ($listingStatus === "Ended") {
+                if ($row['MaxBid'] >= $row['ReservePrice']) {
+                    // If the max bid is equal to or greater than the reserve price
+                    $listingStatus = "<strong>Ended - SOLD!</strong>";
+                    $highestPriceLabel = "SOLD FOR";
+                    $highestBidderLabel = "SOLD TO BUYER ID";
+                } elseif ($row['MaxBid'] < $row['ReservePrice']) {
+                    // If the max bid is less than the reserve price
+                    $listingStatus = "Ended - Reserve not met";
+                }
+             }
+
               $itemLink = "edit_auction.php?item_id=" . $row['ItemAuctionID'];
       
               echo '<div class="col-md-3">';
@@ -67,17 +108,22 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
                   echo '<img src="default.jpg" alt="Default Image" class="item-image">';
               }
               echo '</div>'; // End of image wrapper
-      
-              echo "<h5>" . htmlspecialchars($row['Title']) . "</h5>";
+
+              echo '<div style="font-size: 0.75em;">';
+              echo "<h6>" . htmlspecialchars($row['Title']) . "</h6>";
               echo "<p class='description'>" . htmlspecialchars($row['Description']) . "</p>";
       
               echo '<div class="item-info">';
+              echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
               echo "<p>Starting Price: £" . htmlspecialchars($row['StartingPrice']) . "</p>";
               echo "<p>Reserve Price: £" . htmlspecialchars($row['ReservePrice']) . "</p>";
-              echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
+              echo "<p>" . $highestPriceLabel . ": " . $row['MaxBid'] . "</p>";
+              echo "<p>Status: " . htmlspecialchars($listingStatus) . "</p>";
+              echo "<p>" . $highestBidderLabel . ": " . $row['BuyerID'] . "</p>";
               echo '</div>'; // End of item-info
               echo '</div>'; // End of item-box
               echo '</a>';
+              echo '</div>'; // End of col-md-3
               echo '</div>'; // End of col-md-3
           }
           echo '</div>'; // End of row

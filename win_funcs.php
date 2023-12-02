@@ -10,7 +10,8 @@ function check_ending_listings($connection, $userId) {
     
   if ($result) {
     $row = mysqli_fetch_assoc($result);
-    $lastlogout = $row['LastLogout']; 
+    $lastlogout = date('Y-m-d H:i:s', strtotime($row['LastLogout']));
+
   } else {
     echo "Error in last logout query ";
   }
@@ -24,10 +25,11 @@ function check_ending_listings($connection, $userId) {
   // get highest / most recent (should be the same according to logic) bids corresponding only to the listings that have ended
   $winning_bids_query = "SELECT BuyerID, Bid.ItemAuctionID, BidAmount FROM Bid
   INNER JOIN (
-  SELECT ItemAuctionID, MAX(BidTime) as MaxBidTime
-  FROM Bid GROUP BY ItemAuctionID) AS WinningBids 
-  ON Bid.ItemAuctionID = WinningBids.ItemAuctionID 
-            AND Bid.BidTime = WinningBids.MaxBidTime";
+    SELECT ItemAuctionID, MAX(BidTime) as MaxBidTime
+    FROM Bid GROUP BY ItemAuctionID) 
+  AS most_recent 
+  ON Bid.ItemAuctionID = most_recent.ItemAuctionID 
+            AND Bid.BidTime = most_recent.MaxBidTime";
 
   // join together by item id
   $winner_match_query = "SELECT AuctionItem.ItemAuctionID, Title, SellerID, StartingPrice, ReservePrice, EndDate, BuyerID, BidAmount 
@@ -80,14 +82,14 @@ FROM
                 Bid
             GROUP BY
                 ItemAuctionID
-        ) AS WinningBids
+        ) AS most_recent
     ON
-        Bid.ItemAuctionID = WinningBids.ItemAuctionID AND Bid.BidTime = WinningBids.MaxBidTime
+        Bid.ItemAuctionID = most_recent.ItemAuctionID AND Bid.BidTime = most_recent.MaxBidTime
     ) AS MaxBid
 ON
     AuctionItem.ItemAuctionID = MaxBid.ItemAuctionID
 WHERE
-    AuctionItem.EndDate BETWEEN '2023-11-21 23:12:32' AND NOW()) AS WinningTransactions
+    AuctionItem.EndDate BETWEEN '$lastlogout' AND NOW()) AS WinningTransactions
 LEFT JOIN Sellers ON Sellers.SellerID = WinningTransactions.SellerID
 LEFT JOIN Buyer ON Buyer.BuyerID = WinningTransactions.BuyerID;
   ";
