@@ -41,7 +41,7 @@ $previous_highest_buyerid = $_POST['previous_highest_buyerid'];
 if ($bid <= $current_price) {
   // Handle the error
   // Redirect back to the form with an error message or display the message directly
-  echo('Your bid is too low. Please submit a bid higher than the current bid. Redirecting you back to the listing ... ');
+  echo('Your bid is too low. Please submit a bid higher than the current bid. Please go back to the listing ... ');
 } else {
     // insert data into the table 
   $stmt = $connection->prepare("INSERT INTO Bid (BuyerID, ItemAuctionID, BidTime, BidAmount) VALUES (?, ?, ?, ?)");
@@ -59,7 +59,12 @@ if ($bid <= $current_price) {
 
     // If the pair doesn't exist, insert it
     if ($result->num_rows == 0) {
-        $insertwatchlist_query = "INSERT INTO WatchListItems (BuyerID, ItemAuctionID) VALUES (?, ?)";
+        $insertwatchlist_query = "INSERT INTO WatchListItems (BuyerID, ItemAuctionID) 
+        SELECT ?, ?
+        WHERE NOT EXISTS (
+            SELECT 1 FROM WatchListItems 
+            WHERE BuyerID = ? AND ItemAuctionID = ?
+        )";
         $insertwatchlist_stmt = $connection->prepare($insertwatchlist_query);
         $insertwatchlist_stmt->bind_param("ii", $buyerid, $item_id); 
         $insertwatchlist_stmt->execute();
@@ -76,7 +81,15 @@ if ($bid <= $current_price) {
 
     // simple query to get name of item, for display in the notif message
     $name_query = "SELECT Title FROM AuctionItem WHERE ItemAuctionID = $item_id";
-    $name = mysqli_fetch_assoc(mysqli_query($connection, $name_query));
+    $result = mysqli_query($connection, $name_query);
+
+    if ($result) {
+        $row = mysqli_fetch_assoc($result);
+        $name = $row['Title']; // Access the 'Title' from the associative array
+    } else {
+        // Handle the error case here, e.g., query failed
+        $name = null; // or any default value you prefer
+    }
 
     // identify all other buyers who have watchlisted this item... 
     // $other_buyer_query = "SELECT BuyerID FROM WatchListItems WHERE ItemAuctionID = $item_id AND BuyerID <> $buyerid"; 
@@ -104,6 +117,10 @@ if ($bid <= $current_price) {
             $insert_notif->bind_param("isss", $userId, $formattedNow, $message, $type);
 
             // Execute the prepared statement
+            if (!$insert_notif->execute()) {
+                // Handle error here
+                echo "Error: " . $insert_notif->error;
+            }
             
         }
     } else {
