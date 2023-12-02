@@ -50,20 +50,19 @@
       exit;
     }
   }
-  
+  // Default description if necessay
   if (empty($auctionDetails)) {
     $auctionDetails = "No description is given for this item.";
   }
 
+  // Check if catagory if found in the database
   if ($result->num_rows > 0) {
       $row = $result->fetch_assoc();
       $categoryID = $row['CategoryID'];
   } else {
-      // Handle the case where the category does not exist
       echo "Category not found";
       exit;
   }
-
 
   //// *************************** mapping category name to category id
   $stmt = $connection->prepare("SELECT `CategoryID` FROM `Categories` WHERE `CategoryName` = ?");
