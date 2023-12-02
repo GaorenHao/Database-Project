@@ -55,14 +55,6 @@
     $auctionDetails = "No description is given for this item.";
   }
 
-  // Check if catagory if found in the database
-  if ($result->num_rows > 0) {
-      $row = $result->fetch_assoc();
-      $categoryID = $row['CategoryID'];
-  } else {
-      echo "Category not found";
-      exit;
-  }
 
   //// *************************** mapping category name to category id
   $stmt = $connection->prepare("SELECT `CategoryID` FROM `Categories` WHERE `CategoryName` = ?");
@@ -70,11 +62,20 @@
   $stmt->execute();
   $result = $stmt->get_result();
 
+  if ($result->num_rows > 0) {
+      $row = $result->fetch_assoc();
+      $categoryID = $row['CategoryID'];
+  } else {
+      // Handle the case where the category does not exist
+      echo "Category not found";
+      exit;
+  }
 
-  $stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, Title, Description, 
-  StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
+  /* TODO #3: If everything looks good, make the appropriate call to insert
+              data into the database. */
+
+  $stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, Title, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
   $stmt->bind_param("isssdis", $_SESSION['sellerid'], $categoryID, $auctionTitle, $auctionDetails, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
-
   // Execute the prepared statement
   if ($stmt->execute()) {
     echo "New item added successfully.";
