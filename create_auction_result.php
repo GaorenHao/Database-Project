@@ -50,17 +50,10 @@
       exit;
     }
   }
+  
   if (empty($auctionDetails)) {
     $auctionDetails = "No description is given for this item.";
   }
-  //$nullWatchlist = 0; //////// we could implement default nulls on the SQL side, but for now, let me just do it cosmetically on this side. 
-  /// we are just creating a new item to list. so it is typical that it does not immediately have a watchlistID assignment
-
-  //// *************************** mapping category name to category id
-  $stmt = $connection->prepare("SELECT `CategoryID` FROM `Categories` WHERE `CategoryName` = ?");
-  $stmt->bind_param("s", $auctionCategory);
-  $stmt->execute();
-  $result = $stmt->get_result();
 
   if ($result->num_rows > 0) {
       $row = $result->fetch_assoc();
@@ -72,6 +65,11 @@
   }
 
 
+  //// *************************** mapping category name to category id
+  $stmt = $connection->prepare("SELECT `CategoryID` FROM `Categories` WHERE `CategoryName` = ?");
+  $stmt->bind_param("s", $auctionCategory);
+  $stmt->execute();
+  $result = $stmt->get_result();
 
   /* TODO #3: If everything looks good, make the appropriate call to insert
               data into the database. */
