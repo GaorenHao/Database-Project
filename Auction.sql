@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Nov 28, 2023 at 07:58 AM
+-- Generation Time: Dec 02, 2023 at 07:11 AM
 -- Server version: 5.7.39
 -- PHP Version: 7.4.33
 
@@ -83,26 +83,27 @@ CREATE TABLE `Bid` (
 --
 
 INSERT INTO `Bid` (`BidID`, `BuyerID`, `ItemAuctionID`, `BidTime`, `BidAmount`) VALUES
-(21, 1, 6, '2023-11-15 10:00:00', 120),
-(22, 2, 7, '2023-11-15 10:15:00', 200),
-(23, 3, 8, '2023-11-15 10:30:00', 150),
-(24, 4, 9, '2023-11-15 10:45:00', 220),
-(25, 5, 10, '2023-11-15 11:00:00', 180),
-(26, 6, 11, '2023-11-15 11:15:00', 210),
-(27, 7, 12, '2023-11-15 11:30:00', 250),
-(28, 8, 13, '2023-11-15 11:45:00', 190),
-(29, 9, 14, '2023-11-15 12:00:00', 300),
-(30, 10, 15, '2023-11-15 12:15:00', 160),
-(31, 1, 16, '2023-11-15 12:30:00', 140),
-(32, 2, 17, '2023-11-15 12:45:00', 210),
-(33, 3, 18, '2023-11-15 13:00:00', 230),
-(34, 4, 19, '2023-11-15 13:15:00', 200),
-(35, 5, 20, '2023-11-15 13:30:00', 170),
-(36, 6, 21, '2023-11-15 13:45:00', 190),
-(37, 7, 22, '2023-11-15 14:00:00', 210),
-(38, 8, 23, '2023-11-15 14:15:00', 220),
-(39, 9, 24, '2023-11-15 14:30:00', 180),
-(40, 10, 25, '2023-11-15 14:45:00', 200);
+(41, 1, 6, '2023-12-02 06:55:03', 15),
+(42, 1, 16, '2023-12-02 06:55:28', 30),
+(43, 2, 7, '2023-12-02 06:56:18', 40),
+(44, 2, 17, '2023-12-02 06:56:51', 35),
+(45, 3, 8, '2023-12-02 06:57:37', 20),
+(46, 3, 18, '2023-12-02 06:57:53', 65),
+(47, 4, 9, '2023-12-02 06:59:04', 120),
+(48, 4, 19, '2023-12-02 06:59:28', 75),
+(49, 5, 10, '2023-12-02 07:01:29', 25),
+(50, 5, 20, '2023-12-02 07:01:49', 45),
+(51, 6, 11, '2023-12-02 07:02:25', 50),
+(52, 6, 21, '2023-12-02 07:03:37', 20),
+(53, 7, 12, '2023-12-02 07:04:22', 210),
+(54, 7, 22, '2023-12-02 07:05:03', 30),
+(55, 8, 13, '2023-12-02 07:05:44', 60),
+(56, 8, 23, '2023-12-02 07:05:57', 60),
+(57, 9, 14, '2023-12-02 07:06:36', 50),
+(58, 9, 24, '2023-12-02 07:07:02', 90),
+(59, 10, 6, '2023-12-02 07:07:49', 18),
+(60, 10, 25, '2023-12-02 07:08:10', 50),
+(61, 10, 15, '2023-12-02 07:10:18', 12);
 
 -- --------------------------------------------------------
 
@@ -227,6 +228,13 @@ CREATE TABLE `Notification` (
   `Read` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `Notification`
+--
+
+INSERT INTO `Notification` (`NotificationID`, `UserID`, `DateTime`, `Message`, `Type`, `Read`) VALUES
+(1, 1, '2023-12-02 07:07:49', 'Your watchlist item 6: Array has been outbid. You were previously the highest bidder, but the highest bid is now 18.', 'Watchlist Winner Outbid', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -288,25 +296,25 @@ CREATE TABLE `Users` (
 --
 
 INSERT INTO `Users` (`UserID`, `Email`, `Password`, `FirstName`, `LastName`, `Role`, `LastLogout`) VALUES
-(1, 'buyer1@example.com', 'buyerPass1', 'John', 'Doe', 'buyer', NULL),
-(2, 'seller1@example.com', 'sellerPass1', 'Jane', 'Smith', 'seller', '2023-11-28 07:52:48'),
-(3, 'buyer2@example.com', 'buyerPass2', 'Alice', 'Johnson', 'buyer', NULL),
-(4, 'seller2@example.com', 'sellerPass2', 'Bob', 'Davis', 'seller', '2023-11-28 07:54:11'),
-(5, 'buyer3@example.com', 'buyerPass3', 'Charlie', 'Brown', 'buyer', NULL),
-(6, 'seller3@example.com', 'sellerPass3', 'Emily', 'White', 'seller', '2023-11-28 07:55:07'),
-(7, 'buyer4@example.com', 'buyerPass4', 'Michael', 'Green', 'buyer', NULL),
-(8, 'seller4@example.com', 'sellerPass4', 'Sarah', 'Taylor', 'seller', '2023-11-28 07:55:44'),
-(9, 'buyer5@example.com', 'buyerPass5', 'Daniel', 'Martin', 'buyer', NULL),
-(10, 'seller5@example.com', 'sellerPass5', 'Laura', 'Wilson', 'seller', '2023-11-28 07:56:35'),
-(11, 'buyer6@example.com', 'buyerPass6', 'David', 'Clark', 'buyer', NULL),
-(12, 'seller6@example.com', 'sellerPass6', 'Nancy', 'Lewis', 'seller', '2023-11-28 07:11:09'),
-(13, 'buyer7@example.com', 'buyerPass7', 'Karen', 'Walker', 'buyer', NULL),
-(14, 'seller7@example.com', 'sellerPass7', 'Brian', 'Hill', 'seller', '2023-11-28 07:57:20'),
-(15, 'buyer8@example.com', 'buyerPass8', 'Lisa', 'Lee', 'buyer', NULL),
-(16, 'seller8@example.com', 'sellerPass8', 'Kevin', 'Hall', 'seller', '2023-11-28 07:57:50'),
-(17, 'buyer9@example.com', 'buyerPass9', 'Diana', 'Adams', 'buyer', NULL),
-(18, 'seller9@example.com', 'sellerPass9', 'George', 'Baker', 'seller', '2023-11-28 07:58:28'),
-(19, 'buyer10@example.com', 'buyerPass10', 'Angela', 'Gonzalez', 'buyer', NULL),
+(1, 'buyer1@example.com', '111', 'John', 'Doe', 'buyer', '2023-12-02 06:55:46'),
+(2, 'seller1@example.com', '111', 'Jane', 'Smith', 'seller', '2023-11-28 07:52:48'),
+(3, 'buyer2@example.com', '111', 'Alice', 'Johnson', 'buyer', '2023-12-02 06:56:57'),
+(4, 'seller2@example.com', '111', 'Bob', 'Davis', 'seller', '2023-11-28 07:54:11'),
+(5, 'buyer3@example.com', '111', 'Charlie', 'Brown', 'buyer', '2023-12-02 06:57:59'),
+(6, 'seller3@example.com', '111', 'Emily', 'White', 'seller', '2023-11-28 07:55:07'),
+(7, 'buyer4@example.com', '111', 'Michael', 'Green', 'buyer', '2023-12-02 06:59:56'),
+(8, 'seller4@example.com', '111', 'Sarah', 'Taylor', 'seller', '2023-11-28 07:55:44'),
+(9, 'buyer5@example.com', '111', 'Daniel', 'Martin', 'buyer', '2023-12-02 07:02:00'),
+(10, 'seller5@example.com', '111', 'Laura', 'Wilson', 'seller', '2023-11-28 07:56:35'),
+(11, 'buyer6@example.com', '111', 'David', 'Clark', 'buyer', '2023-12-02 07:03:42'),
+(12, 'seller6@example.com', '111', 'Nancy', 'Lewis', 'seller', '2023-11-28 07:11:09'),
+(13, 'buyer7@example.com', '111', 'Karen', 'Walker', 'buyer', '2023-12-02 07:05:07'),
+(14, 'seller7@example.com', '111', 'Brian', 'Hill', 'seller', '2023-11-28 07:57:20'),
+(15, 'buyer8@example.com', '111', 'Lisa', 'Lee', 'buyer', '2023-12-02 07:06:00'),
+(16, 'seller8@example.com', '111', 'Kevin', 'Hall', 'seller', '2023-11-28 07:57:50'),
+(17, 'buyer9@example.com', '111', 'Diana', 'Adams', 'buyer', '2023-12-02 07:07:22'),
+(18, 'seller9@example.com', '111', 'George', 'Baker', 'seller', '2023-11-28 07:58:28'),
+(19, 'buyer10@example.com', '111', 'Angela', 'Gonzalez', 'buyer', NULL),
 (20, 'admin@example.com', 'adminPass', 'Super', 'User', 'admin', NULL);
 
 -- --------------------------------------------------------
@@ -319,6 +327,34 @@ CREATE TABLE `WatchListItems` (
   `BuyerID` int(11) NOT NULL,
   `ItemAuctionID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `WatchListItems`
+--
+
+INSERT INTO `WatchListItems` (`BuyerID`, `ItemAuctionID`) VALUES
+(1, 6),
+(1, 16),
+(2, 7),
+(2, 17),
+(3, 8),
+(3, 18),
+(4, 9),
+(4, 19),
+(5, 10),
+(5, 20),
+(6, 11),
+(6, 21),
+(7, 12),
+(7, 22),
+(8, 13),
+(8, 23),
+(9, 14),
+(9, 24),
+(10, 6),
+(10, 25),
+(10, 15),
+(10, 16);
 
 --
 -- Indexes for dumped tables
@@ -410,7 +446,7 @@ ALTER TABLE `AuctionItem`
 -- AUTO_INCREMENT for table `Bid`
 --
 ALTER TABLE `Bid`
-  MODIFY `BidID` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `BidID` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `Buyer`
@@ -434,7 +470,7 @@ ALTER TABLE `ItemImages`
 -- AUTO_INCREMENT for table `Notification`
 --
 ALTER TABLE `Notification`
-  MODIFY `NotificationID` int(4) NOT NULL AUTO_INCREMENT;
+  MODIFY `NotificationID` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `Sellers`
