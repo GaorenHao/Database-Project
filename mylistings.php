@@ -41,22 +41,23 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
       //$stmt = $connection->prepare("SELECT ItemAuctionID, Title, Description, StartingPrice, ReservePrice, EndDate  FROM AuctionItem WHERE SellerID = ?");
 
       $stmt_query = "SELECT 
-      Bid.ItemAuctionID,
+      AuctionItem.ItemAuctionID,
       AuctionItem.Title,
       AuctionItem.Description,
       AuctionItem.StartingPrice,
       AuctionItem.ReservePrice,
       AuctionItem.EndDate,
-      Bid.BuyerID,
-      MAX(Bid.BidAmount) as MaxBid
-      FROM 
-          Bid
-      JOIN 
-          AuctionItem ON Bid.ItemAuctionID = AuctionItem.ItemAuctionID
-      WHERE 
-          AuctionItem.SellerID = ?
-      GROUP BY 
-          Bid.ItemAuctionID, Bid.BuyerID;
+      MAX(Bid.BuyerID) as BuyerID, -- If there are no bids, this will be NULL
+      MAX(Bid.BidAmount) as MaxBid -- If there are no bids, this will be NULL
+  FROM 
+      AuctionItem
+  LEFT JOIN 
+      Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID
+  WHERE 
+      AuctionItem.SellerID = ?
+  GROUP BY 
+      AuctionItem.ItemAuctionID;
+  
       ";
 
       $stmt = $connection->prepare($stmt_query);
@@ -81,7 +82,7 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
               if ($listingStatus === "Ended") {
                 if ($row['MaxBid'] >= $row['ReservePrice']) {
                     // If the max bid is equal to or greater than the reserve price
-                    $listingStatus = "<strong>Ended - SOLD!</strong>";
+                    $listingStatus = "Ended - SOLD!";
                     $highestPriceLabel = "SOLD FOR";
                     $highestBidderLabel = "SOLD TO BUYER ID";
                 } elseif ($row['MaxBid'] < $row['ReservePrice']) {
