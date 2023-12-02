@@ -70,10 +70,9 @@
   $stmt->execute();
   $result = $stmt->get_result();
 
-  /* TODO #3: If everything looks good, make the appropriate call to insert
-              data into the database. */
 
-  $stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, Title, Description, StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
+  $stmt = $connection->prepare("INSERT INTO AuctionItem ( SellerID, CategoryID, Title, Description, 
+  StartingPrice, ReservePrice, EndDate) VALUES (?, ?, ?, ?, ?, ?, ?)");
   $stmt->bind_param("isssdis", $_SESSION['sellerid'], $categoryID, $auctionTitle, $auctionDetails, $auctionStartPrice, $auctionReservePrice, $auctionEndDate);
 
   // Execute the prepared statement
