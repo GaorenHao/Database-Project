@@ -7,11 +7,11 @@
 if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') {
     header('Location: browse.php');
   }
-
-// Fetch categories for the dropdown
-$categoryQuery = "SELECT * FROM Categories";
-$categoryResult = $connection->query($categoryQuery);
-$categories = $categoryResult->fetch_all(MYSQLI_ASSOC);
+// include 'db_connect.php';
+// // Fetch categories for the dropdown
+// $categoryQuery = "SELECT * FROM Categories";
+// $categoryResult = $connection->query($categoryQuery);
+// $categories = $categoryResult->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="container">
@@ -40,13 +40,22 @@ $categories = $categoryResult->fetch_all(MYSQLI_ASSOC);
             <label for="auctionCategory" class="col-sm-2 col-form-label text-right">Category</label>
             <div class="col-sm-10">
               <select class="form-control" id="auctionCategory" name="auctionCategory">
-                  <option selected>Choose...</option>
-                  <?php foreach ($categories as $category): ?>
-                      <option value="<?php echo htmlspecialchars($category['CategoryID']); ?>">
-                          <?php echo htmlspecialchars($category['CategoryName']); ?>
-                      </option>
-                  <?php endforeach; ?>
+                <option selected>Choose...</option>
+                <option value="fashion">fashion</option>
+                <option value="electronics">electronics</option>
+                <option value="home">home</option>
+                <option value="beauty">beauty</option>
+                <option value="outdoor">outdoor</option>
+                <option value="art">art</option>
               </select>
+              <!-- <select class="form-control" id="auctionCategory" name="auctionCategory">
+                <?php
+                foreach ($categories as $category) {
+                  $selected = ($category['CategoryID'] == $auctionCategoryID) ? 'selected' : '';
+                  echo "<option value='" . $category['CategoryID'] . "' $selected>" . htmlspecialchars($category['CategoryName']) . "</option>";
+                }
+                ?>
+              </select> -->
               <small id="categoryHelp" class="form-text text-muted">
                   <span class="text-danger">* Required.</span> Select a category for this item.
               </small>
