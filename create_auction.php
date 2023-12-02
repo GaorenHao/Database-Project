@@ -7,11 +7,6 @@
 if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') {
     header('Location: browse.php');
   }
-// include 'db_connect.php';
-// // Fetch categories for the dropdown
-// $categoryQuery = "SELECT * FROM Categories";
-// $categoryResult = $connection->query($categoryQuery);
-// $categories = $categoryResult->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="container">
@@ -41,21 +36,31 @@ if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') 
             <div class="col-sm-10">
               <select class="form-control" id="auctionCategory" name="auctionCategory">
                 <option selected>Choose...</option>
-                <option value="fashion">fashion</option>
-                <option value="electronics">electronics</option>
-                <option value="home">home</option>
-                <option value="beauty">beauty</option>
-                <option value="outdoor">outdoor</option>
-                <option value="art">art</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Beauty">Beauty</option>
+                <option value="Home">Home</option>
+                <option value="Outdoor">Outdoor</option>
+                <option value="Art">Art</option>
+                <option value="Books">Books</option>
+                <option value="Toys">Toys</option>
+                <option value="Sports">Sports</option>
+                <option value="Music">Music</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Gardening">Gardening</option>
+                <option value="Stationery">Stationery</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Footwear">Footwear</option>
+                <option value="Jewelry">Jewelry</option>
+                <option value="Cosmetics">Cosmetics</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Beverages">Beverages</option>
+                <option value="Cookware">Cookware</option>
+                <option value="Bedding">Bedding</option>
               </select>
-              <!-- <select class="form-control" id="auctionCategory" name="auctionCategory">
-                <?php
-                foreach ($categories as $category) {
-                  $selected = ($category['CategoryID'] == $auctionCategoryID) ? 'selected' : '';
-                  echo "<option value='" . $category['CategoryID'] . "' $selected>" . htmlspecialchars($category['CategoryName']) . "</option>";
-                }
-                ?>
-              </select> -->
+            
               <small id="categoryHelp" class="form-text text-muted">
                   <span class="text-danger">* Required.</span> Select a category for this item.
               </small>
