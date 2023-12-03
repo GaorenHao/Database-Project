@@ -42,6 +42,7 @@ $emailQuery = "
     SELECT u.Email
     FROM Notification n
     JOIN Users u ON n.UserID = u.UserID
+    WHERE n.Type = 'Watchlist Winner Outbid'
     ORDER BY n.DateTime DESC
     LIMIT 1;
 ";
