@@ -47,16 +47,27 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
       AuctionItem.StartingPrice,
       AuctionItem.ReservePrice,
       AuctionItem.EndDate,
-      MAX(Bid.BuyerID) as BuyerID, -- If there are no bids, this will be NULL
-      MAX(Bid.BidAmount) as MaxBid -- If there are no bids, this will be NULL
+      Bid.BuyerID, -- BuyerID of the highest bid
+      MaxBid.MaxBidAmount -- Highest bid amount
   FROM 
       AuctionItem
   LEFT JOIN 
-      Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID
+      (
+          SELECT 
+              ItemAuctionID, 
+              MAX(BidAmount) as MaxBidAmount
+          FROM 
+              Bid
+          GROUP BY 
+              ItemAuctionID
+      ) MaxBid ON AuctionItem.ItemAuctionID = MaxBid.ItemAuctionID
+  LEFT JOIN 
+      Bid ON AuctionItem.ItemAuctionID = Bid.ItemAuctionID AND MaxBid.MaxBidAmount = Bid.BidAmount
   WHERE 
       AuctionItem.SellerID = ?
   GROUP BY 
-      AuctionItem.ItemAuctionID;
+      AuctionItem.ItemAuctionID, Bid.BuyerID;
+  
   
       ";
 
@@ -80,12 +91,12 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
               $highestBidderLabel = "Highest Bidder";
 
               if ($listingStatus === "Ended") {
-                if ($row['MaxBid'] >= $row['ReservePrice']) {
+                if ($row['MaxBidAmount'] >= $row['ReservePrice']) {
                     // If the max bid is equal to or greater than the reserve price
                     $listingStatus = "Ended - SOLD!";
                     $highestPriceLabel = "SOLD FOR";
                     $highestBidderLabel = "SOLD TO BUYER ID";
-                } elseif ($row['MaxBid'] < $row['ReservePrice']) {
+                } elseif ($row['MaxBidAmount'] < $row['ReservePrice']) {
                     // If the max bid is less than the reserve price
                     $listingStatus = "Ended - Reserve not met";
                 }
@@ -118,7 +129,7 @@ if (isset ($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSIO
               echo "<p>End Date: " . htmlspecialchars($row['EndDate']) . "</p>";
               echo "<p>Starting Price: £" . htmlspecialchars($row['StartingPrice']) . "</p>";
               echo "<p>Reserve Price: £" . htmlspecialchars($row['ReservePrice']) . "</p>";
-              echo "<p>" . $highestPriceLabel . ": " . $row['MaxBid'] . "</p>";
+              echo "<p>" . $highestPriceLabel . ": " . $row['MaxBidAmount'] . "</p>";
               echo "<p>Status: " . htmlspecialchars($listingStatus) . "</p>";
               echo "<p>" . $highestBidderLabel . ": " . $row['BuyerID'] . "</p>";
               echo '</div>'; // End of item-info
